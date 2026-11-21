@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "cn";
@@ -268,8 +267,4 @@ function Pill({
       {children}
     </button>
   );
-}
-
-export function FoldIcon() {
-  return <Check className="size-3" aria-hidden />;
 }

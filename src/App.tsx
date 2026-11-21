@@ -22,7 +22,7 @@ function NotFound() {
         title="页面走丢了"
         description="这个地址没有对应的内容。"
         action={
-          <Button className="rounded-xl bg-brand text-ink" onClick={() => (window.location.href = "/")}>
+          <Button className="rounded-xl bg-brand text-ink" onClick={() => (window.location.href = `${import.meta.env.BASE_URL}`)}>
             返回首页
           </Button>
         }
@@ -42,6 +42,19 @@ export function App() {
     // 首帧保持与服务端一致，挂载后再读本地数据
     void useAppStore.persist.rehydrate();
   }, []);
+
+  // 「我的」里的显示设置必须真实作用于界面
+  const fontScale = useAppStore((s) => s.profile.fontScale);
+  const reduceMotion = useAppStore((s) => s.profile.reduceMotion);
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.zoom = fontScale === "100" ? "" : String(Number(fontScale) / 100);
+    if (reduceMotion) root.dataset.reduceMotion = "true";
+    else delete root.dataset.reduceMotion;
+    return () => {
+      root.style.zoom = "";
+    };
+  }, [fontScale, reduceMotion]);
   return (
     <TooltipProvider delayDuration={200}>
       <DesktopNav />

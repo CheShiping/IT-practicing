@@ -86,16 +86,16 @@ export default function StatsPage() {
 
         <section className="rounded-2xl bg-white p-4 card-shadow">
           <h2 className="text-[15px] font-semibold text-ink">近 14 天刷题量</h2>
-          <div className="mt-3 flex h-28 items-end gap-1.5">
+          <div className="mt-3 flex h-28 items-end gap-1 overflow-hidden">
             {daily.map((d) => (
-              <div key={d.label} className="flex flex-1 flex-col items-center gap-1">
-                <span className="num text-[10px] text-ink-3">{d.count || ""}</span>
+              <div key={d.label} className="flex min-w-0 flex-1 flex-col items-center gap-1">
+                <span className="num truncate text-[10px] text-ink-3">{d.count || ""}</span>
                 <div
                   className="w-full rounded-t bg-brand"
                   style={{ height: `${Math.max(4, (d.count / maxDaily) * 84)}px` }}
                   title={`${d.label}：${d.count} 题`}
                 />
-                <span className="num text-[10px] text-ink-3">{d.label}</span>
+                <span className="num truncate text-[10px] text-ink-3">{d.label}</span>
               </div>
             ))}
           </div>

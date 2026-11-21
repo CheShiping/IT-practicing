@@ -44,7 +44,7 @@
   --brand-ink: #343746;
   --ink: #343746;
   --ink-2: #666666;
-  --ink-3: #999999;
+  --ink-3: #767676;
   --success-strong: #1fa96d;
   --danger: #ff624c;
   --danger-strong: #d93a1f;
@@ -144,6 +144,15 @@
   border-style: solid;
   border-width: 0 0 10px 10px;
   border-color: transparent transparent #343746 transparent;
+}
+
+/* 应用内「减少动效」开关（我的 › 显示设置） */
+[data-reduce-motion="true"] *,
+[data-reduce-motion="true"] *::before,
+[data-reduce-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

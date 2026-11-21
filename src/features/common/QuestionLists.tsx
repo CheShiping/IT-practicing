@@ -7,6 +7,7 @@ import { loadChapter } from "@/data/loader";
 import { KIND_LABEL, type Question } from "@/data/types";
 import { relativeTime } from "@/lib/format";
 import { useAppStore } from "@/store/useAppStore";
+import { useNavigate } from "react-router-dom";
 
 /** 题目 id 形如 ch3-single-123，可直接定位到所属章节 */
 export function chapterOf(id: string) {
@@ -152,6 +153,7 @@ export function StartPracticeButton({
   title: string;
   disabled?: boolean;
 }) {
+  const navigate = useNavigate();
   const start = () => {
     if (!ids.length) return;
     const chapterIds = [...new Set(ids.map(chapterOf))];
@@ -169,7 +171,7 @@ export function StartPracticeButton({
       results: {},
       startedAt: Date.now(),
     });
-    window.location.assign(`/quiz/${id}`);
+    navigate(`/quiz/${id}`);
   };
   return (
     <Button
