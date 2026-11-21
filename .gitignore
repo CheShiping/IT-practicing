@@ -26,3 +26,8 @@ dist-ssr
 # Question banks
 **/题库/
 **/原型/
+
+# 本地工具产物
+build/*
+!build/data-report.json
+.workbuddy/
