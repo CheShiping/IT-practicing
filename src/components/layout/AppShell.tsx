@@ -85,6 +85,7 @@ export function TopBar({
   right,
   variant = "yellow",
   center = false,
+  fallbackTitle = "计基速刷",
 }: {
   title: string;
   subtitle?: string;
@@ -92,6 +93,7 @@ export function TopBar({
   right?: React.ReactNode;
   variant?: "yellow" | "plain";
   center?: boolean;
+  fallbackTitle?: string;
 }) {
   const navigate = useNavigate();
   const examDate = useAppStore((s) => s.profile.examDate);
@@ -125,14 +127,15 @@ export function TopBar({
           </button>
         ) : null}
         <div className={cn("min-w-0", !center && !back && "flex-1", center && "text-center")}>
-          <p
+          <h1
             className={cn(
               "truncate text-[15px] font-semibold",
+              !title && "sr-only",
               yellow ? "text-brand-ink" : "text-ink",
             )}
           >
-            {title}
-          </p>
+            {title || fallbackTitle}
+          </h1>
           {subtitle ? (
             <p className={cn("truncate text-xs", yellow ? "text-brand-ink/70" : "text-ink-3")}>
               {subtitle}

@@ -34,8 +34,8 @@ export function OptionItem({
         "relative flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-[15px] leading-6 transition-colors duration-150",
         // 控件本身透明，焦点环画在行上，保证键盘操作可见
         "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink",
-        isCorrect && "bg-success text-white",
-        isWrong && "bg-danger text-white",
+        isCorrect && "bg-success text-ink",
+        isWrong && "bg-danger-strong text-white",
         isSelected && "bg-brand-soft text-ink",
         !isCorrect && !isWrong && !isSelected && "border border-black/8 bg-white text-ink",
         disabled && "cursor-default",
@@ -65,7 +65,7 @@ export function OptionItem({
       </span>
       <span className="flex-1">{text}</span>
 
-      {isCorrect ? <Check className="size-4.5 shrink-0 text-white" aria-hidden /> : null}
+      {isCorrect ? <Check className="size-4.5 shrink-0 text-ink" aria-hidden /> : null}
       {isWrong ? <X className="size-4.5 shrink-0 text-white" aria-hidden /> : null}
     </label>
   );

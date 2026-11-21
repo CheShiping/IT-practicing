@@ -183,6 +183,7 @@ export default function QuizPage() {
     <div className="min-h-dvh">
       <TopBar
         title=""
+        fallbackTitle="练习"
         variant="plain"
         back={() => {
           if (answeredCount > 0 && !isRecite) setExitOpen(true);
@@ -351,7 +352,7 @@ export default function QuizPage() {
         {answered ? (
           <section className="rounded-xl border border-black/8 bg-white p-3.5">
             <h2 className="text-sm font-medium text-ink">解析</h2>
-            <div className="mt-2 flex aspect-video w-full items-center justify-center rounded-lg bg-[#9a9a9a]">
+            <div className="mt-2 flex aspect-video w-full items-center justify-center rounded-lg bg-video-placeholder">
               <span className="flex size-11 items-center justify-center rounded-full bg-white/90">
                 <Play className="ml-0.5 size-5 fill-ink text-ink" aria-hidden />
               </span>

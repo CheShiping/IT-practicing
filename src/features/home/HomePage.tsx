@@ -172,7 +172,7 @@ export default function HomePage() {
             icon={<Star className="size-5 fill-white text-white" aria-hidden />}
             label="我的收藏"
             count={favorites.length}
-            tint="bg-[#3B82F6]"
+            tint="bg-accent-blue"
           />
         </div>
 
