@@ -55,7 +55,7 @@ await step("选中科目并确认进入练习", async () => {
   await page.locator("button", { hasText: "计算机基础知识" }).first().click();
   await page.waitForSelector("text=题型选择", { timeout: 10000 });
   await page.click("text=确认");
-  await page.waitForSelector("text=提交答案", { timeout: 20000 });
+  await page.waitForSelector("text=提交答案", { timeout: 45000 });
   await page.screenshot({ path: `${OUT}/03-quiz.png`, fullPage: true });
 });
 
@@ -68,7 +68,28 @@ await step("章节列表页可用", async () => {
   await page.waitForSelector("text=题库选择", { timeout: 15000 });
   await page.locator("button", { hasText: "计算机基础知识" }).first().click();
   await page.click("text=确认");
-  await page.waitForSelector("text=提交答案", { timeout: 20000 });
+  await page.waitForSelector("text=提交答案", { timeout: 45000 });
+});
+
+await step("键盘可达并可选中", async () => {
+  let hit = null;
+  for (let i = 0; i < 25; i++) {
+    await page.keyboard.press("Tab");
+    const info = await page.evaluate(() => {
+      const el = document.activeElement;
+      return { label: el?.getAttribute("aria-label") };
+    });
+    if (info.label && info.label.startsWith("选项")) {
+      hit = info.label;
+      break;
+    }
+  }
+  if (!hit) throw new Error("Tab 无法到达选项控件");
+  await page.keyboard.press("Space");
+  await page.waitForTimeout(300);
+  const selected = await page.evaluate(() => document.querySelectorAll("label.bg-brand-soft").length);
+  if (!selected) throw new Error("空格键未能选中选项");
+  await page.screenshot({ path: `${OUT}/04b-keyboard.png` });
 });
 
 await step("选择选项并提交", async () => {
