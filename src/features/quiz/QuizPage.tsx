@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ClipboardList, Loader2, NotebookPen, Star } from "lucide-react";
+import { Check, ClipboardList, Loader2, NotebookPen, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
@@ -109,9 +109,7 @@ export default function QuizPage() {
   function pick(key: string) {
     if (!question || revealed || isRecite) return;
     if (question.type === "multi") {
-      setSelected((prev) =>
-        prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key],
-      );
+      setSelected((prev) => (prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]));
     } else {
       setSelected([key]);
     }
@@ -134,13 +132,13 @@ export default function QuizPage() {
     return (
       <div className="min-h-dvh">
         <TopBar title="练习" back />
-        <PageContainer className="pt-10">
-          <p className="text-center text-[13px] text-ink-2">
+        <PageContainer className="pt-8">
+          <p className="card p-6 text-center text-[13px] text-ink-2">
             找不到这次练习（可能已结束，或换了浏览器）。
           </p>
-          <div className="mt-5 flex justify-center">
+          <div className="mt-4 flex justify-center">
             <Button
-              className="h-10 rounded-[4px] bg-brand px-5 text-white"
+              className="bg-yellow text-ink shadow-[0_3px_0_var(--yellow-deep)] h-11 rounded-[12px] px-6 text-[14px] active:translate-y-[2px]"
               onClick={() => navigate("/library")}
             >
               去选题库
@@ -155,7 +153,7 @@ export default function QuizPage() {
     return (
       <div className="min-h-dvh">
         <TopBar title="练习" back />
-        <PageContainer className="pt-10 text-center text-[13px] text-ink-2">
+        <PageContainer className="pt-8 text-center text-[13px] text-ink-2">
           题库加载失败：{error}
         </PageContainer>
       </div>
@@ -183,7 +181,7 @@ export default function QuizPage() {
 
   const sheetGroups: SheetGroup[] = [
     {
-      title: `${session.title}`,
+      title: session.title,
       items: questions.map((q, i) => ({
         no: i + 1,
         state:
@@ -199,7 +197,7 @@ export default function QuizPage() {
   ];
 
   return (
-    <div className="min-h-dvh pb-20">
+    <div className="min-h-dvh pb-24">
       <TopBar
         title={session.title}
         kicker={`${KIND_LABEL[question.kind]} · 第 ${index + 1} / ${total} 题`}
@@ -209,7 +207,7 @@ export default function QuizPage() {
         }}
         right={
           <div
-            className="flex shrink-0 items-center overflow-hidden rounded-[3px] border border-rule-2"
+            className="flex shrink-0 items-center rounded-full bg-white/15 p-0.5"
             role="group"
             aria-label="练习模式"
           >
@@ -217,8 +215,8 @@ export default function QuizPage() {
               type="button"
               onClick={() => updateSession({ mode: "quiz" })}
               aria-pressed={!isRecite}
-              className={`px-2.5 py-1 text-[12px] transition-colors ${
-                isRecite ? "bg-paper text-ink-2" : "bg-ink font-semibold text-white"
+              className={`rounded-full px-2.5 py-1 text-[11.5px] font-bold transition-colors ${
+                isRecite ? "text-white/70" : "bg-yellow text-ink"
               }`}
             >
               刷题
@@ -227,8 +225,8 @@ export default function QuizPage() {
               type="button"
               onClick={() => updateSession({ mode: "recite" })}
               aria-pressed={isRecite}
-              className={`px-2.5 py-1 text-[12px] transition-colors ${
-                isRecite ? "bg-ink font-semibold text-white" : "bg-paper text-ink-2"
+              className={`rounded-full px-2.5 py-1 text-[11.5px] font-bold transition-colors ${
+                isRecite ? "bg-yellow text-ink" : "text-white/70"
               }`}
             >
               背题
@@ -237,56 +235,70 @@ export default function QuizPage() {
         }
       />
 
-      {/* 进度：一条印刷细线，不是进度条控件 */
-      }
-      <div className="h-[3px] w-full bg-paper-3">
-        <div
-          className="h-full bg-brand transition-[width] duration-300"
-          style={{ width: `${pct}%` }}
-          role="progressbar"
-          aria-valuenow={Math.round(pct)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="答题进度"
-        />
+      {/* 进度：天蓝轨道上的黄条 */}
+      <div className="bg-azure px-0 pb-2">
+        <div className="mx-auto max-w-[560px] px-5">
+          <div
+            className="h-[4px] overflow-hidden rounded-full bg-white/25"
+            role="progressbar"
+            aria-valuenow={Math.round(pct)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="答题进度"
+          >
+            <div
+              className="h-full rounded-full bg-yellow transition-[width] duration-300"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
       </div>
 
       <PageContainer className="pt-4">
-        {/* 工具行 */}
-        <div className="mb-1 flex items-center justify-end gap-0.5">
-          <IconBtn
-            label={starred ? "取消收藏" : "收藏本题"}
-            active={starred}
-            onClick={() => toggleFavorite(question.id)}
-          >
-            <Star className={starred ? "size-4 fill-brand text-brand" : "size-4"} aria-hidden />
-          </IconBtn>
-          <IconBtn label="笔记" active={hasNote} onClick={() => {
-            setNoteText(notes[question.id]?.text ?? "");
-            setNoteOpen(true);
-          }}>
-            <NotebookPen className="size-4" aria-hidden />
-          </IconBtn>
-          <IconBtn label="答题卡" onClick={() => setSheetOpen(true)}>
-            <ClipboardList className="size-4" aria-hidden />
-          </IconBtn>
-        </div>
+        {/* 题面卡 */}
+        <article key={question.id} className="rise card p-4">
+          <div className="mb-2 flex items-center gap-2">
+            <span className="num flex size-7 items-center justify-center rounded-[8px] bg-azure text-[11.5px] font-extrabold text-white">
+              {question.no}
+            </span>
+            <span className="text-[10.5px] font-bold text-ink-3">{KIND_LABEL[question.kind]}</span>
+            <div className="ml-auto flex items-center gap-0.5">
+              <IconBtn
+                label={starred ? "取消收藏" : "收藏本题"}
+                active={starred}
+                onClick={() => toggleFavorite(question.id)}
+              >
+                <Star
+                  className={starred ? "size-4 fill-yellow text-ink" : "size-4"}
+                  aria-hidden
+                />
+              </IconBtn>
+              <IconBtn
+                label="笔记"
+                active={hasNote}
+                onClick={() => {
+                  setNoteText(notes[question.id]?.text ?? "");
+                  setNoteOpen(true);
+                }}
+              >
+                <NotebookPen className="size-4" aria-hidden />
+              </IconBtn>
+              <IconBtn label="答题卡" onClick={() => setSheetOpen(true)}>
+                <ClipboardList className="size-4" aria-hidden />
+              </IconBtn>
+            </div>
+          </div>
 
-        {/* 题面 */}
-        <article key={question.id} className="rise pt-1">
-          <p className="font-serif text-[16px] leading-[1.85] text-ink">
-            <span className="num mr-1.5 text-[15px] font-bold text-brand">{question.no}.</span>
-            {question.stem}
-          </p>
+          <p className="text-[16px] leading-[1.8] font-semibold text-ink">{question.stem}</p>
 
           {multi && selected.length > 0 && !answered ? (
-            <p className="num mt-2 text-[11px] text-brand">已选 {selected.length} 项</p>
+            <p className="num mt-2 text-[11px] font-bold text-azure">已选 {selected.length} 项</p>
           ) : null}
         </article>
 
         {/* 选项 */}
         {options.length ? (
-          <div className="mt-3 border-t border-ink" role="group" aria-label="选项">
+          <div className="mt-3 space-y-2.5" role="group" aria-label="选项">
             {options.map((o) => (
               <OptionItem
                 key={o.key}
@@ -299,9 +311,9 @@ export default function QuizPage() {
             ))}
           </div>
         ) : (
-          <div className="mt-3 border-t border-ink pt-3">
+          <div className="card mt-3 p-4">
             <p className="label">参考答案</p>
-            <p className="mt-1.5 font-serif text-[15px] leading-[1.85] text-ink">
+            <p className="mt-1.5 text-[14px] leading-[1.8] font-medium text-ink">
               {question.answerText || question.analysis || "本题原书未给出参考答案"}
             </p>
           </div>
@@ -312,28 +324,37 @@ export default function QuizPage() {
           <section
             role="status"
             aria-live="polite"
-            className={`verdict mt-4 border-y ${
-              correct ? "border-success" : "border-danger"
-            } py-3`}
+            className={`verdict mt-3 rounded-[16px] border-2 p-3.5 ${
+              correct ? "border-green bg-green-tint" : "border-red bg-red-tint"
+            }`}
           >
-            <div className="flex items-baseline justify-between gap-3">
-              <p
-                className={`text-[17px] font-bold tracking-tight ${
-                  correct ? "text-success" : "text-danger"
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex size-7 items-center justify-center rounded-full text-white ${
+                  correct ? "bg-green" : "bg-red"
                 }`}
               >
-                {correct ? "回答正确" : "回答错误"}
+                {correct ? (
+                  <Check className="size-4" strokeWidth={3} aria-hidden />
+                ) : (
+                  <X className="size-4" strokeWidth={3} aria-hidden />
+                )}
+              </span>
+              <p className={`text-[15px] font-extrabold ${correct ? "text-green" : "text-red"}`}>
+                {correct ? "答对了" : "答错了"}
               </p>
-              <p className="num text-[12px] text-ink-3">累计正确率 {globalAccuracy()}%</p>
+              <p className="num ml-auto text-[10.5px] font-semibold text-ink-3">
+                累计正确率 {globalAccuracy()}%
+              </p>
             </div>
-            <dl className="num mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-[13px]">
+            <dl className="num mt-2.5 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-[12.5px]">
               <div className="flex items-baseline gap-1.5">
-                <dt className="text-[11px] text-ink-3">正确答案</dt>
-                <dd className="font-bold text-success">{question.answer.join(" ")}</dd>
+                <dt className="text-[10.5px] font-semibold text-ink-3">正确答案</dt>
+                <dd className="font-extrabold text-green">{question.answer.join(" ")}</dd>
               </div>
               <div className="flex items-baseline gap-1.5">
-                <dt className="text-[11px] text-ink-3">你选的</dt>
-                <dd className={`font-bold ${correct ? "text-success" : "text-danger"}`}>
+                <dt className="text-[10.5px] font-semibold text-ink-3">你选的</dt>
+                <dd className={`font-extrabold ${correct ? "text-green" : "text-red"}`}>
                   {selected.length ? selected.join(" ") : "未作答"}
                 </dd>
               </div>
@@ -343,16 +364,16 @@ export default function QuizPage() {
 
         {/* 解析 */}
         {answered ? (
-          <section className="mt-5">
+          <section className="card mt-3 p-4">
             <p className="label">解析</p>
             {question.analysis ? (
-              <p className="mt-1.5 font-serif text-[15px] leading-[1.9] text-ink">
+              <p className="mt-1.5 text-[14px] leading-[1.85] font-medium text-ink">
                 {question.analysis}
               </p>
             ) : (
               <p className="mt-1.5 text-[13px] text-ink-3">原书未给出解析。</p>
             )}
-            <p className="num mt-3 text-[10.5px] text-ink-3">
+            <p className="num mt-3 border-t border-shell-2 pt-2 text-[10px] text-ink-3">
               原书第 {question.source.page} 页 · {question.source.book}
             </p>
           </section>
@@ -360,47 +381,50 @@ export default function QuizPage() {
       </PageContainer>
 
       {/* 底部操作 */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-rule bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-shell-2 bg-paper px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto flex max-w-[520px] items-center gap-2.5">
-          <Button
-            variant="secondary"
-            className="press h-[46px] flex-1 rounded-[4px] border border-rule-2 bg-paper text-[14px] font-medium text-ink hover:bg-paper-2 active:translate-y-px disabled:opacity-40"
+          <button
+            type="button"
+            className="press h-[48px] flex-1 rounded-[13px] bg-paper text-[14px] font-bold text-ink-2 shadow-[0_1px_0_rgba(12,26,40,.06)] hover:bg-shell active:translate-y-[1px] disabled:opacity-40"
             disabled={index === 0}
             onClick={() => go(-1)}
           >
             上一题
-          </Button>
+          </button>
           {!answered && !isRecite ? (
-            <Button
-              className="press h-[46px] flex-[1.4] rounded-[4px] bg-brand text-[15px] font-bold text-white hover:bg-[#a80a5c] active:translate-y-px disabled:opacity-40"
+            <button
+              type="button"
+              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[3px] active:shadow-none disabled:bg-shell-2 disabled:text-ink-3 disabled:shadow-none"
               disabled={selected.length === 0}
               onClick={submit}
             >
               提交答案
-            </Button>
+            </button>
           ) : index === total - 1 ? (
-            <Button
-              className="press h-[46px] flex-[1.4] rounded-[4px] bg-brand text-[15px] font-bold text-white hover:bg-[#a80a5c] active:translate-y-px"
+            <button
+              type="button"
+              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[3px] active:shadow-none"
               onClick={finish}
             >
               查看结果
-            </Button>
+            </button>
           ) : (
-            <Button
-              className="press h-[46px] flex-[1.4] rounded-[4px] bg-brand text-[15px] font-bold text-white hover:bg-[#a80a5c] active:translate-y-px"
+            <button
+              type="button"
+              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[3px] active:shadow-none"
               onClick={() => go(1)}
             >
               下一题
-            </Button>
+            </button>
           )}
         </div>
       </div>
 
       {/* 答题卡 */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="bottom" className="sheet-in max-h-[76vh] rounded-t-[6px]">
+        <SheetContent side="bottom" className="sheet-in max-h-[76vh] rounded-t-[20px]">
           <SheetHeader>
-            <SheetTitle className="text-left text-[14px]">答题卡</SheetTitle>
+            <SheetTitle className="text-left text-[14px] font-extrabold">答题卡</SheetTitle>
           </SheetHeader>
           <div className="overflow-y-auto px-4 pb-6">
             <AnswerSheet
@@ -417,9 +441,9 @@ export default function QuizPage() {
 
       {/* 笔记 */}
       <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="rounded-[18px] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>笔记</DialogTitle>
+            <DialogTitle className="font-extrabold">笔记</DialogTitle>
             <DialogDescription className="truncate">{question.stem.slice(0, 40)}</DialogDescription>
           </DialogHeader>
           <textarea
@@ -428,19 +452,19 @@ export default function QuizPage() {
             rows={5}
             maxLength={2000}
             aria-label="笔记内容"
-            className="w-full rounded-[3px] border border-rule-2 p-3 font-serif text-[14px] leading-7 outline-none focus-visible:border-brand"
+            className="w-full rounded-[12px] border border-shell-2 bg-shell p-3 text-[14px] leading-7 outline-none focus-visible:border-azure"
             placeholder="记下你为什么选错…"
           />
           <DialogFooter>
             <Button
               variant="secondary"
-              className="rounded-[3px] border border-rule-2"
+              className="rounded-[10px] bg-shell text-ink-2"
               onClick={() => setNoteOpen(false)}
             >
               取消
             </Button>
             <Button
-              className="rounded-[3px] bg-brand text-white"
+              className="bg-yellow text-ink shadow-[0_3px_0_var(--yellow-deep)] rounded-[10px]"
               onClick={() => {
                 saveNote(question.id, noteText);
                 setNoteOpen(false);
@@ -454,22 +478,18 @@ export default function QuizPage() {
 
       {/* 退出确认 */}
       <AlertDialog open={exitOpen} onOpenChange={setExitOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-[18px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>结束这次练习？</AlertDialogTitle>
+            <AlertDialogTitle className="font-extrabold">结束这次练习？</AlertDialogTitle>
             <AlertDialogDescription>
               已完成 {answeredCount} 题，进度会保留在这台设备上。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel variant="outline" className="rounded-[3px]">
+            <AlertDialogCancel variant="outline" className="rounded-[10px]">
               继续练习
             </AlertDialogCancel>
-            <AlertDialogAction
-              variant="default"
-              className="rounded-[3px] bg-brand text-white"
-              onClick={finish}
-            >
+            <AlertDialogAction variant="default" className="bg-yellow text-ink shadow-[0_3px_0_var(--yellow-deep)] rounded-[10px]" onClick={finish}>
               结束并看结果
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -496,8 +516,8 @@ function IconBtn({
       onClick={onClick}
       aria-label={label}
       aria-pressed={active}
-      className={`flex size-9 items-center justify-center rounded-[3px] transition-colors ${
-        active ? "text-brand" : "text-ink-2 hover:bg-paper-2"
+      className={`flex size-8 items-center justify-center rounded-[9px] transition-colors ${
+        active ? "bg-yellow text-ink" : "text-ink-3 hover:bg-shell"
       }`}
     >
       {children}

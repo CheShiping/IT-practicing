@@ -100,14 +100,14 @@ export function QuestionBankSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="sheet-in flex max-h-[88vh] flex-col gap-0 overflow-hidden rounded-t-[6px] p-0 md:side-right md:max-h-none md:w-[380px] md:rounded-none"
+        className="sheet-in flex max-h-[88vh] flex-col gap-0 overflow-hidden rounded-t-[20px] p-0 md:side-right md:max-h-none md:w-[380px] md:rounded-none"
       >
-        <SheetHeader className="border-b border-rule px-5 pb-2.5 pt-4 text-left">
+        <SheetHeader className="border-b border-shell-2 px-5 pb-2.5 pt-4 text-left">
           <SheetTitle className="text-left text-[15px] font-bold text-ink">选题</SheetTitle>
         </SheetHeader>
 
         {/* 两页签：科目 / 真题 */}
-        <div className="flex border-b border-rule px-5" role="tablist" aria-label="选题范围">
+        <div className="flex border-b border-shell-2 px-5" role="tablist" aria-label="选题范围">
           {(
             [
               ["subject", "按专题"],
@@ -123,7 +123,7 @@ export function QuestionBankSheet({
               className={cn(
                 "-mb-px border-b-2 px-1 py-2 text-[13px] transition-colors",
                 tab === k
-                  ? "border-brand font-semibold text-ink"
+                  ? "border-azure font-semibold text-ink"
                   : "border-transparent text-ink-3 hover:text-ink-2",
               )}
             >
@@ -150,16 +150,16 @@ export function QuestionBankSheet({
                       }}
                       aria-pressed={chapterId === c.id}
                       className={cn(
-                        "flex h-[52px] w-full items-center gap-2 rounded-[3px] border px-2.5 text-left transition-colors",
+                        "flex h-[52px] w-full items-center gap-2 rounded-[10px] border px-2.5 text-left transition-colors",
                         chapterId === c.id
-                          ? "border-brand bg-brand-tint"
-                          : "border-rule bg-paper hover:bg-paper-2",
+                          ? "border-azure bg-[#e9f6ff]"
+                          : "border-shell-2 bg-paper hover:bg-shell",
                       )}
                     >
                       <span
                         className={cn(
                           "num shrink-0 text-[10.5px]",
-                          chapterId === c.id ? "text-brand" : "text-ink-3",
+                          chapterId === c.id ? "text-azure" : "text-ink-3",
                         )}
                       >
                         {String(i + 1).padStart(2, "0")}
@@ -195,10 +195,10 @@ export function QuestionBankSheet({
                               })
                             }
                             className={cn(
-                              "rounded-[3px] border px-2.5 py-1.5 text-[12.5px] transition-colors",
+                              "rounded-[10px] border px-2.5 py-1.5 text-[12.5px] transition-colors",
                               active
                                 ? "border-ink bg-paper font-medium text-ink"
-                                : "border-rule bg-paper-2 text-ink-3 line-through",
+                                : "border-shell-2 bg-shell text-ink-3 line-through",
                             )}
                           >
                             {u.title}
@@ -215,7 +215,7 @@ export function QuestionBankSheet({
               ) : null}
 
               <p className="label mt-5">{chapterId ? "三" : "二"}、形式</p>
-              <div className="mt-1.5 flex overflow-hidden rounded-[3px] border border-rule-2">
+              <div className="mt-1.5 flex overflow-hidden rounded-[10px] border border-shell-2">
                 {(
                   [
                     ["quiz", "刷题", "先作答，再判定"],
@@ -229,14 +229,14 @@ export function QuestionBankSheet({
                     aria-pressed={mode === k}
                     className={cn(
                       "flex-1 px-3 py-2 text-left transition-colors",
-                      mode === k ? "bg-ink text-white" : "bg-paper text-ink-2",
+                      mode === k ? "bg-azure text-white" : "bg-paper text-ink-2",
                     )}
                   >
                     <span className="block text-[13px] font-semibold">{label}</span>
                     <span
                       className={cn(
                         "block text-[10.5px]",
-                        mode === k ? "text-white/70" : "text-ink-3",
+                        mode === k ? "text-white/80" : "text-ink-3",
                       )}
                     >
                       {hint}
@@ -253,14 +253,14 @@ export function QuestionBankSheet({
                   <li key={y}>
                     <div
                       aria-disabled
-                      className="num cursor-not-allowed rounded-[3px] border border-dashed border-rule-2 bg-paper py-2.5 text-center text-[12.5px] text-ink-3"
+                      className="num cursor-not-allowed rounded-[10px] border border-dashed border-shell-2 bg-paper py-2.5 text-center text-[12.5px] text-ink-3"
                     >
                       {y}
                     </div>
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 border-t border-rule pt-2.5 font-serif text-[12.5px] leading-[1.8] text-ink-2">
+              <p className="mt-3 border-t border-shell-2 pt-2.5 font-serif text-[12.5px] leading-[1.8] text-ink-2">
                 历年真题的题源尚未接入。这里只有《江西省专升本必刷2000题·信息技术》的教材同步训练题；
                 拿到真题后会按年份列在这里，不拿模拟题凑数。
               </p>
@@ -269,7 +269,7 @@ export function QuestionBankSheet({
         </div>
 
         {/* 底部：先报总数，再确认 */}
-        <div className="border-t border-rule px-5 py-3">
+        <div className="border-t border-shell-2 px-5 py-3">
           <div className="mb-2 flex items-baseline justify-between">
             <span className="num text-[11px] text-ink-3">
               {chapterId ? `本次 ${pickedCount} 题` : "先选一个专题"}
@@ -287,7 +287,7 @@ export function QuestionBankSheet({
             type="button"
             onClick={() => void confirm()}
             disabled={busy || !chapterId || tab === "years"}
-            className="press h-[46px] w-full rounded-[4px] bg-brand text-[15px] font-bold text-white transition-colors hover:bg-[#a80a5c] active:translate-y-px disabled:cursor-not-allowed disabled:bg-paper-3 disabled:text-ink-3"
+            className="press h-[46px] w-full rounded-[12px] bg-azure text-[15px] font-bold text-white transition-colors hover:bg-[#a80a5c] active:translate-y-px disabled:cursor-not-allowed disabled:bg-shell-2 disabled:text-ink-3"
           >
             {busy ? "准备中…" : chapterId ? "开始" : "选择专题后开始"}
           </button>

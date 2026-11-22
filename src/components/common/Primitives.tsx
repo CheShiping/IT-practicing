@@ -11,7 +11,7 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center border border-dashed border-rule-2 px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center border border-dashed border-shell-2 px-6 py-14 text-center">
       <FileQuestion className="size-7 text-ink-3" strokeWidth={1.4} aria-hidden />
       <p className="mt-3 text-[14px] font-semibold text-ink">{title}</p>
       {description ? (

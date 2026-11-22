@@ -44,7 +44,7 @@ export default function WrongBookPage() {
       <TopBar title="错题本" kicker={`${Object.keys(wrongBook).length} 道 · 答错自动收进来`} back />
 
       <PageContainer className="pt-4">
-        <div className="flex items-end gap-4 border-b border-rule pb-2">
+        <div className="flex items-end gap-4 border-b border-shell-2 pb-2">
           <div className="min-w-0 flex-1">
             <SearchBox value={keyword} onChange={setKeyword} />
           </div>
@@ -53,7 +53,7 @@ export default function WrongBookPage() {
             onClick={() => setOnlyUnresolved((v) => !v)}
             aria-pressed={onlyUnresolved}
             className={`shrink-0 pb-1 text-[12px] transition-colors ${
-              onlyUnresolved ? "font-semibold text-brand" : "text-ink-3 hover:text-ink-2"
+              onlyUnresolved ? "font-semibold text-azure" : "text-ink-3 hover:text-ink-2"
             }`}
           >
             {onlyUnresolved ? "只看未消灭 ✓" : "只看未消灭"}
@@ -75,7 +75,7 @@ export default function WrongBookPage() {
                 keyword ? (
                   <button
                     type="button"
-                    className="border border-rule-2 px-4 py-2 text-[13px] text-ink"
+                    className="border border-shell-2 px-4 py-2 text-[13px] text-ink"
                     onClick={() => setKeyword("")}
                   >
                     清除搜索
@@ -95,7 +95,7 @@ export default function WrongBookPage() {
                   <QuestionCard
                     q={q}
                     badge={
-                      <span className="num text-[10.5px] text-danger">
+                      <span className="num text-[10.5px] text-red">
                         已错 {wrongBook[q.id]?.count ?? 0} 次
                       </span>
                     }
@@ -120,7 +120,7 @@ export default function WrongBookPage() {
       </PageContainer>
 
       {filtered?.length ? (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-shell-2 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="mx-auto max-w-[560px]">
             <StartPracticeButton
               ids={filtered.map((q) => q.id)}

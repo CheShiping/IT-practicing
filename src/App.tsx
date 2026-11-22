@@ -22,7 +22,7 @@ function NotFound() {
         title="页面走丢了"
         description="这个地址没有对应的内容。"
         action={
-          <Button className="rounded-lg bg-brand text-ink" onClick={() => (window.location.href = `${import.meta.env.BASE_URL}`)}>
+          <Button className="rounded-[12px] bg-azure text-ink" onClick={() => (window.location.href = `${import.meta.env.BASE_URL}`)}>
             返回首页
           </Button>
         }

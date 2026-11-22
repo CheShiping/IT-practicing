@@ -51,8 +51,8 @@ export default function StatsPage() {
 
   const figures = [
     { label: "累计答题", value: hydrated ? attempts : 0, unit: "次", cls: "text-ink" },
-    { label: "答对", value: hydrated ? correct : 0, unit: "题", cls: "text-brand" },
-    { label: "正确率", value: hydrated ? accuracy : 0, unit: "%", cls: "text-ink" },
+    { label: "答对", value: hydrated ? correct : 0, unit: "题", cls: "text-green" },
+    { label: "正确率", value: hydrated ? accuracy : 0, unit: "%", cls: "text-azure" },
     { label: "掌握度", value: hydrated ? mastery : 0, unit: "%", cls: "text-ink" },
   ];
 
@@ -60,105 +60,119 @@ export default function StatsPage() {
     <div className="min-h-dvh">
       <TopBar title="学习统计" kicker="只统计这台设备上的记录" />
 
-      <PageContainer className="pt-5">
-        {/* 读数：一张印刷表，不是四张卡片 */}
-        <dl className="grid grid-cols-2 border-y border-ink sm:grid-cols-4">
+      <PageContainer className="pt-4">
+        {/* 四格读数 */}
+        <section className="card grid grid-cols-2 gap-y-3 p-4">
           {figures.map((f, i) => (
-            <div
-              key={f.label}
-              className={`py-3 ${i % 2 === 1 ? "border-l border-rule pl-3" : ""} ${
-                i >= 2 ? "border-t border-rule sm:border-t-0" : ""
-              } ${i === 2 ? "sm:border-l sm:border-rule sm:pl-3" : ""}`}
-            >
-              <dt className="text-[11px] text-ink-3">{f.label}</dt>
-              <dd className={`num mt-0.5 flex items-baseline gap-0.5 text-[24px] font-bold leading-none ${f.cls}`}>
+            <div key={f.label} className={i % 2 === 1 ? "border-l border-shell-2 pl-4" : ""}>
+              <p className="text-[10.5px] font-semibold text-ink-3">{f.label}</p>
+              <p
+                className={`num mt-0.5 flex items-baseline gap-0.5 text-[24px] leading-none font-extrabold ${f.cls}`}
+              >
                 {f.value}
-                <span className="text-[11px] font-normal text-ink-3">{f.unit}</span>
-              </dd>
+                <span className="text-[10px] font-bold text-ink-3">{f.unit}</span>
+              </p>
             </div>
           ))}
-        </dl>
+        </section>
 
         {/* 近 14 天 */}
-        <div className="mt-8">
+        <div className="mt-6">
           <SectionHead right={`单日最高 ${peak} 题`}>近 14 天</SectionHead>
-          {peak === 0 ? (
-            <div className="flex h-[96px] items-center justify-center border-b border-ink">
-              <p className="text-[12px] text-ink-3">这 14 天还没有答题记录</p>
-            </div>
-          ) : (
-          <div className="flex h-[96px] items-end gap-[3px] border-b border-ink">
-            {daily.map((d) => (
-              <div
-                key={d.label}
-                className="group flex min-w-0 flex-1 flex-col items-center justify-end"
-                title={`${d.label}：${d.count} 题`}
-              >
-                <span
-                  className={`num mb-0.5 text-[9.5px] leading-none ${
-                    d.count ? "text-brand" : "text-transparent"
-                  }`}
-                >
-                  {d.count}
-                </span>
-                <div
-                  className={`w-full ${d.count ? "bg-brand" : "bg-paper-3"}`}
-                  style={{ height: `${d.count ? Math.max(4, (d.count / maxDaily) * 68) : 3}px` }}
-                />
+          <section className="card p-4">
+            {peak === 0 ? (
+              <div className="flex h-[104px] items-center justify-center">
+                <p className="text-[12px] text-ink-3">这 14 天还没有答题记录</p>
               </div>
-            ))}
-          </div>
-          )}
-          <div className="num mt-1 flex justify-between text-[9.5px] text-ink-3">
-            <span>{daily[0].label}</span>
-            <span>{daily[Math.floor(daily.length / 2)].label}</span>
-            <span>{daily[daily.length - 1].label}</span>
-          </div>
+            ) : (
+              <div className="flex h-[104px] items-end gap-[4px]">
+                {daily.map((d) => (
+                  <div
+                    key={d.label}
+                    className="flex min-w-0 flex-1 flex-col items-center justify-end"
+                    title={`${d.label}：${d.count} 题`}
+                  >
+                    <span
+                      className={`num mb-1 text-[9px] leading-none font-bold ${
+                        d.count ? "text-azure" : "text-transparent"
+                      }`}
+                    >
+                      {d.count}
+                    </span>
+                    <div
+                      className={`w-full rounded-t-[4px] ${
+                        d.count ? "bg-azure" : "bg-shell-2"
+                      }`}
+                      style={{ height: `${d.count ? Math.max(6, (d.count / maxDaily) * 74) : 4}px` }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="num mt-2 flex justify-between text-[9.5px] font-semibold text-ink-3">
+              <span>{daily[0].label}</span>
+              <span>{daily[Math.floor(daily.length / 2)].label}</span>
+              <span>{daily[daily.length - 1].label}</span>
+            </div>
+          </section>
         </div>
 
-        {/* 库存 */}
-        <div className="mt-8">
+        {/* 进度 */}
+        <div className="mt-6">
           <SectionHead right={`${total} 题`}>进度</SectionHead>
-          <dl className="num text-[13px]">
-            {[
-              { k: "已练过", v: practiced },
-              { k: "错题本", v: Object.keys(wrongBook).length },
-              { k: "收藏", v: favorites.length },
-            ].map((r) => (
-              <div key={r.k} className="flex items-baseline justify-between border-b border-rule py-2">
-                <dt className="font-sans text-ink-2">{r.k}</dt>
-                <dd className="font-bold text-ink">{hydrated ? r.v : 0}</dd>
+          <section className="card p-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-[10.5px] font-semibold text-ink-3">题库完成度</p>
+                <p className="num mt-0.5 text-[26px] leading-none font-extrabold text-azure">
+                  {total ? Math.round((practiced / total) * 100) : 0}
+                  <span className="text-[11px] font-bold text-ink-3">%</span>
+                </p>
               </div>
-            ))}
-          </dl>
-          <div className="mt-2 flex h-[6px] w-full bg-paper-3">
-            <span
-              className="h-full bg-brand"
-              style={{ width: `${total ? Math.min(100, (practiced / total) * 100) : 0}%` }}
-            />
-          </div>
-          <p className="num mt-1 text-[10.5px] text-ink-3">
-            题库完成度 {total ? Math.round((practiced / total) * 100) : 0}%
-          </p>
+              <p className="num pb-1 text-[11px] font-semibold text-ink-3">
+                {practiced} / {total}
+              </p>
+            </div>
+            <div className="mt-3 h-[8px] overflow-hidden rounded-full bg-shell-2">
+              <div
+                className="h-full rounded-full bg-azure"
+                style={{ width: `${total ? Math.min(100, (practiced / total) * 100) : 0}%` }}
+              />
+            </div>
+            <dl className="mt-3 grid grid-cols-2 gap-y-2 border-t border-shell-2 pt-3">
+              <div className="flex items-baseline justify-between pr-3">
+                <dt className="text-[12px] text-ink-2">错题本</dt>
+                <dd className="num text-[13px] font-extrabold text-red">
+                  {hydrated ? Object.keys(wrongBook).length : 0}
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between border-l border-shell-2 pl-3">
+                <dt className="text-[12px] text-ink-2">收藏</dt>
+                <dd className="num text-[13px] font-extrabold text-ink">
+                  {hydrated ? favorites.length : 0}
+                </dd>
+              </div>
+            </dl>
+          </section>
         </div>
 
         {/* 章节进度 */}
         {unitStats.length ? (
-          <div className="mt-8">
-            <SectionHead right={`前 ${unitStats.length} 个小节`}>练得最多的</SectionHead>
-            <ul>
+          <div className="mt-6">
+            <SectionHead right={`前 ${unitStats.length} 个`}>练得最多的</SectionHead>
+            <ul className="space-y-2.5">
               {unitStats.map((u) => (
-                <li key={u.id} className="border-b border-rule py-2.5">
+                <li key={u.id} className="card p-3.5">
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="min-w-0 truncate text-[13.5px] text-ink">
+                    <span className="min-w-0 truncate text-[13px] font-bold text-ink">
                       {u.chapterTitle} · {u.title}
                     </span>
-                    <span className="num shrink-0 text-[11px] text-ink-3">
+                    <span className="num shrink-0 text-[11px] font-semibold text-ink-3">
                       {u.done}/{u.questionCount}
                     </span>
                   </div>
-                  <div className="mt-1 h-[3px] bg-paper-3">
-                    <div className="h-full bg-brand" style={{ width: `${u.pct}%` }} />
+                  <div className="mt-2 h-[5px] overflow-hidden rounded-full bg-shell-2">
+                    <div className="h-full rounded-full bg-azure" style={{ width: `${u.pct}%` }} />
                   </div>
                 </li>
               ))}
@@ -166,7 +180,7 @@ export default function StatsPage() {
           </div>
         ) : null}
 
-        <p className="num mt-8 border-t border-rule pt-3 text-[10.5px] leading-5 text-ink-3">
+        <p className="mt-6 px-1 pb-2 text-[10px] leading-5 text-ink-3">
           记录只存在这台设备的浏览器里。排行榜与历年真题需要联网数据，本站没有，也不假装有。
         </p>
       </PageContainer>

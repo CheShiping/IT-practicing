@@ -6,8 +6,8 @@ export interface SheetGroup {
 }
 
 /**
- * 答案速查表：书末那张密集的题号表，不用圆点、不用进度环。
- * 一格一题，格线是印刷线，答对填品红，答错填红。
+ * 答题卡：密排的小方格。答对填绿，答错填红，当前题描黄。
+ * 格子是屏幕上能点得动的最小单位，44px 以下不做主操作。
  */
 export function AnswerSheet({
   groups,
@@ -20,17 +20,17 @@ export function AnswerSheet({
     <div className="space-y-5">
       {groups.map((g) => (
         <section key={g.title}>
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 border-b border-ink pb-1.5">
-            <h3 className="text-[13px] font-bold text-ink">{g.title}</h3>
-            <ul className="num flex items-center gap-3 text-[11px] text-ink-3">
-              <Legend className="bg-brand" label="答对" />
-              <Legend className="bg-danger" label="答错" />
-              <Legend className="border border-rule-2" label="未答" />
+          <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="min-w-0 truncate text-[12.5px] font-extrabold text-ink">{g.title}</h3>
+            <ul className="flex shrink-0 items-center gap-3 text-[10.5px] font-semibold text-ink-3">
+              <Legend className="bg-green" label="答对" />
+              <Legend className="bg-red" label="答错" />
+              <Legend className="bg-paper border-2 border-shell-2" label="未答" />
             </ul>
           </div>
-          <ul className="grid grid-cols-6 gap-px border-t border-l border-rule bg-rule sm:grid-cols-9 md:grid-cols-11">
+          <ul className="grid grid-cols-6 gap-2 sm:grid-cols-8">
             {g.items.map((it) => (
-              <li key={it.no} className="bg-paper">
+              <li key={it.no}>
                 <button
                   type="button"
                   onClick={() => onJump(it.no)}
@@ -39,11 +39,12 @@ export function AnswerSheet({
                   }`}
                   aria-current={it.state === "current" ? "true" : undefined}
                   className={cn(
-                    "num flex h-9 w-full items-center justify-center text-[12px] transition-colors",
-                    it.state === "unanswered" && "text-ink-2 hover:bg-paper-2",
-                    it.state === "correct" && "bg-brand font-bold text-white hover:bg-[#a80a5c]",
-                    it.state === "wrong" && "bg-danger font-bold text-white hover:bg-[#972015]",
-                    it.state === "current" && "outline outline-2 -outline-offset-2 outline-ink",
+                    "num flex h-11 w-full items-center justify-center rounded-[10px] text-[12px] font-bold transition-colors",
+                    it.state === "unanswered" &&
+                      "bg-paper text-ink-3 shadow-[0_1px_0_rgba(12,26,40,.04)] hover:bg-shell",
+                    it.state === "correct" && "bg-green text-white hover:brightness-110",
+                    it.state === "wrong" && "bg-red text-white hover:brightness-110",
+                    it.state === "current" && "outline-3 outline-offset-1 outline-yellow",
                   )}
                 >
                   {it.no}
@@ -60,7 +61,7 @@ export function AnswerSheet({
 function Legend({ className, label }: { className?: string; label: string }) {
   return (
     <li className="flex items-center gap-1.5">
-      <span aria-hidden className={cn("size-2.5", className)} />
+      <span aria-hidden className={cn("size-2.5 rounded-[10px]", className)} />
       {label}
     </li>
   );

@@ -51,14 +51,14 @@ export function QuestionCard({
   footer?: React.ReactNode;
 }) {
   return (
-    <article className="border-b border-rule py-3">
+    <article className="card p-3.5">
       <div className="flex items-baseline gap-2">
-        <span className="num text-[12px] font-bold text-brand">{q.no}</span>
+        <span className="num flex size-6 items-center justify-center rounded-[7px] bg-azure text-[10.5px] font-extrabold text-white">{q.no}</span>
         <span className="text-[10.5px] text-ink-3">{KIND_LABEL[q.kind]}</span>
         {badge}
         <div className="ml-auto flex items-center gap-1">{right}</div>
       </div>
-      <p className="mt-1 line-clamp-3 font-serif text-[14.5px] leading-[1.8] text-ink">
+      <p className="mt-1.5 line-clamp-3 text-[13.5px] leading-[1.75] font-medium text-ink">
         {q.stem}
       </p>
       {footer}
@@ -69,7 +69,7 @@ export function QuestionCard({
 /** 行内摘要 */
 export function CardSummary({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-1.5 line-clamp-2 font-serif text-[12px] leading-[1.75] text-ink-3">
+    <p className="mt-1.5 line-clamp-2 text-[12px] leading-[1.7] text-ink-3">
       {children}
     </p>
   );
@@ -79,10 +79,10 @@ export function ListSkeleton() {
   return (
     <div>
       {[0, 1, 2].map((i) => (
-        <div key={i} className="border-b border-rule py-3">
-          <div className="h-3 w-24 animate-pulse bg-paper-3" />
-          <div className="mt-2 h-3.5 w-full animate-pulse bg-paper-3" />
-          <div className="mt-1.5 h-3.5 w-2/3 animate-pulse bg-paper-3" />
+        <div key={i} className="border-b border-shell-2 py-3">
+          <div className="h-3 w-24 animate-pulse bg-shell-2" />
+          <div className="mt-2 h-3.5 w-full animate-pulse bg-shell-2" />
+          <div className="mt-1.5 h-3.5 w-2/3 animate-pulse bg-shell-2" />
         </div>
       ))}
     </div>
@@ -108,7 +108,7 @@ export function SearchBox({
   placeholder?: string;
 }) {
   return (
-    <div className="flex items-center gap-2 border-b border-rule-2 pb-1.5 focus-within:border-ink">
+    <div className="flex items-center gap-2 border-b border-shell-2 pb-1.5 focus-within:border-ink">
       <svg
         viewBox="0 0 24 24"
         className="size-3.5 shrink-0 text-ink-3"
@@ -138,10 +138,10 @@ export function FavoriteToggle({ active, onClick }: { active: boolean; onClick: 
       onClick={onClick}
       aria-label={active ? "取消收藏" : "收藏"}
       aria-pressed={active}
-      className="flex size-8 items-center justify-center rounded-[3px] text-ink-3 transition-colors hover:bg-paper-2"
+      className="flex size-8 items-center justify-center rounded-[10px] text-ink-3 transition-colors hover:bg-shell"
     >
       <Star
-        className={active ? "size-4 fill-brand text-brand" : "size-4 text-ink-3"}
+        className={active ? "size-4 fill-azure text-azure" : "size-4 text-ink-3"}
         aria-hidden
       />
     </button>
@@ -181,7 +181,7 @@ export function StartPracticeButton({
   };
   return (
     <Button
-      className="press h-[46px] w-full rounded-[4px] bg-brand text-[15px] font-bold text-white hover:bg-[#a80a5c] active:translate-y-px"
+      className="press h-[46px] w-full rounded-[12px] bg-azure text-[15px] font-bold text-white hover:bg-[#a80a5c] active:translate-y-px"
       disabled={disabled || !ids.length}
       onClick={start}
     >

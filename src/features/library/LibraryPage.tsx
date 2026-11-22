@@ -20,6 +20,7 @@ export default function LibraryPage() {
     params.get("mode") === "recite" ? "recite" : "quiz",
   );
   const [starting, setStarting] = useState<string | null>(null);
+  // 默认只展开第一篇，其余收起
   const [closed, setClosed] = useState<Record<string, boolean>>({});
 
   const byChapter = useMemo(() => {
@@ -84,7 +85,7 @@ export default function LibraryPage() {
         back
         right={
           <div
-            className="flex shrink-0 items-center overflow-hidden rounded-[3px] border border-rule-2"
+            className="flex shrink-0 items-center overflow-hidden rounded-[10px] border border-shell-2"
             role="group"
             aria-label="练习形式"
           >
@@ -128,7 +129,7 @@ export default function LibraryPage() {
               0,
             );
             const totalQ = list.reduce((a, u) => a + u.gradableCount, 0);
-            const isOpen = !closed[chapterId];
+            const isOpen = ci === 0 ? !closed[chapterId] : Boolean(closed[chapterId]);
             return (
               <section key={chapterId} id={chapterId} className={ci ? "mt-6" : undefined}>
                 <button
@@ -138,7 +139,7 @@ export default function LibraryPage() {
                   className="flex w-full items-baseline gap-2 border-b border-ink pb-1.5 text-left"
                 >
                   <h2 className="text-[13px] font-bold tracking-tight text-ink">
-                    <span className="num mr-1.5 text-brand">刷题{CN[ci]}</span>
+                    <span className="num mr-1.5 text-azure">刷题{CN[ci]}</span>
                     {list[0].chapterTitle}
                   </h2>
                   <span className="num ml-auto text-[11px] text-ink-3">
@@ -150,7 +151,7 @@ export default function LibraryPage() {
                     aria-hidden
                   />
                 </button>
-                <ul className={isOpen ? undefined : "hidden"}>
+                <ul className={isOpen ? "space-y-2" : "hidden"}>
                   {list.map((u) => {
                     const doneCount = Object.keys(progress).filter((k) =>
                       k.startsWith(`${u.id}-`),
@@ -161,14 +162,14 @@ export default function LibraryPage() {
                     return (
                       <li
                         key={u.id}
-                        className="flex items-center gap-3 border-b border-rule py-2.5"
+                        className="card flex items-center gap-3 p-3"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-baseline gap-2">
                             <span className="truncate text-[14.5px] text-ink">{u.title}</span>
                             <span
                               className={`num ml-auto shrink-0 text-[10.5px] ${
-                                u.autoJudged ? "text-brand" : "text-ink-3"
+                                u.autoJudged ? "text-azure" : "text-ink-3"
                               }`}
                             >
                               {u.autoJudged ? "可判分" : "仅解析"}
@@ -178,9 +179,9 @@ export default function LibraryPage() {
                             <span>
                               {u.questionCount} 题 · 已练 {doneCount}
                             </span>
-                            <span className="h-[3px] w-14 bg-paper-3">
+                            <span className="h-[3px] w-14 bg-shell-2">
                               <span
-                                className="block h-full bg-brand"
+                                className="block h-full bg-azure"
                                 style={{ width: `${pct}%` }}
                               />
                             </span>
@@ -188,7 +189,7 @@ export default function LibraryPage() {
                         </div>
                         <Button
                           size="sm"
-                          className="press h-8 shrink-0 rounded-[3px] border border-brand bg-paper px-3 text-[12.5px] font-semibold text-brand hover:bg-brand-tint active:translate-y-px"
+                          className="press h-8 shrink-0 rounded-[10px] border border-azure bg-paper px-3 text-[12.5px] font-semibold text-azure hover:bg-[#e9f6ff] active:translate-y-px"
                           disabled={!!starting}
                           onClick={() => void start(u)}
                         >
@@ -207,7 +208,7 @@ export default function LibraryPage() {
           })
         )}
 
-        <p className="num mt-8 border-t border-rule pt-3 text-[10.5px] leading-5 text-ink-3">
+        <p className="num mt-8 border-t border-shell-2 pt-3 text-[10.5px] leading-5 text-ink-3">
           每个小节都从第 1 题重新编号，与原书一致 · 主观题给参考答案，不自动判分
         </p>
       </PageContainer>

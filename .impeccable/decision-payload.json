@@ -1,0 +1,110 @@
+{
+  "title": "选一个方向（布局一起改）",
+  "question": "五个候选，导航方式与页面结构各不相同。选一个，或者重发。",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "打孔卡",
+      "kicker": "THE ROLL",
+      "lineage": "80 列打孔卡与机房打印件",
+      "thesis": "整个站是一张卡：每一格孔代表一类题，答过就真的打掉一个孔。",
+      "palette": ["#efe9da", "#1b1a17", "#2b5d4a", "#3b362c"],
+      "materials": ["马尼拉卡纸", "方孔阵列", "左上切角"],
+      "viewport": "没有列表也没有底部导航——七条打孔带横在卡面上，带子本身就是目录与进度，点一条进一个专题。",
+      "risk": "米色卡纸容易被读成复古滤镜；孔格若不同步真实进度，就只是装饰图案。",
+      "raised": [
+        {
+          "from": "signals-instruments-split-flap-concourse",
+          "raise": "题号与分数按位翻动，答对那一刻数字逐格落定，而不是整块跳动。"
+        },
+        {
+          "from": "notation-diagram-systems-star-atlas",
+          "raise": "掌握程度用亮点密度表达：打掉的孔连成一片，说明这个专题真的被走过了。"
+        }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.webp",
+      "html": ".impeccable/mocks/decision/assigned.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "机考作答",
+      "kicker": "IMPECCABLE'S PICK",
+      "lineage": "计算机化考试的作答界面",
+      "thesis": "把站做成考试那天会看到的界面：状态条、题面、底部题号栅格。",
+      "palette": ["#f2f1ee", "#1c1c1a", "#a8331f", "#ffffff"],
+      "materials": ["系统表单控件", "单选圆点", "等宽倒计时"],
+      "viewport": "顶部一条深色状态条压住科目与倒计时，题面独占中段，底部九列题号栅格直接当导航，没有列表页。",
+      "risk": "容易读成一张软件截图；考场式的紧绷感对每天刷一百题的人可能太累。",
+      "comp": ".impeccable/mocks/decision/model-pick.webp",
+      "html": ".impeccable/mocks/decision/model-pick.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "grounded-cardbox",
+      "kind": "grounded",
+      "label": "索引卡盒",
+      "verdict": "competitive",
+      "lineage": "3×5 索引卡与卡片盒",
+      "thesis": "一次只有一张卡，卡片堆本身就是页面。",
+      "palette": ["#e7e1d4", "#fffdf6", "#bfae86", "#2a261c"],
+      "materials": ["卡纸", "标签页", "右上切角"],
+      "viewport": "没有列表、没有导航栏，只有一叠卡：当前卡带标签与切角，后面露出两张，底部左右翻页。",
+      "case": "对「背题」最贴切，但「我还有多少没刷」的信息被藏起来了。",
+      "risk": "抽卡的手感很好，代价是丢掉了全局进度。",
+      "comp": ".impeccable/mocks/decision/grounded-cardbox.webp",
+      "html": ".impeccable/mocks/decision/grounded-cardbox.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "grounded-sheet",
+      "kind": "grounded",
+      "label": "电子表格",
+      "verdict": "competitive",
+      "lineage": "Excel 的表格语法",
+      "thesis": "整站是一张 xlsx：列标行号、公式栏、筛选页签。",
+      "palette": ["#ffffff", "#f4f4f0", "#1f6f4a", "#333333"],
+      "materials": ["单元格网格", "列标行号", "公式栏"],
+      "viewport": "表格占满全屏，题干显示在公式栏里，底部一条状态栏和一个动作按钮；筛选页签代替底部导航。",
+      "case": "Office 专题本身有 729 题，用表格语法就是科目标识；但也是最像后台的一种。",
+      "risk": "最容易被读成「后台管理系统」，而这是你最讨厌的一条。",
+      "comp": ".impeccable/mocks/decision/grounded-sheet.webp",
+      "html": ".impeccable/mocks/decision/grounded-sheet.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "grounded-map",
+      "kind": "grounded",
+      "label": "知识线路图",
+      "verdict": "competitive",
+      "lineage": "地铁线路图",
+      "thesis": "七条线路即七个专题，站点即题型，进度就是走过的距离。",
+      "palette": ["#fcfcfa", "#1d1d1b", "#2b5d4a", "#dcdcd6"],
+      "materials": ["45°/90° 折线", "站点圆环", "换乘圈"],
+      "viewport": "地图占住首屏，下面是当前站的题型清单；导航靠点线路与站点，没有列表页。",
+      "case": "把「我走到哪了」讲得最清楚，但对「今天刷哪几题」帮不上忙。",
+      "risk": "做题时地图用不上，可能只是一张好看的封面。",
+      "comp": ".impeccable/mocks/decision/grounded-map.webp",
+      "html": ".impeccable/mocks/decision/grounded-map.html",
+      "htmlFrame": "390x844"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": true },
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "品类标准",
+    "thesis": "刷题 App 通常长什么样，做到位地做一遍。",
+    "palette": ["#f5f7fa", "#6366f1", "#8b5cf6", "#1f2937"],
+    "materials": ["渐变主色", "圆角卡片", "底部三 Tab"],
+    "viewport": "渐变头图 + 三格读数 + 卡片列表 + 底部三 Tab，你见过的每一个刷题 App。",
+    "risk": "设计上与竞品无法区分。",
+    "comp": ".impeccable/mocks/decision/canon.webp",
+    "html": ".impeccable/mocks/decision/canon.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}

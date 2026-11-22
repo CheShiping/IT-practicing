@@ -40,12 +40,12 @@ export default function FavoritesPage() {
             description={keyword ? "换个关键词试试" : "练习中点击右上角星标即可收藏"}
           />
         ) : (
-          <ul className="mt-1">
+          <ul className="mt-3 space-y-2.5">
             {filtered.map((q) => (
               <li key={q.id}>
                 <QuestionCard
                   q={q}
-                  badge={<span className="num text-[10.5px] text-success">答案 {q.answer.join(" ")}</span>}
+                  badge={<span className="num text-[10.5px] text-green">答案 {q.answer.join(" ")}</span>}
                   right={
                     <FavoriteToggle active onClick={() => toggleFavorite(q.id)} />
                   }
@@ -55,7 +55,7 @@ export default function FavoritesPage() {
           </ul>
         )}
       </PageContainer>
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-shell-2 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-[560px]">
           <StartPracticeButton ids={filtered?.map((q) => q.id) ?? []} title="收藏题重练" />
         </div>
@@ -96,14 +96,14 @@ export function NotesPage() {
             description={keyword ? "换个关键词试试" : "刷题时点击笔记图标，记录你的想法"}
           />
         ) : (
-          <ul className="mt-1">
+          <ul className="mt-3 space-y-2.5">
             {filtered.map((q) => (
               <li key={q.id}>
                 <QuestionCard
                   q={q}
                   footer={
-                    <div className="mt-2 border border-brand/35 bg-brand-tint px-3 py-2">
-                      <p className="label mb-0.5 text-brand">笔记</p>
+                    <div className="mt-2 border border-azure/35 bg-[#e9f6ff] px-3 py-2">
+                      <p className="label mb-0.5 text-azure">笔记</p>
                       <p className="whitespace-pre-wrap font-serif text-[13px] leading-[1.8] text-ink">
                         {notes[q.id].text}
                       </p>
