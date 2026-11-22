@@ -36,25 +36,28 @@ const step = async (name, fn) => {
 
 await step("打开首页", async () => {
   await page.goto(BASE, { waitUntil: "networkidle" });
-  await page.waitForSelector("text=考点刷题", { timeout: 15000 });
+  await page.waitForSelector("text=开始刷题", { timeout: 15000 });
   await page.screenshot({ path: `${OUT}/01-home.png`, fullPage: true });
 });
 
 await step("首页显示题库题量", async () => {
   const txt = await page.textContent("body");
-  if (!/1936/.test(txt)) throw new Error(`未显示题库总量：${txt.slice(0, 120)}`);
+  const res = await page.evaluate(() => fetch("./data/manifest.json").then((r) => r.json()));
+  if (!new RegExp(String(res.totalQuestions)).test(txt)) {
+    throw new Error(`未显示题库总量 ${res.totalQuestions}：${txt.slice(0, 120)}`);
+  }
 });
 
 await step("打开题库选择浮层", async () => {
-  await page.click("text=考点刷题");
-  await page.waitForSelector("text=题库选择", { timeout: 15000 });
+  await page.click("text=开始刷题");
+  await page.waitForSelector("text=选题", { timeout: 15000 });
   await page.screenshot({ path: `${OUT}/02-bank-sheet.png` });
 });
 
 await step("选中科目并确认进入练习", async () => {
   await page.locator("button", { hasText: "计算机基础知识" }).first().click();
-  await page.waitForSelector("text=题型选择", { timeout: 10000 });
-  await page.click("text=确认");
+  await page.waitForSelector("text=二、题型", { timeout: 10000 });
+  await page.getByRole("button", { name: "开始", exact: true }).click();
   await page.waitForSelector("text=提交答案", { timeout: 45000 });
   await page.screenshot({ path: `${OUT}/03-quiz.png`, fullPage: true });
 });
@@ -64,10 +67,10 @@ await step("章节列表页可用", async () => {
   await page.waitForSelector("text=计算机基础知识", { timeout: 15000 });
   await page.screenshot({ path: `${OUT}/02b-library.png`, fullPage: true });
   await page.goto(BASE, { waitUntil: "networkidle" });
-  await page.click("text=考点刷题");
-  await page.waitForSelector("text=题库选择", { timeout: 15000 });
+  await page.click("text=开始刷题");
+  await page.waitForSelector("text=选题", { timeout: 15000 });
   await page.locator("button", { hasText: "计算机基础知识" }).first().click();
-  await page.click("text=确认");
+  await page.getByRole("button", { name: "开始", exact: true }).click();
   await page.waitForSelector("text=提交答案", { timeout: 45000 });
 });
 
@@ -87,13 +90,13 @@ await step("键盘可达并可选中", async () => {
   if (!hit) throw new Error("Tab 无法到达选项控件");
   await page.keyboard.press("Space");
   await page.waitForTimeout(300);
-  const selected = await page.evaluate(() => document.querySelectorAll("label.bg-brand-soft").length);
+  const selected = await page.evaluate(() => document.querySelectorAll("[aria-pressed=\"true\"].bg-brand-tint").length);
   if (!selected) throw new Error("空格键未能选中选项");
   await page.screenshot({ path: `${OUT}/04b-keyboard.png` });
 });
 
 await step("选择选项并提交", async () => {
-  await page.locator("label").first().click();
+  await page.locator('[aria-label="选项"] button').first().click();
   await page.click("text=提交答案");
   await page.waitForSelector('[role="status"]', { timeout: 10000 });
   await page.screenshot({ path: `${OUT}/04-judged.png`, fullPage: true });
@@ -110,7 +113,7 @@ await step("刷新后进度保留", async () => {
   await page.waitForSelector("text=提交答案", { timeout: 15000 });
   // 刷新后仍停在第 2 题（未作答），回到第 1 题应保留判定结果
   const counter = await page.textContent("body");
-  if (!/2\s*单选题/.test(counter)) throw new Error("刷新后题号未保持：" + counter.slice(0, 80));
+  if (!/第\s*2\s*\//.test(counter)) throw new Error("刷新后题号未保持：" + counter.slice(0, 80));
   await page.goto(`${url}?q=1`, { waitUntil: "networkidle" });
   await page.waitForSelector('[role="status"]', { timeout: 15000 });
   const stored = await page.evaluate(() => localStorage.getItem("msz.v1.app") || "");
@@ -131,14 +134,14 @@ await step("统计页可用", async () => {
 
 await step("我的页可用", async () => {
   await page.goto(`${BASE}/profile`, { waitUntil: "networkidle" });
-  await page.waitForSelector("text=数据管理", { timeout: 10000 });
+  await page.waitForSelector("text=关于", { timeout: 10000 });
   await page.screenshot({ path: `${OUT}/07-profile.png`, fullPage: true });
 });
 
 await step("桌面端布局", async () => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(BASE, { waitUntil: "networkidle" });
-  await page.waitForSelector("text=考点刷题", { timeout: 10000 });
+  await page.waitForSelector("text=开始刷题", { timeout: 10000 });
   await page.screenshot({ path: `${OUT}/08-desktop.png`, fullPage: true });
 });
 

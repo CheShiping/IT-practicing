@@ -27,10 +27,10 @@ export default function FavoritesPage() {
 
   return (
     <div className="min-h-dvh">
-      <TopBar title="我的收藏" variant="plain" center back />
-      <PageContainer className="max-w-[460px] space-y-3 pt-4">
+      <TopBar title="收藏" kicker={`${favorites.length} 道题`} back />
+      <PageContainer className="pt-4">
         <SearchBox value={keyword} onChange={setKeyword} />
-        <p className="num text-xs text-ink-3">共收藏 {favorites.length} 道题</p>
+        
 
         {!filtered ? (
           <ListSkeleton />
@@ -40,12 +40,12 @@ export default function FavoritesPage() {
             description={keyword ? "换个关键词试试" : "练习中点击右上角星标即可收藏"}
           />
         ) : (
-          <ul className="space-y-3">
+          <ul className="mt-1">
             {filtered.map((q) => (
               <li key={q.id}>
                 <QuestionCard
                   q={q}
-                  badge={<span className="num text-[11px] text-ink-3">正确答案 {q.answer.join("、")}</span>}
+                  badge={<span className="num text-[10.5px] text-success">答案 {q.answer.join(" ")}</span>}
                   right={
                     <FavoriteToggle active onClick={() => toggleFavorite(q.id)} />
                   }
@@ -55,8 +55,8 @@ export default function FavoritesPage() {
           </ul>
         )}
       </PageContainer>
-      <div className="fixed inset-x-0 bottom-0 border-t border-black/5 bg-white/95 px-4 py-3 backdrop-blur md:static md:border-0 md:bg-transparent md:px-0 md:py-0">
-        <div className="mx-auto max-w-[460px]">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-[560px]">
           <StartPracticeButton ids={filtered?.map((q) => q.id) ?? []} title="收藏题重练" />
         </div>
       </div>
@@ -83,10 +83,10 @@ export function NotesPage() {
 
   return (
     <div className="min-h-dvh">
-      <TopBar title="我的笔记" variant="plain" center back />
-      <PageContainer className="max-w-[460px] space-y-3 pt-4">
+      <TopBar title="笔记" kicker={`${ids.length} 条`} back />
+      <PageContainer className="pt-4">
         <SearchBox value={keyword} onChange={setKeyword} placeholder="搜索笔记" />
-        <p className="num text-xs text-ink-3">共 {ids.length} 条笔记</p>
+        
 
         {!filtered ? (
           <ListSkeleton />
@@ -96,17 +96,18 @@ export function NotesPage() {
             description={keyword ? "换个关键词试试" : "刷题时点击笔记图标，记录你的想法"}
           />
         ) : (
-          <ul className="space-y-3">
+          <ul className="mt-1">
             {filtered.map((q) => (
               <li key={q.id}>
                 <QuestionCard
                   q={q}
                   footer={
-                    <div className="mt-2 rounded-xl bg-brand-soft/60 p-3">
-                      <p className="whitespace-pre-wrap text-sm leading-6 text-ink">
+                    <div className="mt-2 border border-brand/35 bg-brand-tint px-3 py-2">
+                      <p className="label mb-0.5 text-brand">笔记</p>
+                      <p className="whitespace-pre-wrap font-serif text-[13px] leading-[1.8] text-ink">
                         {notes[q.id].text}
                       </p>
-                      <p className="num mt-1 text-[11px] text-ink-3">
+                      <p className="num mt-1 text-[10.5px] text-ink-3">
                         更新于 {relative(notes[q.id].updatedAt)}
                       </p>
                     </div>

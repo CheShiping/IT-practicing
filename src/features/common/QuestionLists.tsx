@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { FileText, Loader2, Star } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { loadChapter } from "@/data/loader";
 import { KIND_LABEL, type Question } from "@/data/types";
 import { relativeTime } from "@/lib/format";
@@ -40,6 +38,7 @@ export function useResolvedQuestions(ids: string[]) {
   return questions;
 }
 
+/** 索引行：题号、题型、题干、判定，用印刷线分隔 */
 export function QuestionCard({
   q,
   badge,
@@ -52,37 +51,39 @@ export function QuestionCard({
   footer?: React.ReactNode;
 }) {
   return (
-    <article className="overflow-hidden rounded-2xl bg-white card-shadow">
-      <div className="p-4">
-        <div className="flex items-center gap-1.5">
-          <Badge className="rounded bg-success px-1.5 py-0.5 text-[11px] text-white">
-            {KIND_LABEL[q.kind]}
-          </Badge>
-          {badge}
-          <div className="ml-auto flex items-center gap-2">{right}</div>
-        </div>
-        <p className="mt-2 line-clamp-3 text-[15px] leading-6 text-ink">{q.stem}</p>
+    <article className="border-b border-rule py-3">
+      <div className="flex items-baseline gap-2">
+        <span className="num text-[12px] font-bold text-brand">{q.no}</span>
+        <span className="text-[10.5px] text-ink-3">{KIND_LABEL[q.kind]}</span>
+        {badge}
+        <div className="ml-auto flex items-center gap-1">{right}</div>
       </div>
+      <p className="mt-1 line-clamp-3 font-serif text-[14.5px] leading-[1.8] text-ink">
+        {q.stem}
+      </p>
       {footer}
     </article>
   );
 }
 
-/** 卡片底部摘要条（对齐原型） */
+/** 行内摘要 */
 export function CardSummary({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-1.5 bg-surface px-4 py-2.5">
-      <FileText className="mt-0.5 size-3.5 shrink-0 text-ink-3" aria-hidden />
-      <p className="line-clamp-2 text-[11px] leading-4 text-ink-2">{children}</p>
-    </div>
+    <p className="mt-1.5 line-clamp-2 font-serif text-[12px] leading-[1.75] text-ink-3">
+      {children}
+    </p>
   );
 }
 
 export function ListSkeleton() {
   return (
-    <div className="space-y-3">
+    <div>
       {[0, 1, 2].map((i) => (
-        <div key={i} className="h-28 animate-pulse rounded-2xl bg-white/70" />
+        <div key={i} className="border-b border-rule py-3">
+          <div className="h-3 w-24 animate-pulse bg-paper-3" />
+          <div className="mt-2 h-3.5 w-full animate-pulse bg-paper-3" />
+          <div className="mt-1.5 h-3.5 w-2/3 animate-pulse bg-paper-3" />
+        </div>
       ))}
     </div>
   );
@@ -90,7 +91,7 @@ export function ListSkeleton() {
 
 export function LoadingBlock({ text = "加载中…" }: { text?: string }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-16 text-sm text-ink-3">
+    <div className="flex items-center justify-center gap-2 py-16 text-[13px] text-ink-3">
       <Loader2 className="size-4 animate-spin" aria-hidden />
       {text}
     </div>
@@ -100,17 +101,17 @@ export function LoadingBlock({ text = "加载中…" }: { text?: string }) {
 export function SearchBox({
   value,
   onChange,
-  placeholder = "搜索题干或解析",
+  placeholder = "搜题干或解析",
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
 }) {
   return (
-    <div className="relative">
+    <div className="flex items-center gap-2 border-b border-rule-2 pb-1.5 focus-within:border-ink">
       <svg
         viewBox="0 0 24 24"
-        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-3"
+        className="size-3.5 shrink-0 text-ink-3"
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
@@ -119,12 +120,12 @@ export function SearchBox({
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-3.5-3.5" strokeLinecap="round" />
       </svg>
-      <Input
+      <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="h-11 rounded-xl bg-white pl-9"
+        className="w-full bg-transparent py-1 text-[13.5px] text-ink outline-none placeholder:text-ink-3"
       />
     </div>
   );
@@ -137,9 +138,12 @@ export function FavoriteToggle({ active, onClick }: { active: boolean; onClick: 
       onClick={onClick}
       aria-label={active ? "取消收藏" : "收藏"}
       aria-pressed={active}
-      className="flex size-8 items-center justify-center rounded-lg text-ink-3 hover:bg-black/5"
+      className="flex size-8 items-center justify-center rounded-[3px] text-ink-3 transition-colors hover:bg-paper-2"
     >
-      <Star className={active ? "size-4.5 fill-danger text-danger" : "size-4.5 text-ink-3"} aria-hidden />
+      <Star
+        className={active ? "size-4 fill-brand text-brand" : "size-4 text-ink-3"}
+        aria-hidden
+      />
     </button>
   );
 }
@@ -148,10 +152,12 @@ export function StartPracticeButton({
   ids,
   title,
   disabled,
+  label = "开始刷这组题",
 }: {
   ids: string[];
   title: string;
   disabled?: boolean;
+  label?: string;
 }) {
   const navigate = useNavigate();
   const start = () => {
@@ -175,11 +181,11 @@ export function StartPracticeButton({
   };
   return (
     <Button
-      className="h-12 w-full rounded-2xl bg-brand text-ink hover:bg-brand/90"
+      className="press h-[46px] w-full rounded-[4px] bg-brand text-[15px] font-bold text-white hover:bg-[#a80a5c] active:translate-y-px"
       disabled={disabled || !ids.length}
       onClick={start}
     >
-      消灭错题
+      {label}
     </Button>
   );
 }

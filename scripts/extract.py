@@ -322,13 +322,29 @@ TRUE_TOKENS = set('√✓J LNV∨Y') | {'N’', 'N\'_'}
 FALSE_TOKENS = set('×✗X错F✘')
 
 
+GARBAGE_OK = set('。，、；：？！“”‘’（）《》〈〉—…·【】')
+
+
+def text_noise_ratio(text):
+    """OCR 把插图认成乱码行时，有效字符占比会很低"""
+    if not text:
+        return 1.0
+    good = 0
+    for ch in text:
+        if ch.isalnum() or ch in GARBAGE_OK or ch.isspace():
+            good += 1
+    return 1 - good / len(text)
+
+
 def parse_answers(doc):
     entries, cur = [], None
     for pno in range(doc.page_count):
         for ln in get_lines(doc[pno]):
-            if ln['y'] < 62 or ln['y'] > 786:
+            if ln['y'] < 68 or ln['y'] > 770:
                 continue
             text = clean_text(' '.join(sg['text'] for sg in ln['segs']))
+            if text_noise_ratio(text) > 0.34:
+                continue
             m = ANS_RE.match(text)
             if m and re.match(r'^\s*\d{1,3}\s*[.．、]?\s*[【\[［（(]?\s*(?:精|参|解)', text):
                 if cur:
@@ -606,6 +622,10 @@ def build():
                         item['analysis'] = rest[len(tok):].strip()
                 else:
                     tok = ''
+                # 解析正文＝首行（已去掉答案字母）＋ 后续行
+                cont = a.get('analysis', '')
+                if cont:
+                    item['analysis'] = (item['analysis'] + ' ' + cont).strip()
                 if tk == 'judge':
                     v = judge_token(tok)
                     if v is None:
@@ -687,6 +707,7 @@ def build():
         ch['order'] = int(cid[2:])
         ch['questionCount'] = len(ch['questions'])
 
+    usable = sum(1 for ch in chapters.values() for q in ch['questions'] if q.get('answerable'))
     manifest = {
         'book': BOOK_NAME,
         'source': 'docx/题库/江西库课必刷2000题计算机.pdf + 答案.pdf',

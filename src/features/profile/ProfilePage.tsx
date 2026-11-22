@@ -1,10 +1,6 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { PageContainer, TopBar } from "@/components/layout/AppShell";
+import { PageContainer, SectionHead, TopBar } from "@/components/layout/AppShell";
 import { useManifest } from "@/data/hooks";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -64,107 +60,141 @@ export default function ProfilePage() {
     reader.readAsText(file);
   }
 
+  const inputCls =
+    "w-full border-b border-rule-2 bg-transparent py-1 text-right text-[14px] text-ink outline-none focus:border-brand";
+
   return (
     <div className="min-h-dvh">
-      <TopBar title="我的" variant="plain" center />
-      <PageContainer className="max-w-[560px] space-y-4 pt-4">
-        <section className="rounded-2xl bg-white p-4 card-shadow">
-          <h2 className="text-[15px] font-semibold text-ink">个人信息</h2>
-          <div className="mt-3 space-y-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="name">昵称</Label>
-              <Input
-                id="name"
-                value={profile.name}
-                onChange={(e) => setProfile({ name: e.target.value })}
-                className="h-11 rounded-xl"
-              />
+      <TopBar title="我的" kicker="设置只影响这台设备" />
+
+      <PageContainer className="pt-5">
+        {/* 个人信息 */}
+        <section>
+          <SectionHead>个人信息</SectionHead>
+          <dl className="text-[13.5px]">
+            <div className="flex items-center gap-4 border-b border-rule py-2.5">
+              <dt className="w-20 shrink-0 text-ink-2">昵称</dt>
+              <dd className="flex-1">
+                <input
+                  aria-label="昵称"
+                  value={profile.name}
+                  onChange={(e) => setProfile({ name: e.target.value })}
+                  className={inputCls}
+                />
+              </dd>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="exam">考试日期</Label>
-              <Input
-                id="exam"
-                type="date"
-                value={profile.examDate}
-                onChange={(e) => setProfile({ examDate: e.target.value })}
-                className="h-11 rounded-xl"
-              />
-              <p className="text-xs text-ink-3">设置后，首页顶部会显示考试倒计时。</p>
+            <div className="flex items-center gap-4 border-b border-rule py-2.5">
+              <dt className="w-20 shrink-0 text-ink-2">考试日期</dt>
+              <dd className="flex-1">
+                <input
+                  aria-label="考试日期"
+                  type="date"
+                  value={profile.examDate}
+                  onChange={(e) => setProfile({ examDate: e.target.value })}
+                  className={inputCls}
+                />
+              </dd>
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="goal">每日目标题量</Label>
-              <Input
-                id="goal"
-                type="number"
-                min={1}
-                max={500}
-                value={profile.dailyGoal}
-                onChange={(e) => setProfile({ dailyGoal: Number(e.target.value) || 30 })}
-                className="h-11 rounded-xl"
-              />
+            <div className="flex items-center gap-4 border-b border-rule py-2.5">
+              <dt className="w-20 shrink-0 text-ink-2">每日目标</dt>
+              <dd className="flex flex-1 items-baseline justify-end gap-1.5">
+                <input
+                  aria-label="每日目标题量"
+                  type="number"
+                  min={1}
+                  max={500}
+                  value={profile.dailyGoal}
+                  onChange={(e) => setProfile({ dailyGoal: Number(e.target.value) || 30 })}
+                  className="w-16 border-b border-rule-2 bg-transparent py-1 text-right text-[14px] text-ink outline-none focus:border-brand"
+                />
+                <span className="text-[12px] text-ink-3">题</span>
+              </dd>
             </div>
-          </div>
+          </dl>
+          <p className="num mt-1.5 text-[10.5px] text-ink-3">
+            设置考试日期后，目录页书眉会显示距考试天数
+          </p>
         </section>
 
-        <section className="rounded-2xl bg-white p-4 card-shadow">
-          <h2 className="text-[15px] font-semibold text-ink">显示设置</h2>
-          <div className="mt-3 space-y-3">
-            <div className="space-y-1.5">
-              <Label>字号缩放</Label>
-              <ToggleGroup
-                type="single"
-                value={profile.fontScale}
-                onValueChange={(v) => v && setProfile({ fontScale: v as "100" | "115" | "130" })}
-                variant="outline"
-                className="rounded-xl bg-surface p-1"
-              >
-                {["100", "115", "130"].map((v) => (
-                  <ToggleGroupItem key={v} value={v} className="rounded-lg data-[state=on]:bg-white">
-                    {v}%
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
+        {/* 显示 */}
+        <section className="mt-8">
+          <SectionHead>显示</SectionHead>
+          <div className="flex items-center justify-between gap-4 border-b border-rule py-2.5">
+            <span className="text-[13.5px] text-ink-2">字号</span>
+            <div className="flex items-center overflow-hidden rounded-[3px] border border-rule-2">
+              {(["100", "115", "130"] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setProfile({ fontScale: v })}
+                  aria-pressed={profile.fontScale === v}
+                  className={`num px-2.5 py-1 text-[12px] transition-colors ${
+                    profile.fontScale === v
+                      ? "bg-ink font-semibold text-white"
+                      : "bg-paper text-ink-2"
+                  }`}
+                >
+                  {v}%
+                </button>
+              ))}
             </div>
-            <label className="flex items-center justify-between rounded-xl bg-surface px-3 py-2.5">
-              <span className="text-sm text-ink">减少动效</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 border-b border-rule py-2.5">
+            <span className="text-[13.5px] text-ink-2">减少动效</span>
+            <label className="flex cursor-pointer items-center gap-2.5">
+              <span className="num text-[11px] text-ink-3">
+                {profile.reduceMotion ? "已开启" : "已关闭"}
+              </span>
               <input
                 type="checkbox"
                 checked={profile.reduceMotion}
                 onChange={(e) => setProfile({ reduceMotion: e.target.checked })}
-                className="size-5 accent-[#FFC300]"
+                aria-label="减少动效"
+                className="peer sr-only"
               />
+              <span
+                aria-hidden
+                className="relative h-[22px] w-[38px] rounded-full border border-rule-2 bg-paper-3 transition-colors peer-checked:border-brand peer-checked:bg-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand"
+              >
+                <span className="absolute left-[2px] top-[2px] size-[16px] rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-[16px]" />
+              </span>
             </label>
           </div>
         </section>
 
-        <section className="rounded-2xl bg-white p-4 card-shadow">
-          <h2 className="text-[15px] font-semibold text-ink">数据管理</h2>
-          <p className="mt-1 text-xs text-ink-2">
-            学习记录保存在本机浏览器，不会上传。换设备时可导出后导入。
+        {/* 数据 */}
+        <section className="mt-8">
+          <SectionHead right={`${Object.keys(progress).length} 题记录`}>数据</SectionHead>
+          <p className="mt-2 font-serif text-[13px] leading-[1.8] text-ink-2">
+            学习记录存在这台设备的浏览器里，不会上传。换设备时导出再导入即可带走。
           </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            <Button variant="secondary" className="rounded-xl bg-surface text-ink" onClick={exportData}>
-              导出数据
-            </Button>
-            <Button
-              variant="secondary"
-              className="rounded-xl bg-surface text-ink"
-              onClick={() => fileRef.current?.click()}
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={exportData}
+              className="press h-10 rounded-[3px] border border-rule-2 bg-paper text-[13px] text-ink hover:bg-paper-2 active:translate-y-px"
             >
-              导入数据
-            </Button>
-            <Button
-              variant="destructive"
-              className="rounded-xl bg-danger/15 text-danger-strong hover:bg-danger/25"
+              导出
+            </button>
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="press h-10 rounded-[3px] border border-rule-2 bg-paper text-[13px] text-ink hover:bg-paper-2 active:translate-y-px"
+            >
+              导入
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 if (confirm("确定清空全部本地学习数据？该操作不可恢复。")) {
                   resetAll();
                   toast.success("已清空本地数据");
                 }
               }}
+              className="press h-10 rounded-[3px] border border-danger/40 bg-paper text-[13px] text-danger hover:bg-danger-tint active:translate-y-px"
             >
-              清空数据
-            </Button>
+              清空
+            </button>
           </div>
           <input
             ref={fileRef}
@@ -179,25 +209,29 @@ export default function ProfilePage() {
           />
         </section>
 
-        <section className="rounded-2xl bg-white p-4 card-shadow">
-          <h2 className="text-[15px] font-semibold text-ink">关于</h2>
-          <dl className="mt-2 space-y-1.5 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-ink-2">题源</dt>
+        {/* 关于 */}
+        <section className="mt-8">
+          <SectionHead>关于</SectionHead>
+          <dl className="num text-[12.5px]">
+            <div className="flex justify-between gap-4 border-b border-rule py-2">
+              <dt className="font-sans text-ink-2">题源</dt>
               <dd className="text-right text-ink">{manifest?.book ?? "—"}</dd>
             </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-ink-2">入库题量</dt>
-              <dd className="num text-ink">{manifest?.totalQuestions ?? "—"} 题</dd>
+            <div className="flex justify-between gap-4 border-b border-rule py-2">
+              <dt className="font-sans text-ink-2">入库题量</dt>
+              <dd className="text-ink">{manifest?.totalQuestions ?? "—"} 题</dd>
             </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-ink-2">数据版本</dt>
-              <dd className="num text-ink">{manifest?.dataVersion ?? "—"}</dd>
+            <div className="flex justify-between gap-4 border-b border-rule py-2">
+              <dt className="font-sans text-ink-2">可自动判分</dt>
+              <dd className="text-ink">{manifest?.usableQuestions ?? "—"} 题</dd>
+            </div>
+            <div className="flex justify-between gap-4 border-b border-rule py-2">
+              <dt className="font-sans text-ink-2">数据版本</dt>
+              <dd className="text-ink">{manifest?.dataVersion ?? "—"}</dd>
             </div>
           </dl>
-          <p className="mt-3 text-[11px] leading-5 text-ink-3">
-            本站题目与解析来自纸质教辅的扫描件 OCR 提取结果，个别字符可能存在识别误差；
-            仅供备考参考，请以原书为准。
+          <p className="mt-2 font-serif text-[11.5px] leading-[1.8] text-ink-3">
+            题目与解析来自纸质教辅扫描件的识别结果，个别字符可能有误差，仅供备考参考，请以原书为准。
           </p>
         </section>
       </PageContainer>

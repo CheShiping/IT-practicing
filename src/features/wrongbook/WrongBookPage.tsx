@@ -35,99 +35,101 @@ export default function WrongBookPage() {
     if (!keyword.trim()) return questions;
     const k = keyword.trim().toLowerCase();
     return questions.filter(
-      (q) =>
-        q.stem.toLowerCase().includes(k) || (q.analysis ?? "").toLowerCase().includes(k),
+      (q) => q.stem.toLowerCase().includes(k) || (q.analysis ?? "").toLowerCase().includes(k),
     );
   }, [questions, keyword]);
 
   return (
-    <div className="min-h-dvh">
-      <TopBar title="错题本" variant="plain" center back />
-      <PageContainer className="max-w-[460px] space-y-3 pt-4">
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <SearchBox value={keyword} onChange={setKeyword} placeholder="搜索" />
+    <div className={`min-h-dvh ${filtered?.length ? "pb-24" : ""}`}>
+      <TopBar title="错题本" kicker={`${Object.keys(wrongBook).length} 道 · 答错自动收进来`} back />
+
+      <PageContainer className="pt-4">
+        <div className="flex items-end gap-4 border-b border-rule pb-2">
+          <div className="min-w-0 flex-1">
+            <SearchBox value={keyword} onChange={setKeyword} />
           </div>
           <button
             type="button"
             onClick={() => setOnlyUnresolved((v) => !v)}
             aria-pressed={onlyUnresolved}
-            className={`shrink-0 text-[13px] underline underline-offset-4 transition-colors ${
-              onlyUnresolved ? "text-ink" : "text-ink-2"
+            className={`shrink-0 pb-1 text-[12px] transition-colors ${
+              onlyUnresolved ? "font-semibold text-brand" : "text-ink-3 hover:text-ink-2"
             }`}
           >
-            筛选节
+            {onlyUnresolved ? "只看未消灭 ✓" : "只看未消灭"}
           </button>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="num text-xs text-ink-3">共 {ids.length} 道错题</span>
-          {onlyUnresolved ? (
-            <button
-              type="button"
-              onClick={() => setOnlyUnresolved(false)}
-              className="rounded bg-surface px-1.5 py-0.5 text-[11px] text-ink-2"
-            >
-              只看未消灭 ✕
-            </button>
-          ) : null}
         </div>
 
         {!filtered ? (
-          <ListSkeleton />
+          <div className="mt-1">
+            <ListSkeleton />
+          </div>
         ) : filtered.length === 0 ? (
-          <EmptyState
-            title={keyword ? "没有找到相关错题" : "还没有错题，继续保持！"}
-            description={keyword ? "换个关键词，或清除筛选条件" : "刷题中答错的题会自动收集到这里"}
-            action={
-              keyword ? (
-                <button
-                  type="button"
-                  className="rounded-xl bg-surface px-4 py-2 text-sm text-ink"
-                  onClick={() => setKeyword("")}
-                >
-                  清除搜索
-                </button>
-              ) : undefined
-            }
-          />
+          <div className="mt-6">
+            <EmptyState
+              title={keyword ? "没有找到相关错题" : "还没有错题"}
+              description={
+                keyword ? "换个关键词，或清除筛选条件" : "刷题时答错的题会自动收进这里"
+              }
+              action={
+                keyword ? (
+                  <button
+                    type="button"
+                    className="border border-rule-2 px-4 py-2 text-[13px] text-ink"
+                    onClick={() => setKeyword("")}
+                  >
+                    清除搜索
+                  </button>
+                ) : undefined
+              }
+            />
+          </div>
         ) : (
-          <ul className="space-y-3">
-            {filtered.map((q) => (
-              <li key={q.id}>
-                <QuestionCard
-                  q={q}
-                  badge={
-                    <span className="num rounded border border-black/15 px-1.5 py-0.5 text-[11px] text-ink-2">
-                      已错{wrongBook[q.id]?.count ?? 0}次
-                    </span>
-                  }
-                  right={
-                    <FavoriteToggle
-                      active={favorites.includes(q.id)}
-                      onClick={() => toggleFavorite(q.id)}
-                    />
-                  }
-                  footer={
-                    <CardSummary>
-                      {q.analysis || "原书未给出解析"}
-                      <span className="num"> · 最近错误 {relative(wrongBook[q.id]?.lastAt)}</span>
-                    </CardSummary>
-                  }
-                />
-              </li>
-            ))}
-          </ul>
+          <>
+            <p className="num mt-3 text-[11px] text-ink-3">
+              显示 {filtered.length} / {ids.length} 道
+            </p>
+            <ul>
+              {filtered.map((q) => (
+                <li key={q.id}>
+                  <QuestionCard
+                    q={q}
+                    badge={
+                      <span className="num text-[10.5px] text-danger">
+                        已错 {wrongBook[q.id]?.count ?? 0} 次
+                      </span>
+                    }
+                    right={
+                      <FavoriteToggle
+                        active={favorites.includes(q.id)}
+                        onClick={() => toggleFavorite(q.id)}
+                      />
+                    }
+                    footer={
+                      <CardSummary>
+                        {q.analysis || "原书未给出解析"}
+                        <span className="num"> · 最近 {relative(wrongBook[q.id]?.lastAt)}</span>
+                      </CardSummary>
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </PageContainer>
 
-      <div className="fixed inset-x-0 bottom-0 border-t border-black/5 bg-white/95 px-4 py-3 backdrop-blur md:static md:border-0 md:bg-transparent md:px-0 md:py-0">
-        <div className="mx-auto max-w-[720px]">
-          <StartPracticeButton
-            ids={filtered?.map((q) => q.id) ?? []}
-            title="错题重练"
-          />
+      {filtered?.length ? (
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="mx-auto max-w-[560px]">
+            <StartPracticeButton
+              ids={filtered.map((q) => q.id)}
+              title="错题重练"
+              label={`重做这 ${filtered.length} 道错题`}
+            />
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

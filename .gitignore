@@ -31,3 +31,8 @@ dist-ssr
 build/*
 !build/data-report.json
 .workbuddy/
+
+# 设计工作材料（不随站点发布）
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/question*/

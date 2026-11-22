@@ -1,56 +1,95 @@
+/* 计基速刷 · 江西《必刷2000题》印刷语法
+ * 世界：一本中国教辅的内页 —— 书页白、印刷墨、品红专色、宋体题干、点线目录
+ * 约束：不写卡片阴影，不用等宽字体当装饰，不铺渐变；层级只靠字级、字重、1px 印刷线与专色
+ */
+
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
-/* 主题令牌：来自《标准规范》原型图 */
+/* ---------------------------------------------------------------- 令牌 */
 :root {
-  --radius: 0.875rem;
+  --radius: 0.375rem;
 
-  --background: #ffffff;
-  --foreground: #343746;
+  /* 纸面：教辅内页是纯白，分区用极浅暖灰而不是灰蓝 */
+  --paper: #ffffff;
+  --paper-2: #faf9f7;
+  --paper-3: #f2f0ec;
 
-  --card: #ffffff;
-  --card-foreground: #343746;
+  /* 油墨：印刷黑不是纯黑，三级文字 */
+  --ink: #1a1a1a;
+  --ink-2: #3f3f3f;
+  --ink-3: #6e6e6e;
 
-  --popover: #ffffff;
-  --popover-foreground: #343746;
+  /* 印刷细线与控件描边 */
+  --rule: #e3e0da;
+  --rule-2: #c9c5bd;
 
-  /* 主色：品牌黄。黄底必须配深色字 */
-  --primary: #ffc300;
-  --primary-foreground: #343746;
+  /* 品红专色：这本书的封面与答案字母用的就是它
+   * 对白底 5.77:1，既能做文字也能做实心底配白字 */
+  --brand: #c40d70;
+  --brand-tint: #fce9f3;
+  --brand-line: #e8107e;
 
-  --secondary: #f7f7f7;
-  --secondary-foreground: #343746;
+  /* 判分：绿与红都取印刷墨的沉稳版本，不用荧光 */
+  --success: #0f7a48;
+  --success-tint: #e9f5ef;
+  --danger: #b3271c;
+  --danger-tint: #fbedea;
 
-  --muted: #f7f7f7;
-  --muted-foreground: #666666;
+  /* 字体：中文走系统栈，题干用宋体（试卷体），界面用黑体 */
+  --font-ui: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Source Han Sans SC", system-ui, sans-serif;
+  --font-text: "Songti SC", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", "STSong",
+    serif;
+  --font-num: ui-sans-serif, system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
 
-  --accent: #fff3cc;
-  --accent-foreground: #343746;
+  /* 动效 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
 
-  --destructive: #ff624c;
-  --destructive-foreground: #343746;
+  --focus: var(--brand);
 
-  --success: #21de86;
-  --success-foreground: #343746;
+  /* ---- shadcn 兼容层 ---- */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--paper-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-2);
+  --muted-foreground: var(--ink-3);
+  --accent-color: var(--brand-tint);
+  --accent-foreground: var(--brand);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --success-foreground: #ffffff;
+  --border: var(--rule);
+  --input: var(--rule-2);
+  --ring: var(--brand);
+}
 
-  --border: #cccccc;
-  --input: #cccccc;
-  --ring: #343746;
-
-  /* 语义扩展 */
-  --brand: #ffc300;
-  --brand-soft: #fff3cc;
-  --brand-ink: #343746;
-  --ink: #343746;
-  --ink-2: #666666;
-  --ink-3: #767676;
-  --success-strong: #0f7a48;
-  --danger: #ff624c;
-  --danger-strong: #d93a1f;
-  --surface: #f7f7f7;
-  --accent-blue: #2f6fd0;
-  --video-placeholder: #8e8e93;
+.dark {
+  --paper: #16151a;
+  --paper-2: #1d1c22;
+  --paper-3: #26242c;
+  --ink: #f4f2ef;
+  --ink-2: #cfcbc4;
+  --ink-3: #9a958d;
+  --rule: #2f2d35;
+  --rule-2: #43404a;
+  --brand: #f056a8;
+  --brand-tint: #2a1524;
+  --success: #3fbd85;
+  --danger: #ef6a5c;
 }
 
 @theme inline {
@@ -66,7 +105,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
+  --color-accent: var(--accent-color);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -76,95 +115,253 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-brand: var(--brand);
-  --color-brand-soft: var(--brand-soft);
-  --color-brand-ink: var(--brand-ink);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
-  --color-success-strong: var(--success-strong);
-  --color-danger: var(--danger);
-  --color-danger-strong: var(--danger-strong);
-  --color-surface: var(--surface);
-  --color-accent-blue: var(--accent-blue);
-  --color-video-placeholder: var(--video-placeholder);
+  --color-rule: var(--rule);
+  --color-rule-2: var(--rule-2);
+  --color-brand: var(--brand);
+  --color-brand-tint: var(--brand-tint);
+  --color-brand-line: var(--brand-line);
+  --color-success-strong: var(--success);
+  --color-success-tint: var(--success-tint);
+  --color-danger-strong: var(--danger);
+  --color-danger-tint: var(--danger-tint);
 
-  --radius-sm: calc(var(--radius) - 6px);
-  --radius-md: calc(var(--radius) - 4px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
 
-  --font-sans: "PingFang SC", "PingFang TC", "Microsoft YaHei", "Noto Sans SC",
-    system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-ui);
+  --font-serif: var(--font-text);
+  --font-mono: var(--font-num);
+
+  --ease-out: var(--ease-out);
+  --ease-in: var(--ease-in);
+  --ease-in-out: var(--ease-in-out);
+  --dur-micro: var(--dur-micro);
+  --dur-short: var(--dur-short);
+  --dur-long: var(--dur-long);
 }
 
 @layer base {
   * {
-    border-color: var(--border);
+    border-color: var(--rule);
   }
   html {
     -webkit-text-size-adjust: 100%;
   }
   body {
-    background: var(--surface);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    font-feature-settings: "tnum" 1;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
   :focus-visible {
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--brand);
+    color: #fff;
+  }
+  /* 滚动条：让没画的部分也属于这套设计 */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--paper-2);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--rule-2);
+    border: 3px solid var(--paper-2);
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-3);
   }
 }
 
+/* ---------------------------------------------------------------- 工具类 */
+
+/** 数字与拉丁读数：等宽数字，用于题号、百分比、计数 */
 @utility num {
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.01em;
 }
 
-@utility card-shadow {
-  box-shadow: 0 2px 12px rgb(52 55 70 / 0.06);
+/** 印刷小标签：黑体小字，宽字距，用于书眉与分区标题 */
+@utility label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
 }
 
-@utility float-shadow {
-  box-shadow: 0 8px 32px rgb(52 55 70 / 0.12);
+/** 试卷正文：宋体，行距给足，长题可读 */
+@utility exam {
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  color: var(--ink);
 }
 
-/* 顶部黄条渐变 */
-@utility brand-bar {
-  background-image: linear-gradient(135deg, #ffc300 0%, #ffe082 100%);
+/** 点线引导：目录行的引导点 */
+@utility dotline {
+  flex: 1 1 auto;
+  align-self: end;
+  margin: 0 6px 5px;
+  border-bottom: 1px dotted var(--rule-2);
+  min-width: 12px;
 }
 
-/* 选中芯片的右下角折角 */
-.corner-fold {
-  position: relative;
+/** 印刷横线 */
+@utility rule-t {
+  border-top: 1px solid var(--rule);
 }
-.corner-fold::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  border-style: solid;
-  border-width: 0 0 10px 10px;
-  border-color: transparent transparent #343746 transparent;
+@utility rule-b {
+  border-bottom: 1px solid var(--rule);
 }
 
-/* 应用内「减少动效」开关（我的 › 显示设置） */
-[data-reduce-motion="true"] *,
-[data-reduce-motion="true"] *::before,
-[data-reduce-motion="true"] *::after {
-  animation-duration: 0.001ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.001ms !important;
+/** 页面纸面：不用卡片圆角，只用 1px 印刷线框定的版面 */
+@utility leaf {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+/** 品红实心块：答案字母、当前章节标记 */
+@utility brandmark {
+  background: var(--brand);
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------- 动效 */
+
+@utility press {
+  transition:
+    transform var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+@utility press-active {
+  transform: translateY(1px);
+}
+
+@utility judged {
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility rise {
+  animation: rise-in var(--dur-short) var(--ease-out) both;
+}
+
+@keyframes verdict-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility verdict {
+  animation: verdict-in 180ms var(--ease-out) both;
+}
+
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@utility mark {
+  animation: mark-in 140ms var(--ease-out) both;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@utility sheet-in {
+  animation: sheet-in var(--dur-short) var(--ease-out) both;
+}
+
+@keyframes fade-only {
+  to {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
+    animation-duration: 150ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: 150ms !important;
   }
+  .rise,
+  .verdict,
+  .sheet-in {
+    animation-name: fade-only !important;
+  }
+}
+
+[data-reduce-motion="true"] *,
+[data-reduce-motion="true"] *::before,
+[data-reduce-motion="true"] *::after {
+  animation-duration: 150ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 150ms !important;
+}
+[data-reduce-motion="true"] .rise,
+[data-reduce-motion="true"] .verdict,
+[data-reduce-motion="true"] .sheet-in {
+  animation-name: fade-only !important;
 }

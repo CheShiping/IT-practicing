@@ -232,13 +232,13 @@
    "chapterId": "ch3",
    "sectionId": "ch3-comprehensive",
    "title": "综合应用题",
-   "questions": 41,
-   "answers": 11,
-   "ok": 41,
-   "noAnswer": 0,
+   "questions": 40,
+   "answers": 10,
+   "ok": 40,
+   "noAnswer": 1,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 0
+   "excluded": 1
   },
   {
    "chapterId": "ch4",
@@ -484,13 +484,13 @@
    "chapterId": "ch7",
    "sectionId": "ch7-judge",
    "title": "判断题",
-   "questions": 10,
-   "answers": 10,
-   "ok": 10,
-   "noAnswer": 0,
+   "questions": 9,
+   "answers": 9,
+   "ok": 9,
+   "noAnswer": 1,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 0
+   "excluded": 1
   },
   {
    "chapterId": "ch7",
@@ -831,6 +831,10 @@
    "reason": "填空题答案缺失"
   },
   {
+   "id": "ch3-comprehensive-8",
+   "reason": "答案缺失"
+  },
+  {
    "id": "ch4-single-68",
    "reason": "答案与选项不匹配: ''"
   },
@@ -952,6 +956,10 @@
   },
   {
    "id": "ch7-single-2",
+   "reason": "答案缺失"
+  },
+  {
+   "id": "ch7-judge-2",
    "reason": "答案缺失"
   },
   {
@@ -1713,6 +1721,11 @@
    "stem": "在PowerPoint中的 视图中，上部显示小版本的幻灯片，下部显示备注窗格中的内容。"
   },
   {
+   "id": "ch3-comprehensive-8",
+   "reason": "缺少参考答案",
+   "stem": "小王利用Excel2010在新建工作簿中创建了结构如图3 -43所示的工作表，分析了部分省份理科一本 的录取情况。请结合"
+  },
+  {
    "id": "ch4-single-4",
    "reason": "选项数异常(5)",
    "stem": "图41为某网络的结构图，为使主机1连入因特网，下列对主机1的正确配置是 日 帕器连接内网接口 IP地址192.1 王vi"
@@ -2026,6 +2039,11 @@
    "id": "ch7-single-2",
    "reason": "缺少可判分答案",
    "stem": "下列应用不属于人工智能领域的是"
+  },
+  {
+   "id": "ch7-judge-2",
+   "reason": "缺少判断题答案",
+   "stem": "RFID 技术、传感器技术和嵌入式智能技术均属于物联网的基础性技术。 ( )"
   },
   {
    "id": "ch7-comprehensive-2",
