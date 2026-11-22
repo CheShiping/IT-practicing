@@ -24,8 +24,8 @@ import {
 import { PageContainer, TopBar } from "@/components/layout/AppShell";
 import { OptionItem, type OptionState } from "@/components/common/OptionItem";
 import { AnswerSheet, type SheetGroup } from "@/components/common/AnswerSheet";
-import { judge, loadChapter } from "@/data/loader";
-import { KIND_LABEL, type Question } from "@/data/types";
+import { judge, judgeBlank, loadChapter } from "@/data/loader";
+import { answerModeOf, KIND_LABEL, type Question } from "@/data/types";
 import { useAppStore } from "@/store/useAppStore";
 
 export default function QuizPage() {
@@ -40,12 +40,16 @@ export default function QuizPage() {
   const updateSession = useAppStore((s) => s.updateSession);
   const recordAnswer = useAppStore((s) => s.recordAnswer);
   const addWrong = useAppStore((s) => s.addWrong);
+  const amendAnswer = useAppStore((s) => s.amendAnswer);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const saveNote = useAppStore((s) => s.saveNote);
   const endSession = useAppStore((s) => s.endSession);
 
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
+  // 填空题输入 / 主观题参考答案是否已揭示（自评前不算已答）
+  const [blankInput, setBlankInput] = useState("");
+  const [selfShown, setSelfShown] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [exitOpen, setExitOpen] = useState(false);
@@ -82,19 +86,46 @@ export default function QuizPage() {
   useEffect(() => {
     if (!session || !question) return;
     setSelected(session.answers[question.id] ?? []);
+    setBlankInput("");
+    setSelfShown(false);
   }, [session?.id, question?.id, session?.answers, question]);
 
   const submit = useCallback(() => {
     if (!session || !question) return;
-    const ok = judge(question, selected);
+    const mode = answerModeOf(question);
+    if (mode === "self") return;
+    const ok =
+      mode === "blank" ? judgeBlank(question.answerText, blankInput) : judge(question, selected);
+    const entry = mode === "blank" ? [blankInput.trim()] : selected;
     updateSession({
-      answers: { ...session.answers, [question.id]: selected },
+      answers: { ...session.answers, [question.id]: entry },
       revealed: { ...session.revealed, [question.id]: true },
       results: { ...session.results, [question.id]: ok },
     });
     recordAnswer(question.id, ok);
     if (!ok) addWrong(question.id);
-  }, [session, question, selected, updateSession, recordAnswer, addWrong]);
+  }, [session, question, selected, blankInput, updateSession, recordAnswer, addWrong]);
+
+  /** 填空申诉：参考答案来自扫描件，OCR 可能有误差，允许把这次判错改正 */
+  const amend = useCallback(() => {
+    if (!session || !question) return;
+    updateSession({ results: { ...session.results, [question.id]: true } });
+    amendAnswer(question.id);
+  }, [session, question, updateSession, amendAnswer]);
+
+  /** 主观题自评：看完参考答案后由用户判定，计入正确率与错题本 */
+  const rateSelf = useCallback(
+    (ok: boolean) => {
+      if (!session || !question) return;
+      updateSession({
+        revealed: { ...session.revealed, [question.id]: true },
+        results: { ...session.results, [question.id]: ok },
+      });
+      recordAnswer(question.id, ok);
+      if (!ok) addWrong(question.id);
+    },
+    [session, question, updateSession, recordAnswer, addWrong],
+  );
 
   function optionState(key: string): OptionState {
     if (!question) return "idle";
@@ -172,11 +203,17 @@ export default function QuizPage() {
   }
 
   const options = question.options;
+  const mode = answerModeOf(question);
   const multi = question.type === "multi";
   const answered = revealed || isRecite;
   const correct = session.results[question.id];
   const pct = total ? (answeredCount / total) * 100 : 0;
   const starred = favorites.includes(question.id);
+  // 主观题的解析与参考答案是同一段，避免同一屏重复两遍
+  const analysisIsAnswer =
+    Boolean(question.answerText) &&
+    Boolean(question.analysis) &&
+    question.analysis.trim() === (question.answerText ?? "").trim();
   const hasNote = Boolean(notes[question.id]);
 
   const sheetGroups: SheetGroup[] = [
@@ -323,8 +360,8 @@ export default function QuizPage() {
           ) : null}
         </article>
 
-        {/* 选项 */}
-        {options.length ? (
+        {/* 作答区：选择 / 填空 / 主观自评 */}
+        {mode === "choice" ? (
           <div className="mt-3 space-y-2.5" role="group" aria-label="选项">
             {options.map((o) => (
               <OptionItem
@@ -337,17 +374,59 @@ export default function QuizPage() {
               />
             ))}
           </div>
+        ) : mode === "blank" ? (
+          isRecite ? (
+            <div className="card mt-3 p-4">
+              <p className="label">参考答案</p>
+              <p className="mt-1.5 text-[16px] leading-[1.8] font-semibold text-ink">
+                {question.answerText || "本题原书未给出答案"}
+              </p>
+            </div>
+          ) : (
+          <div className="card mt-3 p-4">
+            <label htmlFor="blank-answer" className="label block">
+              填入答案
+            </label>
+            <input
+              id="blank-answer"
+              value={answered ? (session.answers[question.id]?.[0] ?? blankInput) : blankInput}
+              onChange={(e) => setBlankInput(e.target.value)}
+              disabled={answered || isRecite}
+              enterKeyHint="done"
+              placeholder="写出关键词，多个空用顿号分隔"
+              className="mt-2 block w-full min-w-0 rounded-[12px] border-2 border-shell-2 bg-shell px-3 py-2.5 text-[15px] font-semibold text-ink outline-none transition-colors focus-visible:border-azure disabled:opacity-80"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !answered && !isRecite && blankInput.trim()) submit();
+              }}
+            />
+            <p className="mt-1.5 text-[10.5px] leading-4 text-ink-3">
+              按关键词比对，忽略空格、全半角与标点；答案来自扫描件，个别字符可能有误差。
+            </p>
+          </div>
+          )
         ) : (
           <div className="card mt-3 p-4">
-            <p className="label">参考答案</p>
-            <p className="mt-1.5 text-[14px] leading-[1.8] font-medium text-ink">
-              {question.answerText || question.analysis || "本题原书未给出参考答案"}
-            </p>
+            {selfShown || isRecite ? (
+              <>
+                <p className="label">参考答案</p>
+                <p className="mt-1.5 text-[14px] leading-[1.85] font-medium whitespace-pre-wrap text-ink">
+                  {question.answerText || question.analysis || "本题原书未给出参考答案"}
+                </p>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSelfShown(true)}
+                className="press w-full rounded-[12px] border-2 border-dashed border-azure/40 py-3.5 text-[13.5px] font-bold text-azure transition-colors hover:bg-[#e9f6ff] active:translate-y-[1px]"
+              >
+                先在纸上作答，写好后再看参考答案
+              </button>
+            )}
           </div>
         )}
 
         {/* 判定 */}
-        {answered && !isRecite && options.length ? (
+        {answered && !isRecite && mode !== "self" ? (
           <section
             role="status"
             aria-live="polite"
@@ -377,15 +456,64 @@ export default function QuizPage() {
             <dl className="num mt-2.5 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-[12.5px]">
               <div className="flex items-baseline gap-1.5">
                 <dt className="text-[10.5px] font-semibold text-ink-3">正确答案</dt>
-                <dd className="font-extrabold text-green">{question.answer.join(" ")}</dd>
+                <dd className="min-w-0 font-extrabold text-green">
+                  {mode === "blank" ? question.answerText : question.answer.join(" ")}
+                </dd>
               </div>
               <div className="flex items-baseline gap-1.5">
-                <dt className="text-[10.5px] font-semibold text-ink-3">你选的</dt>
-                <dd className={`font-extrabold ${correct ? "text-green" : "text-red"}`}>
-                  {selected.length ? selected.join(" ") : "未作答"}
+                <dt className="text-[10.5px] font-semibold text-ink-3">
+                  {mode === "blank" ? "你写的" : "你选的"}
+                </dt>
+                <dd className={`min-w-0 font-extrabold ${correct ? "text-green" : "text-red"}`}>
+                  {(mode === "blank"
+                    ? (session.answers[question.id]?.[0] ?? blankInput)
+                    : selected.join(" ")) || "未作答"}
                 </dd>
               </div>
             </dl>
+            {mode === "blank" && !correct ? (
+              <button
+                type="button"
+                onClick={amend}
+                className="mt-2.5 inline-flex items-center gap-1 rounded-[8px] border border-ink-3/35 px-2.5 py-1 text-[11px] font-bold text-ink-2 transition-colors hover:bg-white"
+              >
+                我写的是参考答案（算我对）
+              </button>
+            ) : null}
+          </section>
+        ) : null}
+
+        {/* 主观题自评结果 */}
+        {answered && !isRecite && mode === "self" ? (
+          <section
+            role="status"
+            aria-live="polite"
+            className={`verdict mt-3 rounded-[16px] border-2 p-3.5 ${
+              correct ? "border-green bg-green-tint" : "border-red bg-red-tint"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex size-7 items-center justify-center rounded-full text-white ${
+                  correct ? "bg-green" : "bg-red"
+                }`}
+              >
+                {correct ? (
+                  <Check className="size-4" strokeWidth={3} aria-hidden />
+                ) : (
+                  <X className="size-4" strokeWidth={3} aria-hidden />
+                )}
+              </span>
+              <p className={`text-[15px] font-extrabold ${correct ? "text-green" : "text-red"}`}>
+                自评{correct ? "答对" : "答错"}
+              </p>
+              <p className="num ml-auto text-[10.5px] font-semibold text-ink-3">
+                累计正确率 {globalAccuracy()}%
+              </p>
+            </div>
+            <p className="mt-1.5 text-[11px] leading-4 text-ink-3">
+              主观题没有标准判分，按你的自评计入正确率与错题本。
+            </p>
           </section>
         ) : null}
 
@@ -393,7 +521,15 @@ export default function QuizPage() {
         {answered ? (
           <section className="card mt-3 p-4">
             <p className="label">解析</p>
-            {question.analysis ? (
+            {mode === "blank" && analysisIsAnswer ? (
+              <p className="mt-1.5 text-[13px] leading-6 text-ink-3">
+                原书对填空题只给出答案，未另附解析。
+              </p>
+            ) : analysisIsAnswer ? (
+              <p className="mt-1.5 text-[13px] leading-6 text-ink-3">
+                本题的「解析」与上方参考答案是同一段内容，原书未另附解析。
+              </p>
+            ) : question.analysis ? (
               <p className="mt-1.5 text-[14px] leading-[1.85] font-medium text-ink">
                 {question.analysis}
               </p>
@@ -405,10 +541,8 @@ export default function QuizPage() {
             </p>
           </section>
         ) : null}
-        </div>
-      </div>
 
-      {/* 底部操作：移动端固定，桌面端跟在内容后面 */}
+        {/* 底部操作：移动端固定，桌面端跟在内容后面 */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-shell-2 bg-paper px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:static md:mt-4 md:border-0 md:bg-transparent md:p-0">
         <div className="mx-auto flex max-w-[520px] items-center gap-2.5 md:max-w-none">
           <button
@@ -420,14 +554,43 @@ export default function QuizPage() {
             上一题
           </button>
           {!answered && !isRecite ? (
-            <button
-              type="button"
-              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none disabled:bg-shell-2 disabled:text-ink-3 disabled:shadow-none"
-              disabled={selected.length === 0}
-              onClick={submit}
-            >
-              提交答案
-            </button>
+            mode === "self" ? (
+              !selfShown ? (
+                <button
+                  type="button"
+                  className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none"
+                  onClick={() => setSelfShown(true)}
+                >
+                  看参考答案
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="press h-[48px] flex-1 rounded-[13px] border-2 border-red/40 bg-paper text-[14px] font-bold text-red transition-colors hover:bg-red-tint active:translate-y-[1px]"
+                    onClick={() => rateSelf(false)}
+                  >
+                    没答对
+                  </button>
+                  <button
+                    type="button"
+                    className="press h-[48px] flex-1 rounded-[13px] border-2 border-green/45 bg-paper text-[14px] font-bold text-green transition-colors hover:bg-green-tint active:translate-y-[1px]"
+                    onClick={() => rateSelf(true)}
+                  >
+                    答对了
+                  </button>
+                </>
+              )
+            ) : (
+              <button
+                type="button"
+                className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none disabled:bg-shell-2 disabled:text-ink-3 disabled:shadow-none"
+                disabled={mode === "blank" ? !blankInput.trim() : selected.length === 0}
+                onClick={submit}
+              >
+                提交答案
+              </button>
+            )
           ) : index === total - 1 ? (
             <button
               type="button"
@@ -445,6 +608,8 @@ export default function QuizPage() {
               下一题
             </button>
           )}
+        </div>
+      </div>
         </div>
       </div>
 

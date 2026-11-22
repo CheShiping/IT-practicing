@@ -67,7 +67,8 @@ export function QuestionBankSheet({
       const ids = picked.map((u) => u.id);
       const chapter = await loadChapter(chapterId);
       const pool = chapter.questions.filter((q) => ids.includes(q.sectionId));
-      const questions = mode === "recite" ? pool : pool.filter((q) => q.answer.length > 0);
+      // 全题型可练：填空输入比对、主观题自评，不再按答案数组过滤
+      const questions = pool;
       if (!questions.length) {
         setBusy(false);
         return;

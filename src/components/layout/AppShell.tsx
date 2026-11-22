@@ -99,7 +99,7 @@ export function DesktopNav() {
           <p className="num text-[11px] text-on-azure/70">
             {hydrated
               ? `累计 ${attempts} 题 · 正确率 ${attempts ? Math.round((correct / attempts) * 100) : 0}%`
-              : "1934 道原书题"}
+              : "1942 道原书题"}
           </p>
         </div>
       </div>

@@ -100,7 +100,9 @@ await step("键盘可达并可选中", async () => {
   if (!hit) throw new Error("Tab 无法到达选项控件");
   await page.keyboard.press("Space");
   await page.waitForTimeout(300);
-  const selected = await page.evaluate(() => document.querySelectorAll("[aria-pressed=\"true\"].bg-brand-tint").length);
+  const selected = await page.evaluate(
+    () => document.querySelectorAll('[aria-label^="选项"][aria-pressed="true"]').length,
+  );
   if (!selected) throw new Error("空格键未能选中选项");
   await page.screenshot({ path: `${OUT}/04b-keyboard.png` });
 });

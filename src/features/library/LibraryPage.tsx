@@ -39,10 +39,8 @@ export default function LibraryPage() {
     setStarting(unit.id);
     try {
       const chapter = await loadChapter(unit.chapterId);
-      const pool = chapter.questions.filter(
-        (q) => q.sectionId === unit.id && (mode === "recite" ? true : q.answerable !== false),
-      );
-      const questions = mode === "recite" ? pool : pool.filter((q) => q.answer.length > 0);
+      // 全题型可练：填空走输入比对，主观题揭示答案后自评
+      const questions = chapter.questions.filter((q) => q.sectionId === unit.id);
       if (!questions.length) {
         setStarting(null);
         alert("该小节暂无可用题目");
@@ -128,7 +126,7 @@ export default function LibraryPage() {
               (a, u) => a + Object.keys(progress).filter((k) => k.startsWith(`${u.id}-`)).length,
               0,
             );
-            const totalQ = list.reduce((a, u) => a + u.gradableCount, 0);
+            const totalQ = list.reduce((a, u) => a + u.questionCount, 0);
             const isOpen = ci === 0 ? !closed[chapterId] : Boolean(closed[chapterId]);
             return (
               <section key={chapterId} id={chapterId} className={ci ? "mt-6" : undefined}>
@@ -172,7 +170,11 @@ export default function LibraryPage() {
                                 u.autoJudged ? "text-azure" : "text-ink-3"
                               }`}
                             >
-                              {u.autoJudged ? "可判分" : "仅解析"}
+                              {u.kind === "blank"
+                                ? "填空自测"
+                                : u.autoJudged
+                                  ? "自动判分"
+                                  : "参考答案自评"}
                             </span>
                           </div>
                           <div className="num mt-1 flex items-center gap-2 text-[11px] text-ink-3">

@@ -419,22 +419,46 @@ def header_type_at(headers, page):
     return cur
 
 
+PLAIN_MARK_RE = re.compile(r"【\s*(?:精\s*析|参\s*考\s*答\s*案|解\s*析)\s*】|精析|参考答案")
+
+
 def parse_plain_answers(doc, page_from, page_to):
-    """解析没有【精析】标记的答案（填空题），按双栏坐标还原阅读顺序"""
+    """解析填空题答案（答案册里没有【精析】标记的纯答案条目）
+
+    答案册填空题答案是双栏密排：左栏奇数题、右栏偶数题；同一页下半部分
+    往往紧接「简答题」的【精析】条目，且简答题题号也从 1 开始。
+    因此不能只靠页码边界，必须：
+      1. 按内容排除带【精析】/参考答案的条目；
+      2. 按「页 → 栏（左→右）→ y」排序，避免跨页时左右栏错位。
+    """
     items = []
-    for pno in range(page_from - 1, min(page_to, doc.page_count)):
+    last = min(page_to + 1, doc.page_count)
+    for pno in range(max(0, page_from - 1), last):
         for ln in get_lines(doc[pno]):
             if ln['y'] < 62 or ln['y'] > 786:
                 continue
             for sg in ln['segs']:
-                m = re.match(r'^\s*(\d{1,3})\s*[.．、]\s*(.*)$', sg['text'])
-                if m:
-                    items.append({'no': int(m.group(1)), 'text': clean_text(m.group(2)),
-                                  'x': sg['x0'], 'y': ln['y'], 'page': pno + 1})
-    # 双栏：x<300 左栏，x>=300 右栏；先左后右，栏内按 y
-    left = sorted([i for i in items if i['x'] < 300], key=lambda i: (i['y'], i['x']))
-    right = sorted([i for i in items if i['x'] >= 300], key=lambda i: (i['y'], i['x']))
-    return left + right
+                # OCR 常把题号写成「1 2.」「4 2.」，先把数字间空格压掉再匹配
+                raw = DIGIT_SPACE_RE.sub('', sg['text'])
+                m = re.match(r'^\s*(\d{1,3})\s*[.．、]\s*(.*)$', raw)
+                if not m:
+                    continue
+                if PLAIN_MARK_RE.search(raw):
+                    continue
+                text = clean_text(m.group(2))
+                if not text:
+                    continue
+                # 填空题答案是关键词/短表达式，过长者多为解析正文或图注
+                if len(text) > 40 or text_noise_ratio(text) > 0.3:
+                    continue
+                items.append({
+                    'no': int(m.group(1)),
+                    'text': text,
+                    'col': 0 if sg['x0'] < 200 else 1,
+                    'y': ln['y'],
+                    'page': pno + 1,
+                })
+    return sorted(items, key=lambda i: (i['page'], i['col'], i['y']))
 
 
 # ------------------------------------------------------------------ 小节切分

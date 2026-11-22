@@ -40,13 +40,13 @@
    "chapterId": "ch1",
    "sectionId": "ch1-blank",
    "title": "填空题",
-   "questions": 58,
+   "questions": 66,
    "answers": 0,
-   "ok": 58,
-   "noAnswer": 10,
+   "ok": 66,
+   "noAnswer": 2,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 10
+   "excluded": 2
   },
   {
    "chapterId": "ch1",
@@ -112,13 +112,13 @@
    "chapterId": "ch2",
    "sectionId": "ch2-blank",
    "title": "填空题",
-   "questions": 47,
+   "questions": 52,
    "answers": 0,
-   "ok": 47,
-   "noAnswer": 7,
+   "ok": 52,
+   "noAnswer": 2,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 7
+   "excluded": 2
   },
   {
    "chapterId": "ch2",
@@ -184,13 +184,13 @@
    "chapterId": "ch3",
    "sectionId": "ch3-blank",
    "title": "填空题",
-   "questions": 112,
+   "questions": 106,
    "answers": 0,
-   "ok": 112,
-   "noAnswer": 3,
+   "ok": 106,
+   "noAnswer": 9,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 3
+   "excluded": 9
   },
   {
    "chapterId": "ch3",
@@ -280,13 +280,13 @@
    "chapterId": "ch4",
    "sectionId": "ch4-blank",
    "title": "填空题",
-   "questions": 44,
+   "questions": 43,
    "answers": 0,
-   "ok": 44,
-   "noAnswer": 0,
+   "ok": 43,
+   "noAnswer": 1,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 0
+   "excluded": 1
   },
   {
    "chapterId": "ch4",
@@ -352,13 +352,13 @@
    "chapterId": "ch5",
    "sectionId": "ch5-blank",
    "title": "填空题",
-   "questions": 22,
+   "questions": 21,
    "answers": 0,
-   "ok": 22,
-   "noAnswer": 0,
+   "ok": 21,
+   "noAnswer": 1,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 0
+   "excluded": 1
   },
   {
    "chapterId": "ch5",
@@ -424,13 +424,13 @@
    "chapterId": "ch6",
    "sectionId": "ch6-blank",
    "title": "填空题",
-   "questions": 22,
+   "questions": 25,
    "answers": 0,
-   "ok": 22,
-   "noAnswer": 3,
+   "ok": 25,
+   "noAnswer": 0,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 3
+   "excluded": 0
   },
   {
    "chapterId": "ch6",
@@ -603,39 +603,7 @@
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch1-blank-12",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-13",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-15",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-19",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-42",
-   "reason": "填空题答案缺失"
-  },
-  {
    "id": "ch1-blank-47",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-50",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-53",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch1-blank-54",
    "reason": "填空题答案缺失"
   },
   {
@@ -687,27 +655,7 @@
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch2-blank-15",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch2-blank-17",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch2-blank-18",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch2-blank-25",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch2-blank-35",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch2-blank-54",
+   "id": "ch2-blank-49",
    "reason": "填空题答案缺失"
   },
   {
@@ -819,6 +767,30 @@
    "reason": "判断题答案符号无法识别: ''"
   },
   {
+   "id": "ch3-blank-47",
+   "reason": "填空题答案缺失"
+  },
+  {
+   "id": "ch3-blank-79",
+   "reason": "填空题答案缺失"
+  },
+  {
+   "id": "ch3-blank-81",
+   "reason": "填空题答案缺失"
+  },
+  {
+   "id": "ch3-blank-82",
+   "reason": "填空题答案缺失"
+  },
+  {
+   "id": "ch3-blank-85",
+   "reason": "填空题答案缺失"
+  },
+  {
+   "id": "ch3-blank-86",
+   "reason": "填空题答案缺失"
+  },
+  {
    "id": "ch3-blank-98",
    "reason": "填空题答案缺失"
   },
@@ -907,6 +879,10 @@
    "reason": "判断题答案符号无法识别: ''"
   },
   {
+   "id": "ch4-blank-27",
+   "reason": "填空题答案缺失"
+  },
+  {
    "id": "ch5-single-26",
    "reason": "答案缺失"
   },
@@ -927,15 +903,7 @@
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch6-blank-10",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch6-blank-14",
-   "reason": "填空题答案缺失"
-  },
-  {
-   "id": "ch6-blank-18",
+   "id": "ch5-blank-21",
    "reason": "填空题答案缺失"
   },
   {
@@ -1151,49 +1119,9 @@
    "stem": "世界上第一台电子计算机名字叫ENIAC。 ("
   },
   {
-   "id": "ch1-blank-12",
-   "reason": "缺少参考答案",
-   "stem": "高级语言的翻译过程有两种形式？即编译和 φ"
-  },
-  {
-   "id": "ch1-blank-13",
-   "reason": "缺少参考答案",
-   "stem": "在运算器中有若干临时存放运算结果的部件，称为，用于存放ALU运算的结果。"
-  },
-  {
-   "id": "ch1-blank-15",
-   "reason": "缺少参考答案",
-   "stem": "是指计算机系统中由电子、机械和光电元件等组成的各种物理装置的总称。"
-  },
-  {
-   "id": "ch1-blank-19",
-   "reason": "缺少参考答案",
-   "stem": "是计算机系统用来存储程序和数据的器件，它是一个记忆装置，也是计算机能够实现程 序存储控制的基础。"
-  },
-  {
-   "id": "ch1-blank-42",
-   "reason": "缺少参考答案",
-   "stem": "Cache的中文译名是"
-  },
-  {
    "id": "ch1-blank-47",
    "reason": "缺少参考答案",
    "stem": "在微机中，应用最普遍的字符的编码是"
-  },
-  {
-   "id": "ch1-blank-50",
-   "reason": "缺少参考答案",
-   "stem": "微型计算机系统总线是由数据总线、 和控制总线三部分组成的。"
-  },
-  {
-   "id": "ch1-blank-53",
-   "reason": "缺少参考答案",
-   "stem": "计算机软件分为 和应用软件两大类。"
-  },
-  {
-   "id": "ch1-blank-54",
-   "reason": "缺少参考答案",
-   "stem": "将汇编语言源程序转换为等价的目标程序的过程称为"
   },
   {
    "id": "ch1-blank-61",
@@ -1326,34 +1254,9 @@
    "stem": "Windows 7中，要切换窗口，可以使用 快捷键。"
   },
   {
-   "id": "ch2-blank-15",
+   "id": "ch2-blank-49",
    "reason": "缺少参考答案",
-   "stem": "在Windows7的“资源管理器”或“计算机”窗口中，若想改变文件或文件夹的显示方式（即大图标、 小图标、列表和详细信息"
-  },
-  {
-   "id": "ch2-blank-17",
-   "reason": "缺少参考答案",
-   "stem": "在Windows7的“资源管理器”窗口左部，图标和名称前面带空心兰角的节点表明它含"
-  },
-  {
-   "id": "ch2-blank-18",
-   "reason": "缺少参考答案",
-   "stem": "在Windows7中，如果要卸载某个应用程序，可以打开 窗口，打开“程序和功能”选项，然 后双击其中要卸载的“程序”图标"
-  },
-  {
-   "id": "ch2-blank-25",
-   "reason": "缺少参考答案",
-   "stem": "在Windows7操作系统中，“ Ctrl + V”是 命令的快捷键。"
-  },
-  {
-   "id": "ch2-blank-35",
-   "reason": "缺少参考答案",
-   "stem": "中存放着Windows7的绝大多数命令和安装到系统里面的所有程序，是操作系统的中 央控制区域。"
-  },
-  {
-   "id": "ch2-blank-54",
-   "reason": "缺少参考答案",
-   "stem": "在资源管理器中，用户可以根据需要使用 菜单的“重命名”命令来更改文件或文件夹的 名称。"
+   "stem": "Windows 7中，双击标题栏可以完成窗口的 的切换。"
   },
   {
    "id": "ch3-single-4",
@@ -1706,6 +1609,36 @@
    "stem": "在PowerPoint中，可以使用“动画刷”复制对象的动画效果。 ／ 飞 飞 ／、洁白、瑞空题"
   },
   {
+   "id": "ch3-blank-47",
+   "reason": "缺少参考答案",
+   "stem": "Exc el中，如果要输入当天的日期，则按 组合键。"
+  },
+  {
+   "id": "ch3-blank-79",
+   "reason": "缺少参考答案",
+   "stem": "Exc e l中，公式必须以 开头，然后输入表达式，否则Exc e l会将公式作为数据处理。"
+  },
+  {
+   "id": "ch3-blank-81",
+   "reason": "缺少参考答案",
+   "stem": "在Excel中，表示绝对引用地址符号的是"
+  },
+  {
+   "id": "ch3-blank-82",
+   "reason": "缺少参考答案",
+   "stem": "Excel中，在单元格输入日期时，两种可使用的年、月、日间隔符是"
+  },
+  {
+   "id": "ch3-blank-85",
+   "reason": "缺少参考答案",
+   "stem": "在Exce l工作表的单元格E5中有公式“＝E3十$E$2 ”，删除第D列后，则D5单元格中的公式 为"
+  },
+  {
+   "id": "ch3-blank-86",
+   "reason": "缺少参考答案",
+   "stem": "在Exc el工作表的单元格C5中有公式“＝$ B3 +C2 ”，将C5单元格的公式复制到D7单元格内，则 D7单元格内"
+  },
+  {
    "id": "ch3-blank-98",
    "reason": "缺少参考答案",
    "stem": "在PowerPoint中，隐藏幻灯片可以在 选项卡中进行操作。"
@@ -1876,6 +1809,11 @@
    "stem": "谷歌是著名搜索引擎之 每个人只能有一个E-mail账号。 ("
   },
   {
+   "id": "ch4-blank-27",
+   "reason": "缺少参考答案",
+   "stem": "在HTML语言中， 标记可以强制文本换行。"
+  },
+  {
    "id": "ch5-single-5",
    "reason": "存在空选项",
    "stem": "下列硬件设备中，（"
@@ -1956,6 +1894,11 @@
    "stem": "图像都是由一些排成行列的像素组成的，通常称位图或点阵图。、学四、填空题"
   },
   {
+   "id": "ch5-blank-21",
+   "reason": "缺少参考答案",
+   "stem": "王凯同学报名参加了网上配乐朗诵公益活动，需要自己录制上传一段数字声音。 (1）为防止失真，王凯知道在设置采样频率时，必须"
+  },
+  {
    "id": "ch6-single-23",
    "reason": "选项数异常(5)",
    "stem": "威胁信息安全的因素有很多，一般不包括"
@@ -1999,21 +1942,6 @@
    "id": "ch6-multi-1",
    "reason": "题干为空",
    "stem": ""
-  },
-  {
-   "id": "ch6-blank-10",
-   "reason": "缺少参考答案",
-   "stem": "对个人计算机进行病毒防范，最直接的方法就是"
-  },
-  {
-   "id": "ch6-blank-14",
-   "reason": "缺少参考答案",
-   "stem": "发送方要发送的消息称为明文，明文被变换成看似无意义的随机消息，这个随机消息称 为"
-  },
-  {
-   "id": "ch6-blank-18",
-   "reason": "缺少参考答案",
-   "stem": "是信息安全与保密的核心和关键。"
   },
   {
    "id": "ch6-comprehensive-3",

@@ -46,6 +46,8 @@ interface AppState {
   recordAnswer: (qid: string, correct: boolean) => void;
   addWrong: (qid: string) => void;
   removeWrong: (qid: string) => void;
+  /** 申诉：把刚判错的一次改正（填空题参考答案来自扫描件，可能有 OCR 误差） */
+  amendAnswer: (qid: string) => void;
   toggleFavorite: (qid: string) => void;
   saveNote: (qid: string, text: string) => void;
   removeNote: (qid: string) => void;
@@ -126,6 +128,26 @@ export const useAppStore = create<AppState>()(
           const next = { ...s.wrongBook };
           delete next[qid];
           return { wrongBook: next };
+        }),
+
+      amendAnswer: (qid) =>
+        set((s) => {
+          const prev = s.progress[qid];
+          const progress =
+            prev && prev.wrong > 0
+              ? {
+                  ...s.progress,
+                  [qid]: {
+                    ...prev,
+                    wrong: prev.wrong - 1,
+                    correct: prev.correct + 1,
+                    streak: prev.streak + 1,
+                  },
+                }
+              : s.progress;
+          const wrongBook = { ...s.wrongBook };
+          delete wrongBook[qid];
+          return { progress, wrongBook };
         }),
 
       toggleFavorite: (qid) =>

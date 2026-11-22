@@ -57,7 +57,7 @@ export default function ResultPage() {
     if (!questions) return [];
     const byType = new Map<string, SheetGroup["items"]>();
     for (const q of questions) {
-      const key = q.type === "subjective" ? "主观题（仅解析）" : KIND_LABEL[q.kind];
+      const key = KIND_LABEL[q.kind];
       if (!byType.has(key)) byType.set(key, []);
       const r = session?.results[q.id];
       byType.get(key)!.push({
@@ -212,7 +212,11 @@ export default function ResultPage() {
                       <p className="num mt-1.5 text-[11.5px] font-bold">
                         <span className="font-semibold text-ink-3">正确答案 </span>
                         <span className="text-green">
-                          {q.answer.join(" ") || q.answerText || "—"}
+                          {q.answer.length
+                            ? q.answer.join(" ")
+                            : q.answerText
+                              ? q.answerText.slice(0, 60) + (q.answerText.length > 60 ? "…" : "")
+                              : "—"}
                         </span>
                         {mine.length ? (
                           <>
@@ -221,7 +225,7 @@ export default function ResultPage() {
                           </>
                         ) : null}
                       </p>
-                      {q.analysis ? (
+                      {q.analysis && q.analysis.trim() !== (q.answerText ?? "").trim() ? (
                         <p className="mt-1.5 text-[12.5px] leading-[1.8] text-ink-2">
                           {q.analysis}
                         </p>

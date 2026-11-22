@@ -45,7 +45,15 @@ export default function FavoritesPage() {
               <li key={q.id}>
                 <QuestionCard
                   q={q}
-                  badge={<span className="num text-[10.5px] text-green">答案 {q.answer.join(" ")}</span>}
+                  badge={
+                    <span className="num text-[10.5px] text-green">
+                      答案{" "}
+                      {q.answer.length
+                        ? q.answer.join(" ")
+                        : (q.answerText ?? "").slice(0, 14) +
+                          ((q.answerText ?? "").length > 14 ? "…" : "")}
+                    </span>
+                  }
                   right={
                     <FavoriteToggle active onClick={() => toggleFavorite(q.id)} />
                   }

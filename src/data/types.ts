@@ -82,3 +82,18 @@ export const KIND_LABEL: Record<QuestionKind, string> = {
 };
 
 export const GRADABLE: QuestionKind[] = ["single", "multi", "judge"];
+
+/**
+ * 作答方式。原书里只有选择/判断能自动判分，填空与主观题此前在站内"做不了"。
+ * 现在按题型给出三种作答路径，让全部 1942 题都能练：
+ *   choice —— 选择/判断，点选项自动判分
+ *   blank  —— 填空，输入后与参考答案比对
+ *   self   —— 简答/分析/操作/综合，揭示参考答案后自评
+ */
+export type AnswerMode = "choice" | "blank" | "self";
+
+export function answerModeOf(q: Question): AnswerMode {
+  if (q.options.length >= 2 && q.answer.length > 0) return "choice";
+  if (q.kind === "blank" && (q.answerText ?? "").trim()) return "blank";
+  return "self";
+}

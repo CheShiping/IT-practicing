@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="100%" role="img" aria-labelledby="t d">
   <title id="t">计基速刷 · 江西专升本计算机题库</title>
-  <desc id="d">天蓝底色的封面：产品名「计基速刷」，副标题「计算机（信息技术）· 1934 道原书题」，一枚奶油黄按钮写着站点地址，右侧是一叠题卡与一支铅笔的线条插画。</desc>
+  <desc id="d">天蓝底色的封面：产品名「计基速刷」，副标题「计算机（信息技术）· 1942 道原书题」，一枚奶油黄按钮写着站点地址，右侧是一叠题卡与一支铅笔的线条插画。</desc>
 
   <defs>
     <pattern id="chk" width="28" height="28" patternUnits="userSpaceOnUse">
@@ -23,7 +23,7 @@
         font-size="104" font-weight="800" letter-spacing="-3" fill="#ffffff">计基速刷</text>
 
   <text x="72" y="246" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="25" font-weight="700" fill="#ffffff">计算机（信息技术）· 1934 道原书题 · 每题带答案与解析</text>
+        font-size="25" font-weight="700" fill="#ffffff">计算机（信息技术）· 1942 道原书题 · 每题带答案与解析</text>
 
   <!-- 地址按钮 -->
   <rect x="72" y="272" width="424" height="54" rx="14" fill="#fdce02"/>
