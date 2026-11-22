@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Gate (typecheck + lint)
+        run: npm run typecheck && npm run lint
+
       - name: Compute base path
         run: |
           if [ "${{ github.event.repository.name }}" = "${{ github.event.repository.owner }}.github.io" ]; then

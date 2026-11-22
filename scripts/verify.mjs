@@ -5,17 +5,63 @@
  * 同时收集 console 错误与未捕获异常。
  */
 import { chromium } from "playwright";
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 const BASE = process.env.BASE_URL || "http://localhost:4173";
 const OUT = "build/verify";
 mkdirSync(OUT, { recursive: true });
 
 const errors = [];
-const EXEC =
-  process.env.CHROME_PATH ||
-  "C:/Users/Shiping/AppData/Local/ms-playwright/chromium-1234/chrome-win64/chrome.exe";
-const browser = await chromium.launch({ executablePath: EXEC });
+
+// 浏览器解析顺序：CHROME_PATH → Playwright 自带版本 → 缓存里已有的任意 chromium。
+// 不再写死具体版本号：Playwright 升级后会换 revision，写死必然崩。
+function cachedChromium() {
+  const base =
+    process.env.PLAYWRIGHT_BROWSERS_PATH ||
+    (process.platform === "win32"
+      ? join(process.env.LOCALAPPDATA || join(homedir(), "AppData", "Local"), "ms-playwright")
+      : process.platform === "darwin"
+        ? join(homedir(), "Library", "Caches", "ms-playwright")
+        : join(homedir(), ".cache", "ms-playwright"));
+  if (!existsSync(base)) return [];
+  const rel =
+    process.platform === "win32"
+      ? ["chrome-win64", "chrome.exe"]
+      : process.platform === "darwin"
+        ? ["chrome-mac", "Chromium.app", "Contents", "MacOS", "Chromium"]
+        : ["chrome-linux", "chrome"];
+  return readdirSync(base)
+    .filter((d) => /^chromium-\d+$/.test(d))
+    .sort((a, b) => Number(b.split("-")[1]) - Number(a.split("-")[1]))
+    .map((d) => join(base, d, ...rel))
+    .filter((p) => existsSync(p));
+}
+
+const attempts = [];
+if (process.env.CHROME_PATH) attempts.push({ path: process.env.CHROME_PATH, label: "CHROME_PATH" });
+attempts.push({ path: null, label: "Playwright 自带版本" });
+for (const p of cachedChromium()) attempts.push({ path: p, label: "缓存兜底" });
+
+let browser;
+let lastError;
+for (const { path, label } of attempts) {
+  try {
+    browser = await chromium.launch(path ? { executablePath: path } : {});
+    console.log(`浏览器：${label}${path ? `（${path}）` : ""}`);
+    break;
+  } catch (e) {
+    lastError = e;
+  }
+}
+if (!browser) {
+  console.error(
+    `浏览器启动失败：${lastError?.message}\n` +
+      `请运行 npx playwright install chromium，或用 CHROME_PATH 指向本机 Chrome。`,
+  );
+  process.exit(1);
+}
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 
 // 静态托管下 /quiz/:id 这类动态路由由 404.html 空壳兜底，404 状态码是预期行为，不算错误

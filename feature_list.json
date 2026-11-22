@@ -1,0 +1,28 @@
+{
+  "updatedAt": "2026-11-22",
+  "note": "只允许一个 active 功能；status 取值 todo | active | done | blocked。evidence 必须是可复核的东西（命令输出、截图、commit），不是形容词。",
+  "features": [
+    {
+      "id": "quiz-all-types",
+      "title": "全部题型可练（填空与主观题）",
+      "status": "done",
+      "acceptance": [
+        "填空题输入答案后能按归一化规则判分并显示正误",
+        "主观题可揭示参考答案后自评，且不计入客观题得分"
+      ],
+      "evidence": ["commit 29a9175", "build/verify/03-quiz.png"]
+    },
+    {
+      "id": "harness-gate",
+      "title": "一条命令门禁 + 推送回执",
+      "status": "active",
+      "acceptance": [
+        "npm run check 一条命令跑完 typecheck / lint / build / 浏览器主流程",
+        "浏览器段能自动起停 4180 类 Pages 服务器，不依赖手动开终端",
+        "CI 在 build 之前执行 typecheck 与 lint，不通过则不部署",
+        "推送后在 progress.md 留下 CI run 回执（headSha + conclusion）"
+      ],
+      "evidence": []
+    }
+  ]
+}
