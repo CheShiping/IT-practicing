@@ -34,7 +34,8 @@ export default function StatsPage() {
     return days;
   }, [records]);
 
-  const maxDaily = Math.max(1, ...daily.map((d) => d.count));
+  const peak = Math.max(0, ...daily.map((d) => d.count));
+  const maxDaily = Math.max(1, peak);
 
   const unitStats = useMemo(() => {
     if (!units) return [];
@@ -80,27 +81,38 @@ export default function StatsPage() {
 
         {/* 近 14 天 */}
         <div className="mt-8">
-          <SectionHead right={`单日最高 ${maxDaily} 题`}>近 14 天</SectionHead>
-          <div className="flex h-[104px] items-end gap-[3px] border-b border-rule">
+          <SectionHead right={`单日最高 ${peak} 题`}>近 14 天</SectionHead>
+          {peak === 0 ? (
+            <div className="flex h-[96px] items-center justify-center border-b border-ink">
+              <p className="text-[12px] text-ink-3">这 14 天还没有答题记录</p>
+            </div>
+          ) : (
+          <div className="flex h-[96px] items-end gap-[3px] border-b border-ink">
             {daily.map((d) => (
-              <div key={d.label} className="flex min-w-0 flex-1 flex-col items-center justify-end gap-1">
-                <span className="num truncate text-[9.5px] leading-none text-ink-3">
-                  {d.count || ""}
+              <div
+                key={d.label}
+                className="group flex min-w-0 flex-1 flex-col items-center justify-end"
+                title={`${d.label}：${d.count} 题`}
+              >
+                <span
+                  className={`num mb-0.5 text-[9.5px] leading-none ${
+                    d.count ? "text-brand" : "text-transparent"
+                  }`}
+                >
+                  {d.count}
                 </span>
                 <div
                   className={`w-full ${d.count ? "bg-brand" : "bg-paper-3"}`}
-                  style={{ height: `${Math.max(2, (d.count / maxDaily) * 74)}px` }}
-                  title={`${d.label}：${d.count} 题`}
+                  style={{ height: `${d.count ? Math.max(4, (d.count / maxDaily) * 68) : 3}px` }}
                 />
               </div>
             ))}
           </div>
+          )}
           <div className="num mt-1 flex justify-between text-[9.5px] text-ink-3">
-            {daily.map((d, i) => (
-              <span key={d.label} className="min-w-0 flex-1 truncate text-center">
-                {i % 3 === 0 || i === daily.length - 1 ? d.label : ""}
-              </span>
-            ))}
+            <span>{daily[0].label}</span>
+            <span>{daily[Math.floor(daily.length / 2)].label}</span>
+            <span>{daily[daily.length - 1].label}</span>
           </div>
         </div>
 

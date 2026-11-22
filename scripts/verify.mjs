@@ -18,8 +18,18 @@ const EXEC =
 const browser = await chromium.launch({ executablePath: EXEC });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 
+// 静态托管下 /quiz/:id 这类动态路由由 404.html 空壳兜底，404 状态码是预期行为，不算错误
+const isDynamicRouteFallback = (url) => /\/quiz\/[^/]+(\?.*)?$/.test(url);
+page.on("requestfailed", (r) => errors.push(`[net] ${r.url()}`));
+page.on("response", (r) => {
+  if (r.status() >= 400 && !isDynamicRouteFallback(r.url())) {
+    errors.push(`[${r.status()}] ${r.url()}`);
+  }
+});
 page.on("console", (m) => {
-  if (m.type() === "error") errors.push(`[console] ${m.text()}`);
+  if (m.type() === "error" && !/status of 404/.test(m.text())) {
+    errors.push(`[console] ${m.text()}`);
+  }
 });
 page.on("pageerror", (e) => errors.push(`[pageerror] ${e.message}`));
 
