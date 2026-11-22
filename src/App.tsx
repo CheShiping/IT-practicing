@@ -14,6 +14,7 @@ import FavoritesPage, { NotesPage } from "@/features/favorites/FavoritesPage";
 import StatsPage from "@/features/stats/StatsPage";
 import ProfilePage from "@/features/profile/ProfilePage";
 import { useAppStore } from "@/store/useAppStore";
+import { loadLegacyMap } from "@/data/loader";
 
 function NotFound() {
   return (
@@ -40,7 +41,18 @@ export function App() {
 
   useEffect(() => {
     // 首帧保持与服务端一致，挂载后再读本地数据
-    void useAppStore.persist.rehydrate();
+    void (async () => {
+      await useAppStore.persist.rehydrate();
+      // Office 拆板块后题号重排：把旧 id 上的进度/错题/笔记/收藏搬过来，只搬一次
+      if (useAppStore.getState().legacyMerged) return;
+      try {
+        const map = await loadLegacyMap();
+        if (Object.keys(map).length) useAppStore.getState().migrateIds(map);
+        useAppStore.getState().markLegacyMerged();
+      } catch {
+        // 映射文件缺失时不动本地数据
+      }
+    })();
   }, []);
 
   // 「我的」里的显示设置必须真实作用于界面

@@ -196,6 +196,54 @@ await step("我的页可用", async () => {
   await page.screenshot({ path: `${OUT}/07-profile.png`, fullPage: true });
 });
 
+await step("Office 章拆成 Word / Excel / PowerPoint 三个板块", async () => {
+  await page.goto(`${BASE}/library`, { waitUntil: "networkidle" });
+  await page.locator("button", { hasText: "Office 办公软件" }).first().click();
+  for (const t of ["Word 文字处理", "Excel 电子表格", "PowerPoint 演示文稿"]) {
+    await page.waitForSelector(`text=${t}`, { timeout: 10000 });
+  }
+  // 三个板块的题量之和必须等于该章总量（拆板块不能丢题）
+  const check = await page.evaluate(async () => {
+    const { units } = await fetch("./data/units.json").then((r) => r.json());
+    const ch3 = units.filter((u) => u.chapterId === "ch3");
+    const sum = (list) => list.reduce((a, u) => a + u.questionCount, 0);
+    const mods = {};
+    for (const u of ch3) mods[u.moduleId || "-"] = (mods[u.moduleId || "-"] || 0) + u.questionCount;
+    return { total: sum(ch3), mods };
+  });
+  const parts = Object.values(check.mods).reduce((a, b) => a + b, 0);
+  if (parts !== check.total) throw new Error(`板块题量和 ${parts} ≠ 章总量 ${check.total}`);
+  await page.screenshot({ path: `${OUT}/07b-library-office.png`, fullPage: true });
+});
+
+await step("选题浮层按板块过滤题量", async () => {
+  await page.goto(BASE, { waitUntil: "networkidle" });
+  await page.click("text=开始刷题");
+  await page.waitForSelector("text=选题", { timeout: 15000 });
+  await page.locator("button", { hasText: "Office 办公软件" }).first().click();
+  await page.waitForSelector("text=二、板块", { timeout: 10000 });
+  await page.locator("button", { hasText: "Word 文字处理" }).first().click();
+  const expectWord = await page.evaluate(async () => {
+    const { units } = await fetch("./data/units.json").then((r) => r.json());
+    return units
+      .filter((u) => u.chapterId === "ch3" && u.moduleId === "w")
+      .reduce((a, u) => a + u.questionCount, 0);
+  });
+  const sheetText = await page.textContent("body");
+  if (!new RegExp(`本次\\s*${expectWord}\\s*题`).test(sheetText)) {
+    throw new Error(`Word 板块题量应为 ${expectWord}：` + sheetText.slice(0, 160));
+  }
+  await page.screenshot({ path: `${OUT}/07c-sheet-module.png` });
+  await page.getByRole("button", { name: "开始", exact: true }).click();
+  await page.waitForSelector("text=提交答案", { timeout: 45000 });
+  const title = await page.textContent("body");
+  if (!title.includes("Word 文字处理")) throw new Error("练习标题没带板块名：" + title.slice(0, 120));
+  if (!new RegExp(`/\\s*${expectWord}\\s*题`).test(title)) {
+    throw new Error(`本次练习题量应为 ${expectWord}`);
+  }
+  await page.screenshot({ path: `${OUT}/07d-quiz-word.png`, fullPage: true });
+});
+
 await step("桌面端布局", async () => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(BASE, { waitUntil: "networkidle" });

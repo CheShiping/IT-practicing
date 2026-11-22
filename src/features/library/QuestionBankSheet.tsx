@@ -4,13 +4,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { cn } from "cn";
 import { useUnits } from "@/data/hooks";
 import { loadChapter } from "@/data/loader";
-import type { Unit } from "@/data/types";
 import { useAppStore } from "@/store/useAppStore";
 
 const YEARS = [2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013];
 
 /**
- * 选题：像从书的扉页翻到目录——先选专题，再选题型，最后定练习形式。
+ * 选题：像从书的扉页翻到目录——先选专题，再选板块（只有 Office 分板块），
+ * 再选题型，最后定练习形式。
  */
 export function QuestionBankSheet({
   open,
@@ -28,6 +28,7 @@ export function QuestionBankSheet({
   const [tab, setTab] = useState<"subject" | "years">(initialTab);
   const [mode, setMode] = useState<"quiz" | "recite">(initialMode);
   const [chapterId, setChapterId] = useState<string | null>(null);
+  const [moduleId, setModuleId] = useState<string | null>(null);
   const [kindKeys, setKindKeys] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
 
@@ -41,18 +42,49 @@ export function QuestionBankSheet({
     return [...map.values()];
   }, [units]);
 
-  const kinds = useMemo(
+  const chapterUnits = useMemo(
     () => (units ?? []).filter((u) => u.chapterId === chapterId),
     [units, chapterId],
   );
 
-  const pickedCount = useMemo(() => {
-    const picked = kinds.filter((u) => !kindKeys.length || kindKeys.includes(u.kind));
-    return picked.reduce((a, u) => a + u.questionCount, 0);
-  }, [kinds, kindKeys]);
+  const modules = useMemo(() => {
+    const map = new Map<string, { id: string; title: string; count: number }>();
+    for (const u of chapterUnits) {
+      if (!u.moduleId) continue;
+      const cur = map.get(u.moduleId);
+      if (cur) cur.count += u.questionCount;
+      else map.set(u.moduleId, { id: u.moduleId, title: u.moduleTitle ?? u.moduleId, count: u.questionCount });
+    }
+    return [...map.values()];
+  }, [chapterUnits]);
+
+  // 选了板块就只看该板块的小节
+  const scoped = useMemo(
+    () => (moduleId ? chapterUnits.filter((u) => u.moduleId === moduleId) : chapterUnits),
+    [chapterUnits, moduleId],
+  );
+
+  // 同一题型在不同板块各有一个小节，这里按题型合并显示
+  const kinds = useMemo(() => {
+    const map = new Map<string, { kind: string; title: string; count: number }>();
+    for (const u of scoped) {
+      const cur = map.get(u.kind);
+      if (cur) cur.count += u.questionCount;
+      else map.set(u.kind, { kind: u.kind, title: u.title, count: u.questionCount });
+    }
+    return [...map.values()];
+  }, [scoped]);
+
+  const picked = useMemo(
+    () => scoped.filter((u) => !kindKeys.length || kindKeys.includes(u.kind)),
+    [scoped, kindKeys],
+  );
+
+  const pickedCount = picked.reduce((a, u) => a + u.questionCount, 0);
 
   function reset() {
     setChapterId(null);
+    setModuleId(null);
     setKindKeys([]);
     setMode("quiz");
   }
@@ -61,9 +93,6 @@ export function QuestionBankSheet({
     if (!chapterId || busy) return;
     setBusy(true);
     try {
-      const picked: Unit[] = (units ?? []).filter(
-        (u) => u.chapterId === chapterId && (!kindKeys.length || kindKeys.includes(u.kind)),
-      );
       const ids = picked.map((u) => u.id);
       const chapter = await loadChapter(chapterId);
       const pool = chapter.questions.filter((q) => ids.includes(q.sectionId));
@@ -74,9 +103,13 @@ export function QuestionBankSheet({
         return;
       }
       const id = `s_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
-      const title = `${chapters.find((c) => c.id === chapterId)?.title ?? ""} · ${
-        mode === "quiz" ? "刷题" : "背诵"
-      }`;
+      const title = [
+        chapters.find((c) => c.id === chapterId)?.title ?? "",
+        modules.find((m) => m.id === moduleId)?.title,
+        mode === "quiz" ? "刷题" : "背诵",
+      ]
+        .filter(Boolean)
+        .join(" · ");
       useAppStore.getState().startSession({
         id,
         unitIds: ids,
@@ -96,6 +129,11 @@ export function QuestionBankSheet({
       setBusy(false);
     }
   }
+
+  // 步骤号：专题 →（板块）→ 题型 → 形式
+  const stepModule = modules.length > 1;
+  const nKinds = stepModule ? "三" : "二";
+  const nForm = stepModule ? "四" : "三";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -147,6 +185,7 @@ export function QuestionBankSheet({
                       type="button"
                       onClick={() => {
                         setChapterId(c.id);
+                        setModuleId(null);
                         setKindKeys([]);
                       }}
                       aria-pressed={chapterId === c.id}
@@ -176,14 +215,48 @@ export function QuestionBankSheet({
                 ))}
               </ul>
 
+              {stepModule ? (
+                <>
+                  <p className="label mt-5">二、板块</p>
+                  <ul className="mt-1.5 flex flex-wrap gap-1.5">
+                    {[{ id: "", title: "全部", count: chapterUnits.reduce((a, u) => a + u.questionCount, 0) }, ...modules].map(
+                      (m) => {
+                        const active = (m.id || null) === moduleId;
+                        return (
+                          <li key={m.id || "all"}>
+                            <button
+                              type="button"
+                              aria-pressed={active}
+                              onClick={() => {
+                                setModuleId(m.id || null);
+                                setKindKeys([]);
+                              }}
+                              className={cn(
+                                "rounded-[10px] border px-2.5 py-1.5 text-[12.5px] transition-colors",
+                                active
+                                  ? "border-azure bg-[#e9f6ff] font-semibold text-ink"
+                                  : "border-shell-2 bg-paper text-ink-2 hover:bg-shell",
+                              )}
+                            >
+                              {m.title}
+                              <span className="num ml-1 text-ink-3">{m.count}</span>
+                            </button>
+                          </li>
+                        );
+                      },
+                    )}
+                  </ul>
+                </>
+              ) : null}
+
               {chapterId ? (
                 <>
-                  <p className="label mt-5">二、题型</p>
+                  <p className="label mt-5">{nKinds}、题型</p>
                   <ul className="mt-1.5 flex flex-wrap gap-1.5">
                     {kinds.map((u) => {
                       const active = kindKeys.length === 0 || kindKeys.includes(u.kind);
                       return (
-                        <li key={u.id}>
+                        <li key={u.kind}>
                           <button
                             type="button"
                             aria-pressed={active}
@@ -203,19 +276,19 @@ export function QuestionBankSheet({
                             )}
                           >
                             {u.title}
-                            <span className="num ml-1 text-ink-3">{u.questionCount}</span>
+                            <span className="num ml-1 text-ink-3">{u.count}</span>
                           </button>
                         </li>
                       );
                     })}
                   </ul>
                   <p className="mt-1.5 text-[10.5px] leading-5 text-ink-3">
-                    不选则练该专题全部题型；划线的是已排除。
+                    不选则练当前范围的全部题型；划线的是已排除。
                   </p>
                 </>
               ) : null}
 
-              <p className="label mt-5">{chapterId ? "三" : "二"}、形式</p>
+              <p className="label mt-5">{chapterId ? nForm : "二"}、形式</p>
               <div className="mt-1.5 flex overflow-hidden rounded-[10px] border border-shell-2">
                 {(
                   [

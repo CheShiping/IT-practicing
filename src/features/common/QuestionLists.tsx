@@ -7,7 +7,7 @@ import { relativeTime } from "@/lib/format";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
 
-/** 题目 id 形如 ch3-single-123，可直接定位到所属章节 */
+/** 题目 id 形如 ch3-w-single-123（无板块时为 ch1-single-123），首段即章节 */
 export function chapterOf(id: string) {
   return id.split("-")[0];
 }

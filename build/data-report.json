@@ -4,6 +4,7 @@
    "chapterId": "ch1",
    "sectionId": "ch1-single",
    "title": "单项选择题",
+   "moduleId": null,
    "questions": 181,
    "answers": 207,
    "ok": 199,
@@ -16,6 +17,7 @@
    "chapterId": "ch1",
    "sectionId": "ch1-multi",
    "title": "多项选择题",
+   "moduleId": null,
    "questions": 34,
    "answers": 36,
    "ok": 36,
@@ -28,6 +30,7 @@
    "chapterId": "ch1",
    "sectionId": "ch1-judge",
    "title": "判断题",
+   "moduleId": null,
    "questions": 46,
    "answers": 50,
    "ok": 46,
@@ -40,6 +43,7 @@
    "chapterId": "ch1",
    "sectionId": "ch1-blank",
    "title": "填空题",
+   "moduleId": null,
    "questions": 66,
    "answers": 0,
    "ok": 66,
@@ -52,6 +56,7 @@
    "chapterId": "ch1",
    "sectionId": "ch1-short",
    "title": "简答题",
+   "moduleId": null,
    "questions": 8,
    "answers": 8,
    "ok": 8,
@@ -64,6 +69,7 @@
    "chapterId": "ch1",
    "sectionId": "ch1-comprehensive",
    "title": "综合应用题",
+   "moduleId": null,
    "questions": 5,
    "answers": 5,
    "ok": 5,
@@ -76,6 +82,7 @@
    "chapterId": "ch2",
    "sectionId": "ch2-single",
    "title": "单项选择题",
+   "moduleId": null,
    "questions": 192,
    "answers": 208,
    "ok": 206,
@@ -88,6 +95,7 @@
    "chapterId": "ch2",
    "sectionId": "ch2-multi",
    "title": "多项选择题",
+   "moduleId": null,
    "questions": 45,
    "answers": 45,
    "ok": 44,
@@ -100,6 +108,7 @@
    "chapterId": "ch2",
    "sectionId": "ch2-judge",
    "title": "判断题",
+   "moduleId": null,
    "questions": 47,
    "answers": 53,
    "ok": 47,
@@ -112,6 +121,7 @@
    "chapterId": "ch2",
    "sectionId": "ch2-blank",
    "title": "填空题",
+   "moduleId": null,
    "questions": 52,
    "answers": 0,
    "ok": 52,
@@ -124,6 +134,7 @@
    "chapterId": "ch2",
    "sectionId": "ch2-short",
    "title": "简答题",
+   "moduleId": null,
    "questions": 9,
    "answers": 9,
    "ok": 9,
@@ -136,6 +147,7 @@
    "chapterId": "ch2",
    "sectionId": "ch2-comprehensive",
    "title": "综合应用题",
+   "moduleId": null,
    "questions": 3,
    "answers": 3,
    "ok": 3,
@@ -146,59 +158,168 @@
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-single",
+   "sectionId": "ch3-w-single",
    "title": "单项选择题",
-   "questions": 416,
+   "moduleId": "w",
+   "questions": 146,
    "answers": 463,
-   "ok": 456,
-   "noAnswer": 11,
+   "ok": 162,
+   "noAnswer": 3,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 51
+   "excluded": 19
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-multi",
+   "sectionId": "ch3-e-single",
+   "title": "单项选择题",
+   "moduleId": "e",
+   "questions": 168,
+   "answers": 463,
+   "ok": 188,
+   "noAnswer": 6,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 26
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-p-single",
+   "title": "单项选择题",
+   "moduleId": "p",
+   "questions": 102,
+   "answers": 463,
+   "ok": 106,
+   "noAnswer": 2,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 6
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-w-multi",
    "title": "多项选择题",
-   "questions": 73,
+   "moduleId": "w",
+   "questions": 27,
    "answers": 80,
-   "ok": 76,
+   "ok": 28,
+   "noAnswer": 2,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 3
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-e-multi",
+   "title": "多项选择题",
+   "moduleId": "e",
+   "questions": 28,
+   "answers": 80,
+   "ok": 29,
+   "noAnswer": 1,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 2
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-p-multi",
+   "title": "多项选择题",
+   "moduleId": "p",
+   "questions": 18,
+   "answers": 80,
+   "ok": 19,
+   "noAnswer": 1,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 2
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-w-judge",
+   "title": "判断题",
+   "moduleId": "w",
+   "questions": 30,
+   "answers": 78,
+   "ok": 30,
+   "noAnswer": 5,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 5
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-e-judge",
+   "title": "判断题",
+   "moduleId": "e",
+   "questions": 23,
+   "answers": 78,
+   "ok": 23,
+   "noAnswer": 3,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 3
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-p-judge",
+   "title": "判断题",
+   "moduleId": "p",
+   "questions": 14,
+   "answers": 78,
+   "ok": 14,
    "noAnswer": 4,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 7
+   "excluded": 4
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-judge",
-   "title": "判断题",
-   "questions": 67,
-   "answers": 78,
-   "ok": 67,
-   "noAnswer": 12,
-   "badOption": 0,
-   "suspect": 0,
-   "excluded": 12
-  },
-  {
-   "chapterId": "ch3",
-   "sectionId": "ch3-blank",
+   "sectionId": "ch3-w-blank",
    "title": "填空题",
-   "questions": 106,
+   "moduleId": "w",
+   "questions": 37,
    "answers": 0,
-   "ok": 106,
-   "noAnswer": 9,
+   "ok": 37,
+   "noAnswer": 0,
    "badOption": 0,
    "suspect": 0,
-   "excluded": 9
+   "excluded": 0
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-short",
+   "sectionId": "ch3-e-blank",
+   "title": "填空题",
+   "moduleId": "e",
+   "questions": 48,
+   "answers": 0,
+   "ok": 48,
+   "noAnswer": 6,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 6
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-p-blank",
+   "title": "填空题",
+   "moduleId": "p",
+   "questions": 21,
+   "answers": 0,
+   "ok": 21,
+   "noAnswer": 3,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 3
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-w-short",
    "title": "简答题",
-   "questions": 4,
+   "moduleId": "w",
+   "questions": 1,
    "answers": 4,
-   "ok": 4,
+   "ok": 1,
    "noAnswer": 0,
    "badOption": 0,
    "suspect": 0,
@@ -206,11 +327,38 @@
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-analysis",
+   "sectionId": "ch3-e-short",
+   "title": "简答题",
+   "moduleId": "e",
+   "questions": 2,
+   "answers": 4,
+   "ok": 2,
+   "noAnswer": 0,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 0
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-p-short",
+   "title": "简答题",
+   "moduleId": "p",
+   "questions": 1,
+   "answers": 4,
+   "ok": 1,
+   "noAnswer": 0,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 0
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-w-analysis",
    "title": "分析题",
-   "questions": 12,
+   "moduleId": "w",
+   "questions": 6,
    "answers": 12,
-   "ok": 12,
+   "ok": 6,
    "noAnswer": 0,
    "badOption": 0,
    "suspect": 0,
@@ -218,8 +366,22 @@
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-operation",
+   "sectionId": "ch3-e-analysis",
+   "title": "分析题",
+   "moduleId": "e",
+   "questions": 6,
+   "answers": 12,
+   "ok": 6,
+   "noAnswer": 0,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 0
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-w-operation",
    "title": "操作题",
+   "moduleId": "w",
    "questions": 5,
    "answers": 5,
    "ok": 5,
@@ -230,20 +392,48 @@
   },
   {
    "chapterId": "ch3",
-   "sectionId": "ch3-comprehensive",
+   "sectionId": "ch3-w-comprehensive",
    "title": "综合应用题",
-   "questions": 40,
+   "moduleId": "w",
+   "questions": 13,
    "answers": 10,
-   "ok": 40,
+   "ok": 13,
+   "noAnswer": 0,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 0
+  },
+  {
+   "chapterId": "ch3",
+   "sectionId": "ch3-e-comprehensive",
+   "title": "综合应用题",
+   "moduleId": "e",
+   "questions": 15,
+   "answers": 10,
+   "ok": 15,
    "noAnswer": 1,
    "badOption": 0,
    "suspect": 0,
    "excluded": 1
   },
   {
+   "chapterId": "ch3",
+   "sectionId": "ch3-p-comprehensive",
+   "title": "综合应用题",
+   "moduleId": "p",
+   "questions": 12,
+   "answers": 10,
+   "ok": 12,
+   "noAnswer": 0,
+   "badOption": 0,
+   "suspect": 0,
+   "excluded": 0
+  },
+  {
    "chapterId": "ch4",
    "sectionId": "ch4-single",
    "title": "单项选择题",
+   "moduleId": null,
    "questions": 138,
    "answers": 159,
    "ok": 150,
@@ -256,6 +446,7 @@
    "chapterId": "ch4",
    "sectionId": "ch4-multi",
    "title": "多项选择题",
+   "moduleId": null,
    "questions": 19,
    "answers": 20,
    "ok": 19,
@@ -268,6 +459,7 @@
    "chapterId": "ch4",
    "sectionId": "ch4-judge",
    "title": "判断题",
+   "moduleId": null,
    "questions": 27,
    "answers": 34,
    "ok": 27,
@@ -280,6 +472,7 @@
    "chapterId": "ch4",
    "sectionId": "ch4-blank",
    "title": "填空题",
+   "moduleId": null,
    "questions": 43,
    "answers": 0,
    "ok": 43,
@@ -292,6 +485,7 @@
    "chapterId": "ch4",
    "sectionId": "ch4-short",
    "title": "简答题",
+   "moduleId": null,
    "questions": 9,
    "answers": 9,
    "ok": 9,
@@ -304,6 +498,7 @@
    "chapterId": "ch4",
    "sectionId": "ch4-comprehensive",
    "title": "综合应用题",
+   "moduleId": null,
    "questions": 5,
    "answers": 5,
    "ok": 5,
@@ -316,6 +511,7 @@
    "chapterId": "ch5",
    "sectionId": "ch5-single",
    "title": "单项选择题",
+   "moduleId": null,
    "questions": 89,
    "answers": 98,
    "ok": 98,
@@ -328,6 +524,7 @@
    "chapterId": "ch5",
    "sectionId": "ch5-multi",
    "title": "多项选择题",
+   "moduleId": null,
    "questions": 10,
    "answers": 12,
    "ok": 12,
@@ -340,6 +537,7 @@
    "chapterId": "ch5",
    "sectionId": "ch5-judge",
    "title": "判断题",
+   "moduleId": null,
    "questions": 11,
    "answers": 14,
    "ok": 11,
@@ -352,6 +550,7 @@
    "chapterId": "ch5",
    "sectionId": "ch5-blank",
    "title": "填空题",
+   "moduleId": null,
    "questions": 21,
    "answers": 0,
    "ok": 21,
@@ -364,6 +563,7 @@
    "chapterId": "ch5",
    "sectionId": "ch5-short",
    "title": "简答题",
+   "moduleId": null,
    "questions": 6,
    "answers": 6,
    "ok": 6,
@@ -376,6 +576,7 @@
    "chapterId": "ch5",
    "sectionId": "ch5-comprehensive",
    "title": "综合应用题",
+   "moduleId": null,
    "questions": 4,
    "answers": 4,
    "ok": 4,
@@ -388,6 +589,7 @@
    "chapterId": "ch6",
    "sectionId": "ch6-single",
    "title": "单项选择题",
+   "moduleId": null,
    "questions": 45,
    "answers": 53,
    "ok": 53,
@@ -400,6 +602,7 @@
    "chapterId": "ch6",
    "sectionId": "ch6-multi",
    "title": "多项选择题",
+   "moduleId": null,
    "questions": 11,
    "answers": 12,
    "ok": 12,
@@ -412,6 +615,7 @@
    "chapterId": "ch6",
    "sectionId": "ch6-judge",
    "title": "判断题",
+   "moduleId": null,
    "questions": 15,
    "answers": 15,
    "ok": 15,
@@ -424,6 +628,7 @@
    "chapterId": "ch6",
    "sectionId": "ch6-blank",
    "title": "填空题",
+   "moduleId": null,
    "questions": 25,
    "answers": 0,
    "ok": 25,
@@ -436,6 +641,7 @@
    "chapterId": "ch6",
    "sectionId": "ch6-short",
    "title": "简答题",
+   "moduleId": null,
    "questions": 6,
    "answers": 6,
    "ok": 6,
@@ -448,6 +654,7 @@
    "chapterId": "ch6",
    "sectionId": "ch6-comprehensive",
    "title": "综合应用题",
+   "moduleId": null,
    "questions": 0,
    "answers": 0,
    "ok": 0,
@@ -460,6 +667,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-single",
    "title": "单项选择题",
+   "moduleId": null,
    "questions": 16,
    "answers": 16,
    "ok": 16,
@@ -472,6 +680,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-multi",
    "title": "多项选择题",
+   "moduleId": null,
    "questions": 5,
    "answers": 5,
    "ok": 5,
@@ -484,6 +693,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-judge",
    "title": "判断题",
+   "moduleId": null,
    "questions": 9,
    "answers": 9,
    "ok": 9,
@@ -496,6 +706,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-blank",
    "title": "填空题",
+   "moduleId": null,
    "questions": 7,
    "answers": 0,
    "ok": 7,
@@ -508,6 +719,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-short",
    "title": "简答题",
+   "moduleId": null,
    "questions": 5,
    "answers": 5,
    "ok": 5,
@@ -520,6 +732,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-analysis",
    "title": "分析题",
+   "moduleId": null,
    "questions": 5,
    "answers": 5,
    "ok": 5,
@@ -532,6 +745,7 @@
    "chapterId": "ch7",
    "sectionId": "ch7-comprehensive",
    "title": "综合应用题",
+   "moduleId": null,
    "questions": 0,
    "answers": 0,
    "ok": 0,
@@ -659,151 +873,151 @@
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-single-57",
+   "id": "ch3-w-single-book57",
    "reason": "答案与选项不匹配: ''"
   },
   {
-   "id": "ch3-single-93",
+   "id": "ch3-w-single-book93",
    "reason": "答案缺失"
   },
   {
-   "id": "ch3-single-129",
+   "id": "ch3-w-single-book129",
    "reason": "答案与选项不匹配: ''"
   },
   {
-   "id": "ch3-single-144",
+   "id": "ch3-e-single-book144",
    "reason": "答案缺失"
   },
   {
-   "id": "ch3-single-175",
+   "id": "ch3-e-single-book175",
    "reason": "答案与选项不匹配: 'A'"
   },
   {
-   "id": "ch3-single-195",
+   "id": "ch3-e-single-book195",
    "reason": "答案缺失"
   },
   {
-   "id": "ch3-single-199",
+   "id": "ch3-e-single-book199",
    "reason": "答案与选项不匹配: 'D'"
   },
   {
-   "id": "ch3-single-292",
+   "id": "ch3-e-single-book292",
    "reason": "答案缺失"
   },
   {
-   "id": "ch3-single-324",
+   "id": "ch3-e-single-book324",
    "reason": "答案与选项不匹配: ''"
   },
   {
-   "id": "ch3-single-395",
+   "id": "ch3-p-single-book395",
    "reason": "答案缺失"
   },
   {
-   "id": "ch3-single-415",
+   "id": "ch3-p-single-book415",
    "reason": "答案与选项不匹配: 'D'"
   },
   {
-   "id": "ch3-multi-2",
+   "id": "ch3-w-multi-book2",
    "reason": "答案与选项不匹配: 'ABCD'"
   },
   {
-   "id": "ch3-multi-23",
+   "id": "ch3-w-multi-book23",
    "reason": "答案与选项不匹配: 'ACD'"
   },
   {
-   "id": "ch3-multi-54",
+   "id": "ch3-e-multi-book54",
    "reason": "答案与选项不匹配: 'CDE'"
   },
   {
-   "id": "ch3-multi-64",
+   "id": "ch3-p-multi-book64",
    "reason": "答案与选项不匹配: 'AC'"
   },
   {
-   "id": "ch3-judge-5",
+   "id": "ch3-w-judge-book5",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-8",
+   "id": "ch3-w-judge-book8",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-26",
+   "id": "ch3-w-judge-book26",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-28",
+   "id": "ch3-w-judge-book28",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-29",
+   "id": "ch3-w-judge-book29",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-44",
+   "id": "ch3-e-judge-book44",
    "reason": "答案缺失"
   },
   {
-   "id": "ch3-judge-45",
+   "id": "ch3-e-judge-book45",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-53",
+   "id": "ch3-e-judge-book53",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-64",
+   "id": "ch3-p-judge-book64",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-65",
+   "id": "ch3-p-judge-book65",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-66",
+   "id": "ch3-p-judge-book66",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-judge-79",
+   "id": "ch3-p-judge-book79",
    "reason": "判断题答案符号无法识别: ''"
   },
   {
-   "id": "ch3-blank-47",
+   "id": "ch3-e-blank-book47",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-79",
+   "id": "ch3-e-blank-book79",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-81",
+   "id": "ch3-e-blank-book81",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-82",
+   "id": "ch3-e-blank-book82",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-85",
+   "id": "ch3-e-blank-book85",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-86",
+   "id": "ch3-e-blank-book86",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-98",
+   "id": "ch3-p-blank-book98",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-110",
+   "id": "ch3-p-blank-book110",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-blank-114",
+   "id": "ch3-p-blank-book114",
    "reason": "填空题答案缺失"
   },
   {
-   "id": "ch3-comprehensive-8",
+   "id": "ch3-e-comprehensive-book8",
    "reason": "答案缺失"
   },
   {
@@ -1259,402 +1473,402 @@
    "stem": "Windows 7中，双击标题栏可以完成窗口的 的切换。"
   },
   {
-   "id": "ch3-single-4",
+   "id": "ch3-w-single-book4",
    "reason": "选项数异常(8)",
    "stem": "如图31所示的Word文档中，图片的文字环绕方式是 奋斗者号是中因研发的万米载入潜水器，于2016年立项，由极龙号、深海"
   },
   {
-   "id": "ch3-single-33",
+   "id": "ch3-w-single-book33",
    "reason": "选项数异常(7)",
    "stem": "要在Word文档中录入如图35所示的数学公式，应选择的选项卡是 x + n"
   },
   {
-   "id": "ch3-single-41",
+   "id": "ch3-w-single-book41",
    "reason": "选项数异常(18)",
    "stem": "如图3-6所示的Word视图是 关子筒’，控制论创始入羡团委主掌＂＇维纳认为z 倍息是貌的在运应外部世界"
   },
   {
-   "id": "ch3-single-57",
+   "id": "ch3-w-single-book57",
    "reason": "缺少可判分答案",
    "stem": "在编辑完文档后，需要将其关闭，除了可以用退出Word程序的方法来关闭文档外，还可以通过选择 “文件／关闭”命令或按（）键"
   },
   {
-   "id": "ch3-single-63",
+   "id": "ch3-w-single-book63",
    "reason": "存在空选项",
    "stem": "Word文档中，把光标快速移动到文挡开头，应按下（）键。 Up"
   },
   {
-   "id": "ch3-single-79",
+   "id": "ch3-w-single-book79",
    "reason": "选项数异常(5)",
    "stem": "”功能可以每隔一定时间保存一次文档，自动保存以后 ("
   },
   {
-   "id": "ch3-single-82",
+   "id": "ch3-w-single-book82",
    "reason": "存在空选项",
    "stem": "Word中，按下（）组合键，可以实现字符格式的重复操作。"
   },
   {
-   "id": "ch3-single-91",
+   "id": "ch3-w-single-book91",
    "reason": "存在空选项",
    "stem": "Word中与将来在打印机上打印输出的结果最相近的视图是"
   },
   {
-   "id": "ch3-single-93",
+   "id": "ch3-w-single-book93",
    "reason": "缺少可判分答案",
    "stem": "下列（）方法不能立即创建一个新的Word文档。"
   },
   {
-   "id": "ch3-single-97",
+   "id": "ch3-w-single-book97",
    "reason": "存在空选项",
    "stem": "在Word中，打开文档的快捷键是"
   },
   {
-   "id": "ch3-single-119",
+   "id": "ch3-w-single-book119",
    "reason": "存在空选项",
    "stem": "打开Word后，默认的显示方式是（）视图。"
   },
   {
-   "id": "ch3-single-129",
+   "id": "ch3-w-single-book129",
    "reason": "缺少可判分答案",
    "stem": "Word中，有下面几种说法，不正确的是"
   },
   {
-   "id": "ch3-single-131",
+   "id": "ch3-w-single-book131",
    "reason": "选项数异常(5)",
    "stem": "在Word中，下列关于页眉和页脚的叙述中，错误的是"
   },
   {
-   "id": "ch3-single-138",
+   "id": "ch3-w-single-book138",
    "reason": "选项数异常(5)",
    "stem": "Word中，要一次性将文档中的“ Comput e r”替换成“计算机”，打开“查找和替换”对话框，如图38 所示，在“"
   },
   {
-   "id": "ch3-single-144",
-   "reason": "缺少可判分答案",
-   "stem": "下列关于Exce l的基本概念，不正确的是"
-  },
-  {
-   "id": "ch3-single-145",
-   "reason": "存在空选项",
-   "stem": "在Excel中，选择连续区域Al:F50的方法之一是用鼠标单击Al单元格，然后滚动屏幕找到F50 单元格，在单击F50单"
-  },
-  {
-   "id": "ch3-single-171",
-   "reason": "存在空选项",
-   "stem": "若选择了从A5到B7，从C7到£9两个区域，则在Exc el中的表示方法为"
-  },
-  {
-   "id": "ch3-single-175",
-   "reason": "缺少可判分答案",
-   "stem": "在Excel中，Al单元格为文字：程序设计语言－2022版，在A3单元格输入公式“＝ LEFT(Al, 6）”，其结果是"
-  },
-  {
-   "id": "ch3-single-186",
-   "reason": "存在空选项",
-   "stem": "在Excel工作表中，若向单元格中输入“"
-  },
-  {
-   "id": "ch3-single-187",
-   "reason": "选项数异常(11)",
-   "stem": "某电费清单如图3 - 10所示： ..:i A B C D E 1 本月应缴电费"
-  },
-  {
-   "id": "ch3-single-189",
-   "reason": "选项数异常(6)",
-   "stem": "如图3- 11所示，Exc e l工作表中只显示品牌为“比亚迪”的产品的销售数量，应该选择的操作是（)，－一－τ一一〔"
-  },
-  {
-   "id": "ch3-single-191",
-   "reason": "选项数异常(7)",
-   "stem": "某公司所有员工学历水平分布如图3-12所示： 本科 硕士 博士"
-  },
-  {
-   "id": "ch3-single-193",
-   "reason": "选项数异常(5)",
-   "stem": "在如图3-13所示Excel工作表的单元格中计算工资为800元的职工的销售总额，应在C6单元格 中输入计算公式 ( A "
-  },
-  {
-   "id": "ch3-single-195",
-   "reason": "选项数异常(5)",
-   "stem": "统计下列Excel工作表中政治课考试成绩在95分到110分之间（包含95分和110分）的学生人 数，正确的公式是 12－"
-  },
-  {
-   "id": "ch3-single-197",
-   "reason": "存在空选项",
-   "stem": "在Excel中，函数SUM(Al:A4）等价于 +"
-  },
-  {
-   "id": "ch3-single-199",
-   "reason": "缺少可判分答案",
-   "stem": "Exce l中，将电话号码01068330088输入单元格，可以键入 01068330088"
-  },
-  {
-   "id": "ch3-single-214",
-   "reason": "存在空选项",
-   "stem": "在Exce l中，工作表中的行号列标分别表示为 , 3… .."
-  },
-  {
-   "id": "ch3-single-233",
-   "reason": "存在空选项",
-   "stem": "在Excel中，在工作表Sheet3引用工作表Sheet2中的A6单元格，应采用下列（）表示方式。"
-  },
-  {
-   "id": "ch3-single-240",
-   "reason": "存在空选项",
-   "stem": "在Exce l中，下列运算符中优先级最高的是 < = +"
-  },
-  {
-   "id": "ch3-single-245",
-   "reason": "选项数异常(5)",
-   "stem": "在Exce l中有一个数据非常多的成绩表，从第二页到最后均不能看到每页最上面的行表头，应通 过（"
-  },
-  {
-   "id": "ch3-single-253",
-   "reason": "存在空选项",
-   "stem": "在Exce l中，若单元格Cl中公式为＝Al ＋凹，将其移动到E5单元格，则E5中的公式是 ( )"
-  },
-  {
-   "id": "ch3-single-257",
-   "reason": "存在空选项",
-   "stem": "在Excel单元格中进行文字处理时，强制换行的方法是在需要换行的位置按（）键。"
-  },
-  {
-   "id": "ch3-single-258",
-   "reason": "存在空选项",
-   "stem": "在Exce l中，要在一个单元格内输入一个公式，应先键入符号"
-  },
-  {
-   "id": "ch3-single-263",
-   "reason": "存在空选项",
-   "stem": "在Exc e l中，打开工作簿1和工作簿2，在工作簿1中引用工作簿2的Sh eet l工作表中的第2行第 5列单元格，可"
-  },
-  {
-   "id": "ch3-single-264",
-   "reason": "存在空选项",
-   "stem": "以下不属于Exce l中的算术运算符的是 I % <>"
-  },
-  {
-   "id": "ch3-single-282",
-   "reason": "存在空选项",
-   "stem": "Excel中，（）是一个不正确的数值型数据。"
-  },
-  {
-   "id": "ch3-single-284",
-   "reason": "存在空选项",
-   "stem": "在Exce l中，如果单元格数字格式设置为带两位小数，此时输入三位小数，则末位四舍五入，计算时"
-  },
-  {
-   "id": "ch3-single-292",
-   "reason": "缺少可判分答案",
-   "stem": "以下在Excel中输入函数的方法错误的是 m"
-  },
-  {
-   "id": "ch3-single-324",
-   "reason": "缺少可判分答案",
-   "stem": "对图316中的数据以“总分”为主关键字进行降序排序，那么第5行的数据参与排序后的结果是 A B C D E F G l "
-  },
-  {
-   "id": "ch3-single-325",
-   "reason": "存在空选项",
-   "stem": "如图317所示Excel工作表，实发工资＝基本工资＋津贴＋奖金扣款＋每人高温补贴，每人高 温补贴金额存放在H2单元格中，"
-  },
-  {
-   "id": "ch3-single-368",
-   "reason": "存在空选项",
-   "stem": "PowerPoint中，创建一套新的演示文稿的快捷方式是按组合键"
-  },
-  {
-   "id": "ch3-single-386",
-   "reason": "选项数异常(6)",
-   "stem": "在PowerPoint中，在如图320所示的“设置背景格式”对话框中设置背景时，若使所选择的背景仅 适用于当前所选的幻灯"
-  },
-  {
-   "id": "ch3-single-395",
-   "reason": "缺少可判分答案",
-   "stem": "PowerPoint幻灯片中出现一个如图321所示的喇叭形图标表示幻灯片中插入了 图3 - 21 .音频"
-  },
-  {
-   "id": "ch3-single-407",
-   "reason": "存在空选项",
-   "stem": "在Pow e rPoint中，默认情况下，对一张幻灯片的内容全部选中的快捷操作是"
-  },
-  {
-   "id": "ch3-single-410",
-   "reason": "存在空选项",
-   "stem": "在PowerPoint中，默认情况下，放映全部幻灯片的快捷操作是"
-  },
-  {
-   "id": "ch3-single-415",
-   "reason": "缺少可判分答案",
-   "stem": "在PowerPoint中，删除超链接的操作为"
-  },
-  {
-   "id": "ch3-single-436",
+   "id": "ch3-w-single-book436",
    "reason": "存在空选项",
    "stem": "按（）组合键打开打印预览界面后可以提前查看打印效果。"
   },
   {
-   "id": "ch3-single-440",
+   "id": "ch3-w-single-book440",
    "reason": "存在空选项",
    "stem": "由于误操作，将Word中插入的表格删除，按（〉键可以将该表格重新恢复。"
   },
   {
-   "id": "ch3-single-446",
+   "id": "ch3-w-single-book446",
    "reason": "存在空选项",
    "stem": "关闭当前文件而不会退出Word程序的组合键是"
   },
   {
-   "id": "ch3-single-449",
+   "id": "ch3-w-single-book449",
    "reason": "选项数异常(5)",
    "stem": "在Wo rd2010文档中有一个段落的最后一行只有一个字符，想把该字符合并到上一行，下述方法 中（"
   },
   {
-   "id": "ch3-single-450",
+   "id": "ch3-w-single-book450",
    "reason": "存在空选项",
    "stem": "在Word2010中可以在文档的所有页或一页上打印－图形作为页面背景，这种特殊的文本效果被 称为"
   },
   {
-   "id": "ch3-multi-2",
+   "id": "ch3-e-single-book144",
+   "reason": "缺少可判分答案",
+   "stem": "下列关于Exce l的基本概念，不正确的是"
+  },
+  {
+   "id": "ch3-e-single-book145",
+   "reason": "存在空选项",
+   "stem": "在Excel中，选择连续区域Al:F50的方法之一是用鼠标单击Al单元格，然后滚动屏幕找到F50 单元格，在单击F50单"
+  },
+  {
+   "id": "ch3-e-single-book171",
+   "reason": "存在空选项",
+   "stem": "若选择了从A5到B7，从C7到£9两个区域，则在Exc el中的表示方法为"
+  },
+  {
+   "id": "ch3-e-single-book175",
+   "reason": "缺少可判分答案",
+   "stem": "在Excel中，Al单元格为文字：程序设计语言－2022版，在A3单元格输入公式“＝ LEFT(Al, 6）”，其结果是"
+  },
+  {
+   "id": "ch3-e-single-book186",
+   "reason": "存在空选项",
+   "stem": "在Excel工作表中，若向单元格中输入“"
+  },
+  {
+   "id": "ch3-e-single-book187",
+   "reason": "选项数异常(11)",
+   "stem": "某电费清单如图3 - 10所示： ..:i A B C D E 1 本月应缴电费"
+  },
+  {
+   "id": "ch3-e-single-book189",
+   "reason": "选项数异常(6)",
+   "stem": "如图3- 11所示，Exc e l工作表中只显示品牌为“比亚迪”的产品的销售数量，应该选择的操作是（)，－一－τ一一〔"
+  },
+  {
+   "id": "ch3-e-single-book191",
+   "reason": "选项数异常(7)",
+   "stem": "某公司所有员工学历水平分布如图3-12所示： 本科 硕士 博士"
+  },
+  {
+   "id": "ch3-e-single-book193",
+   "reason": "选项数异常(5)",
+   "stem": "在如图3-13所示Excel工作表的单元格中计算工资为800元的职工的销售总额，应在C6单元格 中输入计算公式 ( A "
+  },
+  {
+   "id": "ch3-e-single-book195",
+   "reason": "选项数异常(5)",
+   "stem": "统计下列Excel工作表中政治课考试成绩在95分到110分之间（包含95分和110分）的学生人 数，正确的公式是 12－"
+  },
+  {
+   "id": "ch3-e-single-book197",
+   "reason": "存在空选项",
+   "stem": "在Excel中，函数SUM(Al:A4）等价于 +"
+  },
+  {
+   "id": "ch3-e-single-book199",
+   "reason": "缺少可判分答案",
+   "stem": "Exce l中，将电话号码01068330088输入单元格，可以键入 01068330088"
+  },
+  {
+   "id": "ch3-e-single-book214",
+   "reason": "存在空选项",
+   "stem": "在Exce l中，工作表中的行号列标分别表示为 , 3… .."
+  },
+  {
+   "id": "ch3-e-single-book233",
+   "reason": "存在空选项",
+   "stem": "在Excel中，在工作表Sheet3引用工作表Sheet2中的A6单元格，应采用下列（）表示方式。"
+  },
+  {
+   "id": "ch3-e-single-book240",
+   "reason": "存在空选项",
+   "stem": "在Exce l中，下列运算符中优先级最高的是 < = +"
+  },
+  {
+   "id": "ch3-e-single-book245",
+   "reason": "选项数异常(5)",
+   "stem": "在Exce l中有一个数据非常多的成绩表，从第二页到最后均不能看到每页最上面的行表头，应通 过（"
+  },
+  {
+   "id": "ch3-e-single-book253",
+   "reason": "存在空选项",
+   "stem": "在Exce l中，若单元格Cl中公式为＝Al ＋凹，将其移动到E5单元格，则E5中的公式是 ( )"
+  },
+  {
+   "id": "ch3-e-single-book257",
+   "reason": "存在空选项",
+   "stem": "在Excel单元格中进行文字处理时，强制换行的方法是在需要换行的位置按（）键。"
+  },
+  {
+   "id": "ch3-e-single-book258",
+   "reason": "存在空选项",
+   "stem": "在Exce l中，要在一个单元格内输入一个公式，应先键入符号"
+  },
+  {
+   "id": "ch3-e-single-book263",
+   "reason": "存在空选项",
+   "stem": "在Exc e l中，打开工作簿1和工作簿2，在工作簿1中引用工作簿2的Sh eet l工作表中的第2行第 5列单元格，可"
+  },
+  {
+   "id": "ch3-e-single-book264",
+   "reason": "存在空选项",
+   "stem": "以下不属于Exce l中的算术运算符的是 I % <>"
+  },
+  {
+   "id": "ch3-e-single-book282",
+   "reason": "存在空选项",
+   "stem": "Excel中，（）是一个不正确的数值型数据。"
+  },
+  {
+   "id": "ch3-e-single-book284",
+   "reason": "存在空选项",
+   "stem": "在Exce l中，如果单元格数字格式设置为带两位小数，此时输入三位小数，则末位四舍五入，计算时"
+  },
+  {
+   "id": "ch3-e-single-book292",
+   "reason": "缺少可判分答案",
+   "stem": "以下在Excel中输入函数的方法错误的是 m"
+  },
+  {
+   "id": "ch3-e-single-book324",
+   "reason": "缺少可判分答案",
+   "stem": "对图316中的数据以“总分”为主关键字进行降序排序，那么第5行的数据参与排序后的结果是 A B C D E F G l "
+  },
+  {
+   "id": "ch3-e-single-book325",
+   "reason": "存在空选项",
+   "stem": "如图317所示Excel工作表，实发工资＝基本工资＋津贴＋奖金扣款＋每人高温补贴，每人高 温补贴金额存放在H2单元格中，"
+  },
+  {
+   "id": "ch3-p-single-book368",
+   "reason": "存在空选项",
+   "stem": "PowerPoint中，创建一套新的演示文稿的快捷方式是按组合键"
+  },
+  {
+   "id": "ch3-p-single-book386",
+   "reason": "选项数异常(6)",
+   "stem": "在PowerPoint中，在如图320所示的“设置背景格式”对话框中设置背景时，若使所选择的背景仅 适用于当前所选的幻灯"
+  },
+  {
+   "id": "ch3-p-single-book395",
+   "reason": "缺少可判分答案",
+   "stem": "PowerPoint幻灯片中出现一个如图321所示的喇叭形图标表示幻灯片中插入了 图3 - 21 .音频"
+  },
+  {
+   "id": "ch3-p-single-book407",
+   "reason": "存在空选项",
+   "stem": "在Pow e rPoint中，默认情况下，对一张幻灯片的内容全部选中的快捷操作是"
+  },
+  {
+   "id": "ch3-p-single-book410",
+   "reason": "存在空选项",
+   "stem": "在PowerPoint中，默认情况下，放映全部幻灯片的快捷操作是"
+  },
+  {
+   "id": "ch3-p-single-book415",
+   "reason": "缺少可判分答案",
+   "stem": "在PowerPoint中，删除超链接的操作为"
+  },
+  {
+   "id": "ch3-w-multi-book2",
    "reason": "缺少可判分答案",
    "stem": "以下可以退出Wo rd2010程序的是"
   },
   {
-   "id": "ch3-multi-23",
+   "id": "ch3-w-multi-book23",
    "reason": "缺少可判分答案",
    "stem": "在Word2010的“表格属性”对话框中可以设置"
   },
   {
-   "id": "ch3-multi-24",
+   "id": "ch3-w-multi-book24",
    "reason": "选项数异常(5)",
    "stem": "在Word2010中，欲移动图324中选择的文本，可（）进行操作。 一J"
   },
   {
-   "id": "ch3-multi-54",
+   "id": "ch3-e-multi-book54",
    "reason": "缺少可判分答案",
    "stem": "在Exce l2010中，下列叙述中错误的是"
   },
   {
-   "id": "ch3-multi-59",
+   "id": "ch3-e-multi-book59",
    "reason": "存在空选项",
    "stem": "在使用Excel2010中的高级筛选功能时，必须先建立一个条件区域，以下关于条件区域的说法正确 ( ) 的是 条件区域的"
   },
   {
-   "id": "ch3-multi-64",
+   "id": "ch3-p-multi-book64",
    "reason": "缺少可判分答案",
    "stem": "在Pow erPoint2010的（）下，可以用鼠标拖动方法改变幻灯片的顺序。"
   },
   {
-   "id": "ch3-multi-74",
+   "id": "ch3-p-multi-book74",
    "reason": "存在空选项",
    "stem": "PowerPoint 2010中，幻灯片中可以设置动画的对象为 剪贴画"
   },
   {
-   "id": "ch3-judge-5",
+   "id": "ch3-w-judge-book5",
    "reason": "缺少判断题答案",
    "stem": "在Word中，可以将文本转换成表格，也可以将表格转换成文本。"
   },
   {
-   "id": "ch3-judge-8",
+   "id": "ch3-w-judge-book8",
    "reason": "缺少判断题答案",
    "stem": "Word既能编辑文本，又能编辑图片。 ("
   },
   {
-   "id": "ch3-judge-26",
+   "id": "ch3-w-judge-book26",
    "reason": "缺少判断题答案",
    "stem": "在Word表格中，公式中引用的基本数据源如果发生了变化，计算的结果并不会自动改变，需要用户 ( ) 逐个进行公式更新。"
   },
   {
-   "id": "ch3-judge-28",
+   "id": "ch3-w-judge-book28",
    "reason": "缺少判断题答案",
    "stem": "Word中“格式刷”按钮有单击和双击两种用法。"
   },
   {
-   "id": "ch3-judge-29",
+   "id": "ch3-w-judge-book29",
    "reason": "缺少判断题答案",
    "stem": "在Word中，在表格最后一行的行末按下Tab键可以在表格末添加一行。"
   },
   {
-   "id": "ch3-judge-44",
+   "id": "ch3-e-judge-book44",
    "reason": "缺少判断题答案",
    "stem": "在Excel中，当给某一个单元格设置了文本格式，则该单元格可以输入数字也可以输入字符。、 ／ 的一个工作表中，当前活动单"
   },
   {
-   "id": "ch3-judge-45",
+   "id": "ch3-e-judge-book45",
    "reason": "缺少判断题答案",
    "stem": "在Excel、1 ／"
   },
   {
-   "id": "ch3-judge-53",
+   "id": "ch3-e-judge-book53",
    "reason": "缺少判断题答案",
    "stem": "用户既可以在一个工作簿"
   },
   {
-   "id": "ch3-judge-64",
+   "id": "ch3-p-judge-book64",
    "reason": "缺少判断题答案",
    "stem": "在PowerPoint中，通过屏幕截图功能，不但可以插入未最小化到任务栏的可视化窗口图片，还可以 通过屏幕剪辑插入屏幕任"
   },
   {
-   "id": "ch3-judge-65",
+   "id": "ch3-p-judge-book65",
    "reason": "缺少判断题答案",
    "stem": "在普通视图中，单击一个对象后，按住Ctr!键，再单击另一个对象，则两个对象均被选中。 ( )"
   },
   {
-   "id": "ch3-judge-66",
+   "id": "ch3-p-judge-book66",
    "reason": "缺少判断题答案",
    "stem": "Pow erPoint在放映幻灯片时，必须按照幻灯片的编 号顺序进行播放。"
   },
   {
-   "id": "ch3-judge-79",
+   "id": "ch3-p-judge-book79",
    "reason": "缺少判断题答案",
    "stem": "在PowerPoint中，可以使用“动画刷”复制对象的动画效果。 ／ 飞 飞 ／、洁白、瑞空题"
   },
   {
-   "id": "ch3-blank-47",
+   "id": "ch3-e-blank-book47",
    "reason": "缺少参考答案",
    "stem": "Exc el中，如果要输入当天的日期，则按 组合键。"
   },
   {
-   "id": "ch3-blank-79",
+   "id": "ch3-e-blank-book79",
    "reason": "缺少参考答案",
    "stem": "Exc e l中，公式必须以 开头，然后输入表达式，否则Exc e l会将公式作为数据处理。"
   },
   {
-   "id": "ch3-blank-81",
+   "id": "ch3-e-blank-book81",
    "reason": "缺少参考答案",
    "stem": "在Excel中，表示绝对引用地址符号的是"
   },
   {
-   "id": "ch3-blank-82",
+   "id": "ch3-e-blank-book82",
    "reason": "缺少参考答案",
    "stem": "Excel中，在单元格输入日期时，两种可使用的年、月、日间隔符是"
   },
   {
-   "id": "ch3-blank-85",
+   "id": "ch3-e-blank-book85",
    "reason": "缺少参考答案",
    "stem": "在Exce l工作表的单元格E5中有公式“＝E3十$E$2 ”，删除第D列后，则D5单元格中的公式 为"
   },
   {
-   "id": "ch3-blank-86",
+   "id": "ch3-e-blank-book86",
    "reason": "缺少参考答案",
    "stem": "在Exc el工作表的单元格C5中有公式“＝$ B3 +C2 ”，将C5单元格的公式复制到D7单元格内，则 D7单元格内"
   },
   {
-   "id": "ch3-blank-98",
+   "id": "ch3-p-blank-book98",
    "reason": "缺少参考答案",
    "stem": "在PowerPoint中，隐藏幻灯片可以在 选项卡中进行操作。"
   },
   {
-   "id": "ch3-blank-110",
+   "id": "ch3-p-blank-book110",
    "reason": "缺少参考答案",
    "stem": "PowerPoint中，在“幻灯片／大纲”窗格中选定一张幻灯片，按 键会新建一张幻灯片。"
   },
   {
-   "id": "ch3-blank-114",
+   "id": "ch3-p-blank-book114",
    "reason": "缺少参考答案",
    "stem": "在PowerPoint中的 视图中，上部显示小版本的幻灯片，下部显示备注窗格中的内容。"
   },
   {
-   "id": "ch3-comprehensive-8",
+   "id": "ch3-e-comprehensive-book8",
    "reason": "缺少参考答案",
    "stem": "小王利用Excel2010在新建工作簿中创建了结构如图3 -43所示的工作表，分析了部分省份理科一本 的录取情况。请结合"
   },

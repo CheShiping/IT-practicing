@@ -30,3 +30,19 @@
 - 浏览器版本对齐（重试 `npx playwright install chromium`）；兜底分支保留，届时会自然走「自带版本」。
 - 等 WIP 提交后再推送工具链提交，补 CI run 回执（headSha + conclusion）。
 
+
+## Office 章拆成 Word / Excel / PowerPoint 三个板块（21:25-21:50）
+
+### 做了什么
+- 数据：`ch3` 增加板块层，题型小节由 8 个变 21 个（Word 8 / Excel 7 / PowerPoint 6）；题量 265 / 290 / 168，合计 723，与原章一致。板块内题号按练习顺序从 1 连续重排，原书题号写进 `bookNo`；顺带修掉综合应用题 5 个重复 id。
+- 归属判定：扫描件里没有软件分节标题，`extract.py` 按题干给每题打「软件分」（题干最先出现的软件名 > 专属术语 > 两可词）→ 段落平滑（切到别的软件要付代价，压掉 OCR 噪声）→ `OFFICE_OVERRIDES` 逐条对着原书复核（分析题六组案例、简答第 4 题、单选 441/442）。
+- 界面：题库页在章节标题下分三个板块分组（板块名 + 题型数 + 进度），组内仍列题型；选题浮层在专题之后多一步「二、板块」，题型数量与「本次 N 题」随板块收窄。
+- 迁移：构建输出 `public/data/legacy.json`（688 条旧 id → 新 id），`store.migrateIds` 首次加载把进度 / 错题 / 笔记 / 收藏搬一次；原书题号重复的综合题无法一一对应，不迁。
+
+### 证据
+- `npm run check` 退出码 0，15 步全 OK，无控制台错误。
+- 新增两条验收：① Office 三板块可见，且三板块题量之和 = 章总量；② 选题浮层选 Word 后「本次 265 题」，进入的练习标题含「Word 文字处理」且题量 265。
+- 截图：`build/verify/07b-library-office.png`、`07c-sheet-module.png`、`07d-quiz-word.png`。
+- 数据校验：1942 题无重复 id；ch3 各节题号 1..N 连续；板块题量 265+290+168=723。
+- 迁移自测：预置 `ch3-single-1`、`ch3-blank-5` 旧记录后加载，localStorage 变为 `ch3-w-single-1`、`ch3-w-blank-5`，题库页显示「已练 1」。
+- 未推送：命中「`public/data/**` 题库改动不自动推」。

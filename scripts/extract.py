@@ -504,6 +504,114 @@ def map_sections(segments, offset):
     return res
 
 
+# ------------------------------------------------------------------ Office 板块切分
+#
+# 原书第三章把 Word / Excel / PowerPoint 混排在一起，只有题型小标题，没有软件分节。
+# 站内要把这一章拆成三个板块，只能按题干内容判定归属：
+#   1. 先给每题打「软件分」：题干里最先出现的软件名权重最高，其次是专属术语
+#      （文档/页眉、工作簿/单元格、幻灯片/母版），最后是两可词（表格、图表、视图）；
+#   2. 再做段落平滑：这本书按软件顺序编排，同一软件连续成段，单题抖动多半是
+#      OCR 噪声，用「切段有代价」的最短路径把零星的误判拉回所属段落；
+#   3. 剩下的跨段个案在 OVERRIDES 里逐条改判，都是对着原书复核过的。
+
+OFFICE_CID = 'ch3'
+OFFICE_MODULES = [
+    ('w', 'Word 文字处理'),
+    ('e', 'Excel 电子表格'),
+    ('p', 'PowerPoint 演示文稿'),
+]
+MODULE_TITLE = dict(OFFICE_MODULES)
+
+APP_NAME_RE = {
+    'w': re.compile(r'word'),
+    'e': re.compile(r'excel'),
+    'p': re.compile(r'power\s*point|ppt'),
+}
+APP_STRONG_RE = {
+    'w': re.compile(
+        r'文档|段落|样式|页眉|页脚|目录|邮件合并|分栏|批注|修订|水印|页边距|制表位|'
+        r'项目符号|脚注|尾注|题注|艺术字|文本框|拼写|字数统计|首行缩进|悬挂缩进|'
+        r'分节符|纸张|打印预览|大纲|导航窗格|中文版式|带圈字符|稿纸|信封|docx|改写|'
+        r'特殊符号|标题1|行距|分页符|图文混排|环绕方式|段落标记|回车符'),
+    'e': re.compile(
+        r'工作簿|工作表|单元格|公式|函数|填充柄|绝对引用|相对引用|混合引用|分类汇总|'
+        r'数据透视|条件格式|数据有效|数据验证|编辑栏|名称框|列标|行号|排序|筛选|求和|'
+        r'自动填充|序列|sum|average|count|vlookup|if\s*\(|max\s*\(|min\s*\(|round|'
+        r'int\s*\(|合并后居中|列宽|行高|图表|数据源|图例|分类轴|数值轴|记录'),
+    'p': re.compile(
+        r'幻灯片|演示文稿|版式|母版|切换|动画|放映|排练计时|占位符|备注页|讲义|'
+        r'超链接|smartart|主题|演示'),
+}
+APP_WEAK_RE = {
+    'w': re.compile(r'表格|视图|插入|选项卡|工具栏|剪贴板|保存|打开|新建|页面设置|快捷键|字体|字号|对齐'),
+    'e': re.compile(r'表格|数据|区域|列|行'),
+    'p': re.compile(r'背景|图形|形状|对象|音频|视频|图片|切换效果'),
+}
+
+# 逐条复核后的改判（键为「题型, 原书题号」）
+#   分析题按（一）～（六）的案例成组：前三组是 Word，后三组是 Excel；
+#   题 6/11/12 的题干把下一组的导语和「操作题」标题一起吸进来了，只看字面会误判。
+#   第 4 题简答是 PowerPoint；单选 441/442 属于「用 PowerPoint 汇报」那一段。
+OFFICE_OVERRIDES = {
+    ('short', 4): 'p',
+    ('single', 441): 'p',
+    ('single', 442): 'p',
+}
+for _i in range(1, 7):
+    OFFICE_OVERRIDES[('analysis', _i)] = 'w'
+for _i in range(7, 13):
+    OFFICE_OVERRIDES[('analysis', _i)] = 'e'
+
+
+def app_scores(q):
+    """给一道题打 Word / Excel / PowerPoint 三个软件分"""
+    text = re.sub(r'\s+', '', (q['stem'] + ' ' + ' '.join(o['text'] for o in q['options'])).lower())
+    hits = []
+    for key in 'wep':
+        for m in APP_NAME_RE[key].finditer(text):
+            hits.append((m.start(), key))
+    hits.sort()
+    out = {}
+    for key in 'wep':
+        mine = [i for i, h in enumerate(hits) if h[1] == key]
+        first = bool(mine) and mine[0] == 0
+        out[key] = 8 * int(first) + 3 * max(0, len(mine) - int(first))
+        out[key] += 2 * len(set(APP_STRONG_RE[key].findall(text)))
+        out[key] += len(set(APP_WEAK_RE[key].findall(text)))
+    return out
+
+
+def smooth_apps(seq, switch=6.0):
+    """最短路径分词：切到另一个软件要付 switch 的代价，压掉单题抖动"""
+    labels = 'wep'
+    n = len(seq)
+    cost = [[0.0] * 3 for _ in range(n)]
+    back = [[0] * 3 for _ in range(n)]
+    for i, sc in enumerate(seq):
+        for j in range(3):
+            cur = -sc[labels[j]]
+            if i == 0:
+                cost[i][j] = cur
+                continue
+            best, arg = None, 0
+            for k in range(3):
+                c = cost[i - 1][k] + (0 if k == j else switch) + cur
+                if best is None or c < best:
+                    best, arg = c, k
+            cost[i][j], back[i][j] = best, arg
+    j = min(range(3), key=lambda x: cost[-1][x])
+    out = [j]
+    for i in range(n - 1, 0, -1):
+        j = back[i][j]
+        out.append(j)
+    return [labels[x] for x in reversed(out)]
+
+
+def office_modules(qs, kind):
+    labels = smooth_apps([app_scores(q) for q in qs])
+    return [OFFICE_OVERRIDES.get((kind, q['no']), L) for q, L in zip(qs, labels)]
+
+
 # ------------------------------------------------------------------ 主流程
 
 
@@ -547,6 +655,152 @@ def map_answer_sections(segments, qstats):
     return out
 
 
+def make_section(cid, mid, tk, qs, ans_entries, plain, report):
+    """把一段同题型的题目落成一个小节
+
+    mid 不为空表示这是 Office 章下的软件板块：题号按练习顺序从 1 重排，
+    原书题号写进 bookNo（原书综合题按案例组重复编号，照抄会撞 id）。
+    """
+    sec_id = '%s-%s-%s' % (cid, mid, tk) if mid else '%s-%s' % (cid, tk)
+    ans_map = {a['no']: a for a in ans_entries}
+    stats = {'ok': 0, 'noAnswer': 0, 'badOption': 0, 'suspect': 0, 'excluded': 0}
+    out_qs = []
+    book_nos = []
+    for q in qs:
+        item = {
+            # 板块内的正式 id / 题号要等质量闸门筛完再排（见函数末尾），这里先用原书题号占位
+            'id': '%s-book%d' % (sec_id, q['no']) if mid else '%s-%d' % (sec_id, q['no']),
+            'chapterId': cid,
+            'sectionId': sec_id,
+            'no': 0 if mid else q['no'],
+            'type': tk if tk in AUTO_JUDGE else 'subjective',
+            'kind': tk,
+            'stem': q['stem'],
+            'options': [{'key': o['key'], 'text': o['text']} for o in q['options']]
+                      if tk in AUTO_JUDGE else [],
+            'answer': [],
+            'analysis': '',
+            'source': {'book': BOOK_NAME, 'page': q['page']},
+        }
+        if mid:
+            item['moduleId'] = mid
+        a = ans_map.get(q['no'])
+        if tk == 'blank':
+            txt = plain.get(q['no'])
+            if txt:
+                item['answerText'] = txt
+                item['analysis'] = txt
+                stats['ok'] += 1
+            else:
+                stats['noAnswer'] += 1
+                item['reviewFlag'] = 'noAnswer'
+                report['issues'].append({'id': item['id'], 'reason': '填空题答案缺失'})
+        elif a is None:
+            stats['noAnswer'] += 1
+            item['reviewFlag'] = 'noAnswer'
+            report['issues'].append({'id': item['id'], 'reason': '答案缺失'})
+        else:
+            rest = a.get('rest', '')
+            item['analysis'] = rest
+            if tk == 'judge':
+                mm = re.match(r"^([×✗√✓✔J L N X T V F Y／＼][\u2019\']?)", rest)
+                tok = mm.group(1) if mm else ''
+                if tok:
+                    item['analysis'] = rest[len(tok):].strip()
+            elif tk in ('single', 'multi'):
+                mm = re.match(r'^([A-Ea-e]{1,5})', rest)
+                tok = mm.group(1).upper() if mm else ''
+                if tok:
+                    item['analysis'] = rest[len(tok):].strip()
+            else:
+                tok = ''
+            # 解析正文＝首行（已去掉答案字母）＋ 后续行
+            cont = a.get('analysis', '')
+            if cont:
+                item['analysis'] = (item['analysis'] + ' ' + cont).strip()
+            if tk == 'judge':
+                v = judge_token(tok)
+                if v is None:
+                    stats['noAnswer'] += 1
+                    item['reviewFlag'] = 'noAnswer'
+                    report['issues'].append({'id': item['id'], 'reason': '判断题答案符号无法识别: %r' % tok})
+                else:
+                    item['answer'] = ['A'] if v else ['B']
+                    item['options'] = [{'key': 'A', 'text': '正确'}, {'key': 'B', 'text': '错误'}]
+                    stats['ok'] += 1
+            elif tk in ('single', 'multi'):
+                mlead = re.match(r'^[A-E]{1,5}', tok.upper())
+                letters = list(mlead.group(0)) if mlead else []
+                if len(letters) > 4:
+                    letters = letters[:4]
+                keys = [o['key'] for o in item['options']]
+                if tk == 'single':
+                    letters = letters[:1]
+                if letters and all(c in keys for c in letters):
+                    item['answer'] = letters
+                    if (tk == 'single' and len(letters) != 1) or (tk == 'multi' and len(letters) < 2):
+                        item['reviewFlag'] = 'suspect'
+                        stats['suspect'] += 1
+                    else:
+                        stats['ok'] += 1
+                else:
+                    stats['noAnswer'] += 1
+                    item['reviewFlag'] = 'noAnswer'
+                    report['issues'].append({'id': item['id'], 'reason': '答案与选项不匹配: %r' % tok})
+            else:
+                item['answerText'] = item['analysis']
+                stats['ok'] += 1
+        if tk in AUTO_JUDGE and tk != 'judge' and len(item['options']) < 2:
+            item['reviewFlag'] = 'badOption'
+            stats['badOption'] += 1
+            report['issues'].append({'id': item['id'], 'reason': '选项缺失'})
+        # 质量闸门：题干完整 + 选项齐全 + 答案可判分，否则不进线上题库
+        drop = None
+        if not item['stem']:
+            drop = '题干为空'
+        elif tk in AUTO_JUDGE and tk != 'judge':
+            if len(item['options']) < 3 or len(item['options']) > 4:
+                drop = '选项数异常(%d)' % len(item['options'])
+            elif not item['answer']:
+                drop = '缺少可判分答案'
+            elif any(not o['text'].strip() for o in item['options']):
+                drop = '存在空选项'
+        elif tk == 'judge':
+            if not item['answer']:
+                drop = '缺少判断题答案'
+        else:
+            if not item.get('answerText'):
+                drop = '缺少参考答案'
+        if drop:
+            stats['excluded'] += 1
+            report['excluded'].append({'id': item['id'], 'reason': drop,
+                                       'stem': item['stem'][:60]})
+            continue
+        item['answerable'] = tk in AUTO_JUDGE
+        out_qs.append(item)
+        book_nos.append(q['no'])
+    if mid:
+        # 筛完再编号：题号连续，原书题号留在 bookNo 里溯源
+        for i, item in enumerate(out_qs, 1):
+            item['no'] = i
+            item['id'] = '%s-%d' % (sec_id, i)
+            item['bookNo'] = book_nos[i - 1]
+    sec = {
+        'id': sec_id, 'chapterId': cid, 'title': TYPE_NAME[tk], 'kind': tk,
+        'autoJudged': tk in AUTO_JUDGE,
+        'questionCount': len(out_qs),
+        'usableCount': stats['ok'],
+    }
+    if mid:
+        sec['moduleId'] = mid
+    report['sections'].append({
+        'chapterId': cid, 'sectionId': sec_id, 'title': TYPE_NAME[tk],
+        'moduleId': mid,
+        'questions': len(out_qs), 'answers': len(ans_entries), **stats,
+    })
+    return sec, out_qs, stats
+
+
 def build():
     qdoc = pymupdf.open(QPDF)
     adoc = pymupdf.open(APDF)
@@ -554,16 +808,9 @@ def build():
     raw_q = parse_book(qdoc, 8)
     q_sections = map_sections(segment(raw_q), 0)
     # 尾部小节（综合应用题题号未归 1）单独按页补采
-    tail_q = {
-        ('ch6', 'comprehensive'): parse_book(qdoc, 164)[:0],
-    }
     qmap = {(c, t): qs for c, t, qs in q_sections}
-    # ch6/ch7 综合应用题：按页范围补采
     for (cid, t), (p_from, p_to) in TAIL_PAGES.items():
-        got = parse_book_range(qdoc, p_from, p_to)
-        qmap[(cid, t)] = got
-    plan = [(c, t) for c, ts in SECTION_PLAN.items() for t in ts]
-    plan = [(c, t) for c, t in plan]
+        qmap[(cid, t)] = parse_book_range(qdoc, p_from, p_to)
     ordered = [(c[0], t) for c in CHAPTERS for t in SECTION_PLAN[c[0]]]
 
     qstats = {}
@@ -590,173 +837,80 @@ def build():
     report = {'sections': [], 'issues': [], 'excluded': []}
     chapters = {}
     total_q = 0
-    usable = 0
 
     for cid, tk in ordered:
         qs = qmap.get((cid, tk), [])
         ch = chapters.setdefault(cid, {'id': cid, 'title': '', 'sections': [], 'questions': []})
-        sec_id = '%s-%s' % (cid, tk)
         ans_entries = amap.get((cid, tk), [])
-        ans_map = {a['no']: a for a in ans_entries}
         plain = plain_map.get((cid, tk), {}) if tk == 'blank' else {}
-        stats = {'ok': 0, 'noAnswer': 0, 'badOption': 0, 'suspect': 0, 'excluded': 0}
-        out_qs = []
-        for q in qs:
-            item = {
-                'id': '%s-%d' % (sec_id, q['no']),
-                'chapterId': cid,
-                'sectionId': sec_id,
-                'no': q['no'],
-                'type': tk if tk in AUTO_JUDGE else 'subjective',
-                'kind': tk,
-                'stem': q['stem'],
-                'options': [{'key': o['key'], 'text': o['text']} for o in q['options']]
-                          if tk in AUTO_JUDGE else [],
-                'answer': [],
-                'analysis': '',
-                'source': {'book': BOOK_NAME, 'page': q['page']},
-            }
-            a = ans_map.get(q['no'])
-            if tk == 'blank':
-                txt = plain.get(q['no'])
-                if txt:
-                    item['answerText'] = txt
-                    item['analysis'] = txt
-                    stats['ok'] += 1
-                else:
-                    stats['noAnswer'] += 1
-                    item['reviewFlag'] = 'noAnswer'
-                    report['issues'].append({'id': item['id'], 'reason': '填空题答案缺失'})
-            elif a is None:
-                stats['noAnswer'] += 1
-                item['reviewFlag'] = 'noAnswer'
-                report['issues'].append({'id': item['id'], 'reason': '答案缺失'})
-            else:
-                rest = a.get('rest', '')
-                item['analysis'] = rest
-                if tk == 'judge':
-                    mm = re.match(r"^([×✗√✓✔J L N X T V F Y／＼][\u2019\']?)", rest)
-                    tok = mm.group(1) if mm else ''
-                    if tok:
-                        item['analysis'] = rest[len(tok):].strip()
-                elif tk in ('single', 'multi'):
-                    mm = re.match(r'^([A-Ea-e]{1,5})', rest)
-                    tok = mm.group(1).upper() if mm else ''
-                    if tok:
-                        item['analysis'] = rest[len(tok):].strip()
-                else:
-                    tok = ''
-                # 解析正文＝首行（已去掉答案字母）＋ 后续行
-                cont = a.get('analysis', '')
-                if cont:
-                    item['analysis'] = (item['analysis'] + ' ' + cont).strip()
-                if tk == 'judge':
-                    v = judge_token(tok)
-                    if v is None:
-                        stats['noAnswer'] += 1
-                        item['reviewFlag'] = 'noAnswer'
-                        report['issues'].append({'id': item['id'], 'reason': '判断题答案符号无法识别: %r' % tok})
-                    else:
-                        item['answer'] = ['A'] if v else ['B']
-                        item['options'] = [{'key': 'A', 'text': '正确'}, {'key': 'B', 'text': '错误'}]
-                        stats['ok'] += 1
-                elif tk in ('single', 'multi'):
-                    mlead = re.match(r'^[A-E]{1,5}', tok.upper())
-                    letters = list(mlead.group(0)) if mlead else []
-                    if len(letters) > 4:
-                        letters = letters[:4]
-                    keys = [o['key'] for o in item['options']]
-                    if tk == 'single':
-                        letters = letters[:1]
-                    if letters and all(c in keys for c in letters):
-                        item['answer'] = letters
-                        if (tk == 'single' and len(letters) != 1) or (tk == 'multi' and len(letters) < 2):
-                            item['reviewFlag'] = 'suspect'
-                            stats['suspect'] += 1
-                        else:
-                            stats['ok'] += 1
-                    else:
-                        stats['noAnswer'] += 1
-                        item['reviewFlag'] = 'noAnswer'
-                        report['issues'].append({'id': item['id'], 'reason': '答案与选项不匹配: %r' % tok})
-                else:
-                    item['answerText'] = item['analysis']
-                    stats['ok'] += 1
-            if tk in AUTO_JUDGE and tk != 'judge' and len(item['options']) < 2:
-                item['reviewFlag'] = 'badOption'
-                stats['badOption'] += 1
-                report['issues'].append({'id': item['id'], 'reason': '选项缺失'})
-            # 质量闸门：题干完整 + 选项齐全 + 答案可判分，否则不进线上题库
-            drop = None
-            if not item['stem']:
-                drop = '题干为空'
-            elif tk in AUTO_JUDGE and tk != 'judge':
-                if len(item['options']) < 3 or len(item['options']) > 4:
-                    drop = '选项数异常(%d)' % len(item['options'])
-                elif not item['answer']:
-                    drop = '缺少可判分答案'
-                elif any(not o['text'].strip() for o in item['options']):
-                    drop = '存在空选项'
-            elif tk == 'judge':
-                if not item['answer']:
-                    drop = '缺少判断题答案'
-            else:
-                if not item.get('answerText'):
-                    drop = '缺少参考答案'
-            if drop:
-                stats['excluded'] = stats.get('excluded', 0) + 1
-                report['excluded'].append({'id': item['id'], 'reason': drop,
-                                           'stem': item['stem'][:60]})
-                continue
-            item['answerable'] = tk in AUTO_JUDGE
-            out_qs.append(item)
-        sec = {
-            'id': sec_id, 'chapterId': cid, 'title': TYPE_NAME[tk], 'kind': tk,
-            'autoJudged': tk in AUTO_JUDGE,
-            'questionCount': len(out_qs),
-            'usableCount': stats['ok'],
-        }
-        ch['sections'].append(sec)
-        ch['questions'].extend(out_qs)
-        total_q += len(out_qs)
-        usable += stats['ok']
-        report['sections'].append({
-            'chapterId': cid, 'sectionId': sec_id, 'title': TYPE_NAME[tk],
-            'questions': len(out_qs), 'answers': len(ans_entries), **stats,
-        })
+        if cid == OFFICE_CID:
+            mids = office_modules(qs, tk) if qs else []
+            groups = [(m, [q for q, x in zip(qs, mids) if x == m]) for m, _ in OFFICE_MODULES]
+            groups = [(m, g) for m, g in groups if g]  # 该板块没有这个题型就不建空小节
+        else:
+            groups = [(None, qs)]
+        for mid, sub in groups:
+            sec, items, _stats = make_section(cid, mid, tk, sub, ans_entries, plain, report)
+            ch['sections'].append(sec)
+            ch['questions'].extend(items)
+            total_q += len(items)
 
     titles = {c[0]: c[1] for c in CHAPTERS}
+    modules_meta = [{'id': m, 'title': t, 'order': i + 1} for i, (m, t) in enumerate(OFFICE_MODULES)]
     for cid, ch in chapters.items():
         ch['title'] = titles[cid]
         ch['order'] = int(cid[2:])
         ch['questionCount'] = len(ch['questions'])
+        if cid == OFFICE_CID:
+            ch['modules'] = modules_meta
 
     usable = sum(1 for ch in chapters.values() for q in ch['questions'] if q.get('answerable'))
+    manifest_chapters = []
+    for i, c in enumerate(CHAPTERS):
+        meta = {'id': c[0], 'title': c[1], 'order': i + 1}
+        if c[0] == OFFICE_CID:
+            meta['modules'] = modules_meta
+        manifest_chapters.append(meta)
     manifest = {
         'book': BOOK_NAME,
         'source': 'docx/题库/江西库课必刷2000题计算机.pdf + 答案.pdf',
-        'dataVersion': '2026-11-21',
+        'dataVersion': '2026-11-22',
         'totalQuestions': total_q,
         'usableQuestions': usable,
         'excludedQuestions': len(report['excluded']),
-        'chapters': [{'id': c[0], 'title': c[1], 'order': i + 1} for i, c in enumerate(CHAPTERS)],
+        'chapters': manifest_chapters,
     }
 
     for cid, ch in chapters.items():
         with open(os.path.join(OUT_DIR, 'chapters', '%s.json' % cid), 'w', encoding='utf-8') as f:
             json.dump(ch, f, ensure_ascii=False, separators=(',', ':'))
-    # 练习单元：以「专题 → 题型小节」为最小可刷单位
+
+    # 板块拆分后 Office 的题号重排，本地进度/错题/收藏仍存着旧 id：
+    # 输出「旧 id -> 新 id」，客户端首次加载时迁移一次（综合题原书题号重复，无法对应，跳过）
+    legacy = {}
+    for q in chapters[OFFICE_CID]['questions']:
+        old = '%s-%s-%d' % (OFFICE_CID, q['kind'], q.get('bookNo', q['no']))
+        legacy[old] = None if old in legacy else q['id']
+    legacy = {k: v for k, v in legacy.items() if v}
+    with open(os.path.join(OUT_DIR, 'legacy.json'), 'w', encoding='utf-8') as f:
+        json.dump(legacy, f, ensure_ascii=False, separators=(',', ':'))
+
+    # 练习单元：以「专题 →（板块 →）题型小节」为最小可刷单位
     units = []
     for cid, ch in chapters.items():
         for sec in ch['sections']:
-            units.append({
+            unit = {
                 'id': sec['id'], 'chapterId': cid, 'chapterTitle': ch['title'],
                 'title': sec['title'], 'kind': sec['kind'],
                 'autoJudged': sec['autoJudged'],
                 'questionCount': sec['questionCount'],
                 'gradableCount': sum(1 for q in ch['questions']
                                      if q['sectionId'] == sec['id'] and q.get('answerable')),
-            })
+            }
+            if sec.get('moduleId'):
+                unit['moduleId'] = sec['moduleId']
+                unit['moduleTitle'] = MODULE_TITLE[sec['moduleId']]
+            units.append(unit)
     with open(os.path.join(OUT_DIR, 'units.json'), 'w', encoding='utf-8') as f:
         json.dump({'units': units}, f, ensure_ascii=False, separators=(',', ':'))
     with open(os.path.join(OUT_DIR, 'manifest.json'), 'w', encoding='utf-8') as f:
@@ -767,9 +921,12 @@ def build():
     print('章节 %d，发布题目 %d（自动判分 %d），排除 %d，问题条目 %d'
           % (len(chapters), total_q, usable, len(report['excluded']), len(report['issues'])))
     for s in report['sections']:
-        print('  %-3s %-8s 发布%4d 答案%4d 可用%4d 无答案%3d 选项异常%3d 存疑%3d 排除%3d'
-              % (s['chapterId'], s['title'], s['questions'], s['answers'],
+        print('  %-3s %-6s %-8s 发布%4d 答案%4d 可用%4d 无答案%3d 选项异常%3d 存疑%3d 排除%3d'
+              % (s['chapterId'], s['moduleId'] or '-', s['title'], s['questions'], s['answers'],
                  s['ok'], s['noAnswer'], s['badOption'], s['suspect'], s.get('excluded', 0)))
+    print('Office 板块：' + '，'.join(
+        '%s %d 题' % (t, sum(1 for q in chapters[OFFICE_CID]['questions'] if q.get('moduleId') == m))
+        for m, t in OFFICE_MODULES))
 
 
 if __name__ == '__main__':

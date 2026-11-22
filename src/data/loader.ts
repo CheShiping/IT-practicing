@@ -17,6 +17,8 @@ async function getJSON<T>(path: string): Promise<T> {
 export const loadManifest = () => getJSON<Manifest>("manifest.json");
 export const loadUnits = () => getJSON<{ units: Unit[] }>("units.json").then((d) => d.units);
 export const loadChapter = (id: string) => getJSON<Chapter>(`chapters/${id}.json`);
+/** 旧题号 -> 新题号（Office 拆板块后题号重排，用于迁移本地记录） */
+export const loadLegacyMap = () => getJSON<Record<string, string>>("legacy.json");
 
 export function filterQuestions(chapter: Chapter, unitId?: string) {
   if (!unitId) return chapter.questions;

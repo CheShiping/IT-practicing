@@ -371,11 +371,13 @@ export interface QuestionOption {
 }
 
 export interface Question {
-  id: string;            // 全局唯一：{chapterId}-{sectionId}-{no}
+  id: string;            // 全局唯一：{chapterId}-[{moduleId}-]{sectionId}-{no}
   chapterId: string;
   sectionId: string;
+  moduleId?: string;     // 板块（目前只有 Office 章：w / e / p）
+  no: number;            // 本节内题号，从 1 连续编号
+  bookNo?: number;       // 原书题号（Office 拆分后重排，原书号留档）
   pointIds: string[];    // 考点标签（可多选）
-  no: number;            // 题型内题号
   type: QuestionType;    // 站点可判分的题型
   kind: QuestionKind;    // 原始题型（主观题 type 可为 judge 之外的占位）
   stem: string;
@@ -389,9 +391,16 @@ export interface Question {
   reviewFlag?: 'ok' | 'ocrSuspect' | 'needsManual';
 }
 
+export interface Module {
+  id: string;            // w / e / p
+  title: string;         // 如「Word 文字处理」
+  order: number;
+}
+
 export interface Section {
-  id: string;
+  id: string;             // 有板块时：{chapterId}-{moduleId}-{kind}
   chapterId: string;
+  moduleId?: string;
   title: string;          // 如「单项选择题」
   kind: QuestionKind;
   questionCount: number;
@@ -402,6 +411,7 @@ export interface Chapter {
   id: string;
   title: string;          // 如「计算机基础知识」
   order: number;
+  modules?: Module[];     // 仅「Office 办公软件」有：Word / Excel / PowerPoint
   sections: Section[];
   questionCount: number;
 }
@@ -414,7 +424,7 @@ export interface Point {
 }
 ```
 
-练习单元的落地口径：原书只有「专题 → 题型」两级，没有可用的考点标注，因此**以「专题 → 题型小节」作为最小可刷单元**（`units.json`），不虚构考点标签。考点筛选在数据具备标注后再启用。
+练习单元的落地口径：原书只有「专题 → 题型」两级，没有可用的考点标注，因此**以「专题 → 题型小节」作为最小可刷单元**（`units.json`），不虚构考点标签。考点筛选在数据具备标注后再启用。Office 章多一层「板块」（Word / Excel / PowerPoint），单元 id 相应变成 `ch3-w-single` 这类三段式。
 
 发布产物（`public/data/`）：
 
@@ -459,6 +469,17 @@ public/data/
 - 加载失败时按 8.2 的降级策略处理；成功加载后写入 `Cache Storage`，作为离线兜底。
 - 数据量监控：单专题分片超过 150KB gzip 时拆分小节粒度。
 
+## 4.8 专题下的板块层（Office 章）
+
+原书第三章把 Word / Excel / PowerPoint 的题混排在一起，只有题型小标题，没有软件分节。站内要按软件分开练，因此在该章下加一层「板块」：专题仍是「Office 办公软件」，编号仍是刷题三，只是展开后先分三个板块、再列题型。
+
+- **拆分依据**：扫描件没有软件小标题，只能按题干内容判定。规则在 `scripts/extract.py` 的 `app_scores` / `smooth_apps`：先给每题打「软件分」——题干最先出现的软件名权重最高，其次是专属术语（文档 / 页眉 / 目录，工作簿 / 单元格 / 填充柄，幻灯片 / 母版 / 放映），最后是两可词（表格、图表、视图）；再做段落平滑（切到另一软件要付代价，压掉 OCR 噪声造成的单题抖动）；剩余跨段个案在 `OFFICE_OVERRIDES` 里逐条对着原书复核改判。
+- **结果**：Word 265 题、Excel 290 题、PowerPoint 168 题，合计 723 题，与原章题量一致。每个板块下仍按八种题型分小节，该板块没有的题型不建空小节。
+- **题号**：板块内按练习顺序从 1 重排（原书综合题按案例组重复编号，照抄会撞 id），原书题号写进 `bookNo`，页码照旧可溯源。
+- **进度迁移**：拆分后旧 id 不再存在，构建时输出 `public/data/legacy.json`（旧 id → 新 id），客户端首次加载按它把进度 / 错题 / 笔记 / 收藏搬一次；原书题号重复的综合题无法一一对应，不迁移。
+- **边界**：个别综合案例横跨三个软件（先 Excel 算、再 Word 排版、最后 PPT 汇报），按子问题各自归属拆开；题干本身带上下文，不影响作答。
+- **界面**：题库页在章节标题下列三个板块分组（板块名 + 题型数 + 进度）；选题浮层在「一、专题」之后多一步「二、板块」，选板块后题型数量随之收窄。
+
 # 5 核心模块设计
 
 ## 5.1 首页
@@ -495,6 +516,7 @@ public/data/
 - 未选中：`--surface` 底、`--ink` 文字；选中：`--brand` 底 + 右下角折角 + 文字加粗。
 - 顶部提供「全部科目」项，多选；选中数量在确认按钮上体现。
 - 每项副标签显示该专题题量（如 `2399`），数据来自 `manifest.json`。
+- 选中「Office 办公软件」后多一步「二、板块」：全部 / Word 文字处理 / Excel 电子表格 / PowerPoint 演示文稿（单选），下方题型数量随板块收窄，底部「本次 N 题」同步变化。
 
 ### 5.2.2 刷题形式切换
 
@@ -520,6 +542,8 @@ public/data/
 对应原型 4：顶部黄条 + 返回箭头 + 标题「切换题库」，下方为章节手风琴。
 
 结构：手风琴一级为**题型**或**考点**（取决于用户在 5.2 的选择），二级为**专题**，每个可练小节右侧显示进度 `54/303`。
+
+有板块的专题（Office 办公软件）在专题与题型之间多一级板块分组：展开后先看到 Word / Excel / PowerPoint 三个分组标题（板块名 + 题型数 + 进度），组内再列题型小节；其余专题仍是「专题 → 题型」两级。
 
 - 已完成小节：进度条满格 + 标题左侧黄色对勾圆标。
 - 进行中（有进度未完成）：显示部分进度条。

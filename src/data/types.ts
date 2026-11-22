@@ -15,11 +15,21 @@ export interface QuestionOption {
   text: string;
 }
 
+/** 章节下的软件板块（目前只有 Office 章有：Word / Excel / PowerPoint） */
+export interface Module {
+  id: string;
+  title: string;
+  order: number;
+}
+
 export interface Question {
   id: string;
   chapterId: string;
   sectionId: string;
+  moduleId?: string;
   no: number;
+  /** 原书题号：Office 板块内的题号已按练习顺序重排，原书号另存于此 */
+  bookNo?: number;
   type: QuestionType;
   kind: QuestionKind;
   stem: string;
@@ -34,6 +44,7 @@ export interface Question {
 export interface Section {
   id: string;
   chapterId: string;
+  moduleId?: string;
   title: string;
   kind: QuestionKind;
   autoJudged: boolean;
@@ -45,6 +56,7 @@ export interface Chapter {
   id: string;
   title: string;
   order: number;
+  modules?: Module[];
   sections: Section[];
   questions: Question[];
 }
@@ -53,6 +65,8 @@ export interface Unit {
   id: string;
   chapterId: string;
   chapterTitle: string;
+  moduleId?: string;
+  moduleTitle?: string;
   title: string;
   kind: QuestionKind;
   autoJudged: boolean;
@@ -67,7 +81,7 @@ export interface Manifest {
   totalQuestions: number;
   usableQuestions: number;
   excludedQuestions: number;
-  chapters: { id: string; title: string; order: number }[];
+  chapters: { id: string; title: string; order: number; modules?: Module[] }[];
 }
 
 export const KIND_LABEL: Record<QuestionKind, string> = {

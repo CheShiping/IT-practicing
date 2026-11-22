@@ -165,7 +165,7 @@ export default function StatsPage() {
                 <li key={u.id} className="card p-3.5">
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="min-w-0 truncate text-[13px] font-bold text-ink">
-                      {u.chapterTitle} · {u.title}
+                      {[u.chapterTitle, u.moduleTitle, u.title].filter(Boolean).join(" · ")}
                     </span>
                     <span className="num shrink-0 text-[11px] font-semibold text-ink-3">
                       {u.done}/{u.questionCount}

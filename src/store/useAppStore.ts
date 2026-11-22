@@ -41,6 +41,8 @@ interface AppState {
   current: SessionState | null;
   /** 题库版本，确认后重置本地数据 */
   dataVersion: string;
+  /** 旧题号迁移是否已跑过（Office 拆板块后用 legacy.json 换一次 id） */
+  legacyMerged: boolean;
 
   setProfile: (p: Partial<Profile>) => void;
   recordAnswer: (qid: string, correct: boolean) => void;
@@ -56,6 +58,9 @@ interface AppState {
   endSession: () => void;
   clearSession: () => void;
   resetAll: () => void;
+  /** 按「旧 id -> 新 id」把本地记录搬到新题号上，只跑一次 */
+  migrateIds: (map: Record<string, string>) => void;
+  markLegacyMerged: () => void;
 }
 
 const storage = createJSONStorage(() => {
@@ -86,6 +91,7 @@ export const useAppStore = create<AppState>()(
       sessions: [],
       current: null,
       dataVersion: "",
+      legacyMerged: false,
 
       setProfile: (p) => set((s) => ({ profile: { ...s.profile, ...p } })),
 
@@ -195,6 +201,33 @@ export const useAppStore = create<AppState>()(
           sessions: [],
           current: null,
         }),
+
+      migrateIds: (map) =>
+        set((s) => {
+          const fix = (id: string) => map[id] ?? id;
+          const remap = <T,>(rec: Record<string, T>) => {
+            const out: Record<string, T> = {};
+            for (const [k, v] of Object.entries(rec)) out[fix(k)] = v;
+            return out;
+          };
+          const fixSession = (x: SessionState): SessionState => ({
+            ...x,
+            questionIds: x.questionIds.map(fix),
+            answers: remap(x.answers),
+            revealed: remap(x.revealed),
+            results: remap(x.results),
+          });
+          return {
+            progress: remap(s.progress),
+            wrongBook: remap(s.wrongBook),
+            notes: remap(s.notes),
+            favorites: [...new Set(s.favorites.map(fix))],
+            sessions: s.sessions.map(fixSession),
+            current: s.current ? fixSession(s.current) : null,
+          };
+        }),
+
+      markLegacyMerged: () => set({ legacyMerged: true }),
     }),
     {
       name: "msz.v1.app",
@@ -211,6 +244,7 @@ export const useAppStore = create<AppState>()(
         sessions: s.sessions,
         current: s.current,
         dataVersion: s.dataVersion,
+        legacyMerged: s.legacyMerged,
       }),
     },
   ),
