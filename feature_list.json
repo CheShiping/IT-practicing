@@ -22,7 +22,11 @@
         "CI 在 build 之前执行 typecheck 与 lint，不通过则不部署",
         "推送后在 progress.md 留下 CI run 回执（headSha + conclusion）"
       ],
-      "evidence": []
+      "evidence": [
+        "npm run check 退出码 0，13 步全 OK（2026-11-22）",
+        "build/verify/01-home.png … 08-desktop.png",
+        "commit bb339b8 / 9abbfc4（未推送）"
+      ]
     }
   ]
 }
