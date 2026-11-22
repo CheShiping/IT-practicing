@@ -46,7 +46,7 @@ export function OptionItem({
       <span
         className={cn(
           "num mt-[1px] flex size-[26px] shrink-0 items-center justify-center rounded-[8px] text-[12px] font-extrabold leading-none transition-colors",
-          !selected && !correct && !wrong && "bg-shell-2 text-ink-2",
+          !selected && !correct && !wrong && "bg-[#dbeefb] text-ink",
           selected && "bg-azure text-white",
           correct && "bg-green text-white",
           wrong && "bg-red text-white",

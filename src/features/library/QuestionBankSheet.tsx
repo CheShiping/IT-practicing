@@ -287,7 +287,7 @@ export function QuestionBankSheet({
             type="button"
             onClick={() => void confirm()}
             disabled={busy || !chapterId || tab === "years"}
-            className="press h-[46px] w-full rounded-[12px] bg-azure text-[15px] font-bold text-white transition-colors hover:bg-[#a80a5c] active:translate-y-px disabled:cursor-not-allowed disabled:bg-shell-2 disabled:text-ink-3"
+            className="press h-[50px] w-full rounded-[13px] bg-yellow text-[16px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:bg-shell-2 disabled:text-ink-3 disabled:shadow-none"
           >
             {busy ? "准备中…" : chapterId ? "开始" : "选择专题后开始"}
           </button>

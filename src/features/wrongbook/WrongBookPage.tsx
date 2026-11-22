@@ -44,7 +44,7 @@ export default function WrongBookPage() {
       <TopBar title="错题本" kicker={`${Object.keys(wrongBook).length} 道 · 答错自动收进来`} back />
 
       <PageContainer className="pt-4">
-        <div className="flex items-end gap-4 border-b border-shell-2 pb-2">
+        <div className="card flex items-end gap-4 px-4 pt-2 pb-2.5">
           <div className="min-w-0 flex-1">
             <SearchBox value={keyword} onChange={setKeyword} />
           </div>
@@ -120,8 +120,8 @@ export default function WrongBookPage() {
       </PageContainer>
 
       {filtered?.length ? (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-shell-2 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <div className="mx-auto max-w-[560px]">
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-shell-2 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:static md:mx-auto md:mt-5 md:max-w-[420px] md:border-0 md:bg-transparent md:p-0">
+          <div className="mx-auto max-w-[560px] md:max-w-none">
             <StartPracticeButton
               ids={filtered.map((q) => q.id)}
               title="错题重练"

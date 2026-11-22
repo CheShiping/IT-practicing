@@ -250,7 +250,7 @@ export default function ResultPage() {
           </button>
           <button
             type="button"
-            className="press h-[44px] rounded-[12px] bg-yellow px-1 text-[12.5px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[2px] active:shadow-none"
+            className="press h-[44px] rounded-[12px] bg-yellow px-1 text-[12.5px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[2px] active:shadow-none"
             onClick={() => {
               if (!wrongIds.length) {
                 navigate("/library");

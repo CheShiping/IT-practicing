@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="100%" role="img" aria-labelledby="t d">
+  <title id="t">计基速刷 · 江西专升本计算机题库</title>
+  <desc id="d">天蓝底色的封面：产品名「计基速刷」，副标题「计算机（信息技术）· 1934 道原书题」，一枚奶油黄按钮写着站点地址，右侧是一叠题卡与一支铅笔的线条插画。</desc>
+
+  <defs>
+    <pattern id="chk" width="28" height="28" patternUnits="userSpaceOnUse">
+      <rect width="28" height="28" fill="#008bd7"/>
+      <rect width="14" height="14" fill="#01b6ff"/>
+      <rect x="14" y="14" width="14" height="14" fill="#01b6ff"/>
+    </pattern>
+  </defs>
+
+  <!-- 底 -->
+  <rect width="1200" height="340" rx="0" fill="#008bd7"/>
+  <!-- 棋盘格压顶 -->
+  <rect width="1200" height="28" fill="url(#chk)"/>
+
+  <!-- 左侧文案 -->
+  <text x="72" y="92" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="21" font-weight="700" letter-spacing="3" fill="#cbe9fb">江西省普通高校专升本招生考试</text>
+
+  <text x="72" y="200" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="104" font-weight="800" letter-spacing="-3" fill="#ffffff">计基速刷</text>
+
+  <text x="72" y="246" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="25" font-weight="700" fill="#ffffff">计算机（信息技术）· 1934 道原书题 · 每题带答案与解析</text>
+
+  <!-- 地址按钮 -->
+  <rect x="72" y="272" width="424" height="54" rx="14" fill="#fdce02"/>
+  <rect x="72" y="323" width="424" height="6" rx="3" fill="#f0be00"/>
+  <text x="284" y="307" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="21" font-weight="800" fill="#1a1a18">cheshiping.github.io/IT-practicing</text>
+
+  <!-- 右侧线条插画：一叠题卡 + 一支铅笔 -->
+  <g transform="translate(836 54) scale(1.18)" fill="none" stroke="#1a1a18">
+    <g transform="rotate(7 130 100)">
+      <rect x="66" y="40" width="120" height="100" rx="13" fill="#ffffff" stroke-width="2.6"/>
+    </g>
+    <g transform="rotate(-6 130 100)">
+      <rect x="58" y="46" width="120" height="100" rx="13" fill="#ffffff" stroke-width="2.6"/>
+      <path d="M76 72h86" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M76 88h74" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M76 104h52" stroke-width="2.4" stroke-linecap="round"/>
+      <rect x="76" y="118" width="26" height="14" rx="4" fill="#fdce02" stroke-width="2.2"/>
+    </g>
+    <g transform="rotate(34 188 118)">
+      <rect x="180" y="60" width="24" height="76" rx="5" fill="#fdce02" stroke-width="2.6"/>
+      <path d="M180 136h24l-12 16z" fill="#ffffff" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M186 152l6-8 6 8" fill="#1a1a18"/>
+      <path d="M180 76h24" stroke-width="2.2"/>
+    </g>
+    <path d="M46 34l3.4 8.6L58 46l-8.6 3.4L46 58l-3.4-8.6L34 46l8.6-3.4z" fill="#ffffff" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M216 40l2.4 6 6 2.4-6 2.4-2.4 6-2.4-6-6-2.4 6-2.4z" fill="#fdce02" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="228" cy="86" r="3.4" fill="#ffffff" stroke-width="2"/>
+  </g>
+</svg>

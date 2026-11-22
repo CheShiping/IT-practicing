@@ -55,7 +55,7 @@ export default function FavoritesPage() {
           </ul>
         )}
       </PageContainer>
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-shell-2 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-shell-2 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:static md:mx-auto md:mt-5 md:max-w-[420px] md:border-0 md:bg-transparent md:p-0">
         <div className="mx-auto max-w-[560px]">
           <StartPracticeButton ids={filtered?.map((q) => q.id) ?? []} title="收藏题重练" />
         </div>

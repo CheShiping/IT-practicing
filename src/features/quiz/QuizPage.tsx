@@ -197,7 +197,7 @@ export default function QuizPage() {
   ];
 
   return (
-    <div className="min-h-dvh pb-24">
+    <div className="min-h-dvh pb-24 md:pb-8">
       <TopBar
         title={session.title}
         kicker={`${KIND_LABEL[question.kind]} · 第 ${index + 1} / ${total} 题`}
@@ -207,7 +207,7 @@ export default function QuizPage() {
         }}
         right={
           <div
-            className="flex shrink-0 items-center rounded-full bg-white/15 p-0.5"
+            className="flex shrink-0 items-center rounded-full bg-white/15 p-0.5 md:bg-shell"
             role="group"
             aria-label="练习模式"
           >
@@ -216,7 +216,7 @@ export default function QuizPage() {
               onClick={() => updateSession({ mode: "quiz" })}
               aria-pressed={!isRecite}
               className={`rounded-full px-2.5 py-1 text-[11.5px] font-bold transition-colors ${
-                isRecite ? "text-white/70" : "bg-yellow text-ink"
+                isRecite ? "text-white/70 md:text-ink-3" : "bg-yellow text-ink"
               }`}
             >
               刷题
@@ -226,7 +226,7 @@ export default function QuizPage() {
               onClick={() => updateSession({ mode: "recite" })}
               aria-pressed={isRecite}
               className={`rounded-full px-2.5 py-1 text-[11.5px] font-bold transition-colors ${
-                isRecite ? "bg-yellow text-ink" : "text-white/70"
+                isRecite ? "bg-yellow text-ink" : "text-white/70 md:text-ink-3"
               }`}
             >
               背题
@@ -236,10 +236,10 @@ export default function QuizPage() {
       />
 
       {/* 进度：天蓝轨道上的黄条 */}
-      <div className="bg-azure px-0 pb-2">
-        <div className="mx-auto max-w-[560px] px-5">
+      <div className="bg-azure px-0 pb-2 md:bg-transparent md:pb-0">
+        <div className="mx-auto max-w-[560px] px-5 md:max-w-[1040px] md:px-6">
           <div
-            className="h-[4px] overflow-hidden rounded-full bg-white/25"
+            className="h-[4px] overflow-hidden rounded-full bg-white/25 md:bg-shell-2"
             role="progressbar"
             aria-valuenow={Math.round(pct)}
             aria-valuemin={0}
@@ -254,7 +254,34 @@ export default function QuizPage() {
         </div>
       </div>
 
-      <PageContainer className="pt-4">
+      <div className="mx-auto w-full max-w-[560px] px-4 pt-4 md:grid md:max-w-[1040px] md:grid-cols-[300px_minmax(0,1fr)] md:items-start md:gap-8 md:px-6 md:pt-6">
+        {/* 桌面端答题卡侧栏 */}
+        <aside className="hidden md:block">
+          <div className="card sticky top-6 max-h-[calc(100dvh-6rem)] overflow-y-auto p-4">
+            <div className="mb-2 flex items-baseline justify-between">
+              <p className="text-[13px] font-extrabold text-ink">答题卡</p>
+              <p className="num text-[10.5px] font-semibold text-ink-3">
+                {answeredCount} / {total}
+              </p>
+            </div>
+            <AnswerSheet
+              groups={sheetGroups}
+              onJump={(no) => {
+                updateSession({ index: no - 1 });
+                window.scrollTo({ top: 0 });
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setSheetOpen(false)}
+              className="sr-only"
+            >
+              关闭
+            </button>
+          </div>
+        </aside>
+
+        <div className="min-w-0">
         {/* 题面卡 */}
         <article key={question.id} className="rise card p-4">
           <div className="mb-2 flex items-center gap-2">
@@ -378,11 +405,12 @@ export default function QuizPage() {
             </p>
           </section>
         ) : null}
-      </PageContainer>
+        </div>
+      </div>
 
-      {/* 底部操作 */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-shell-2 bg-paper px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto flex max-w-[520px] items-center gap-2.5">
+      {/* 底部操作：移动端固定，桌面端跟在内容后面 */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-shell-2 bg-paper px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:static md:mt-4 md:border-0 md:bg-transparent md:p-0">
+        <div className="mx-auto flex max-w-[520px] items-center gap-2.5 md:max-w-none">
           <button
             type="button"
             className="press h-[48px] flex-1 rounded-[13px] bg-paper text-[14px] font-bold text-ink-2 shadow-[0_1px_0_rgba(12,26,40,.06)] hover:bg-shell active:translate-y-[1px] disabled:opacity-40"
@@ -394,7 +422,7 @@ export default function QuizPage() {
           {!answered && !isRecite ? (
             <button
               type="button"
-              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[3px] active:shadow-none disabled:bg-shell-2 disabled:text-ink-3 disabled:shadow-none"
+              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none disabled:bg-shell-2 disabled:text-ink-3 disabled:shadow-none"
               disabled={selected.length === 0}
               onClick={submit}
             >
@@ -403,7 +431,7 @@ export default function QuizPage() {
           ) : index === total - 1 ? (
             <button
               type="button"
-              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[3px] active:shadow-none"
+              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none"
               onClick={finish}
             >
               查看结果
@@ -411,7 +439,7 @@ export default function QuizPage() {
           ) : (
             <button
               type="button"
-              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] active:translate-y-[3px] active:shadow-none"
+              className="press h-[48px] flex-[1.5] rounded-[13px] bg-yellow text-[15px] font-extrabold text-ink shadow-[0_3px_0_var(--yellow-deep)] transition-colors hover:bg-[#f7c500] active:translate-y-[3px] active:shadow-none"
               onClick={() => go(1)}
             >
               下一题
@@ -441,7 +469,7 @@ export default function QuizPage() {
 
       {/* 笔记 */}
       <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
-        <DialogContent className="rounded-[18px] sm:max-w-md">
+        <DialogContent className="w-[calc(100%-2rem)] max-w-[440px] overflow-hidden rounded-[18px]">
           <DialogHeader>
             <DialogTitle className="font-extrabold">笔记</DialogTitle>
             <DialogDescription className="truncate">{question.stem.slice(0, 40)}</DialogDescription>
@@ -452,7 +480,7 @@ export default function QuizPage() {
             rows={5}
             maxLength={2000}
             aria-label="笔记内容"
-            className="w-full rounded-[12px] border border-shell-2 bg-shell p-3 text-[14px] leading-7 outline-none focus-visible:border-azure"
+            className="block w-full min-w-0 resize-none rounded-[12px] border border-shell-2 bg-shell p-3 text-[14px] leading-7 outline-none focus-visible:border-azure"
             placeholder="记下你为什么选错…"
           />
           <DialogFooter>

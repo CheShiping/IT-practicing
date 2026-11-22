@@ -1,14 +1,19 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChartNoAxesColumn, House, User } from "lucide-react";
+import { BookOpen, ChartNoAxesColumn, House, Star, User, XCircle } from "lucide-react";
 import { cn } from "cn";
 import { useAppStore } from "@/store/useAppStore";
 import { useHydrated } from "@/data/hooks";
 
 const NAV = [
   { to: "/", label: "首页", icon: House },
+  { to: "/library", label: "题库", icon: BookOpen },
+  { to: "/wrong", label: "错题本", icon: XCircle },
+  { to: "/favorites", label: "收藏", icon: Star },
   { to: "/stats", label: "统计", icon: ChartNoAxesColumn },
   { to: "/profile", label: "我的", icon: User },
 ];
+
+const TAB_NAV = NAV.filter((n) => ["/", "/stats", "/profile"].includes(n.to));
 
 /** 棋盘格边条：参考图里的品牌纹样，放在状态条顶上 */
 export function Checker({ className }: { className?: string }) {
@@ -24,7 +29,7 @@ export function BottomNav() {
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
       <ul className="mx-auto flex max-w-[520px] items-stretch rounded-[18px] bg-paper px-1.5 py-1.5 shadow-[0_-2px_0_rgba(12,26,40,.03),0_10px_28px_rgba(12,40,64,.18)]">
-        {NAV.map((item) => {
+        {TAB_NAV.map((item) => {
           const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           const Icon = item.icon;
           return (
@@ -128,15 +133,31 @@ export function TopBar({
   const showCountdown = Boolean(title) && !kicker && hydrated && countdown;
 
   return (
-    <header className={cn("sticky top-0 z-30 bg-azure", !cover && "md:hidden")}>
-      <Checker />
-      <div className="mx-auto flex min-h-[54px] max-w-[560px] items-center gap-2 px-5">
+    <header
+      className={cn(
+        "sticky top-0 z-30 bg-azure",
+        !cover &&
+          "md:static md:border-b md:border-shell-2 md:bg-transparent md:backdrop-blur-none",
+      )}
+    >
+      <div className={cn(cover ? "block" : "block md:hidden")}>
+        <Checker />
+      </div>
+      <div
+        className={cn(
+          "mx-auto flex min-h-[54px] max-w-[560px] items-center gap-2 px-5",
+          !cover && "md:min-h-[64px] md:max-w-[1040px] md:px-6",
+        )}
+      >
         {back ? (
           <button
             type="button"
             onClick={() => (typeof back === "function" ? back() : navigate(-1))}
             aria-label="返回"
-            className="-ml-2 flex size-9 shrink-0 items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white/15 hover:text-white"
+            className={cn(
+              "-ml-2 flex size-9 shrink-0 items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white/15 hover:text-white",
+              !cover && "md:-ml-2.5 md:size-10 md:text-ink-2 hover:md:bg-shell",
+            )}
           >
             <svg
               viewBox="0 0 24 24"
@@ -155,13 +176,19 @@ export function TopBar({
           <h1
             className={cn(
               "truncate text-[16px] leading-tight font-extrabold tracking-tight text-white",
+              !cover && "md:text-[22px] md:text-ink",
               !title && "sr-only",
             )}
           >
             {title || fallbackTitle}
           </h1>
           {kicker ? (
-            <p className="num mt-0.5 truncate text-[10.5px] leading-tight font-medium text-on-azure">
+            <p
+              className={cn(
+                "num mt-0.5 truncate text-[10.5px] leading-tight font-medium text-on-azure",
+                !cover && "md:text-[11.5px] md:text-ink-3",
+              )}
+            >
               {kicker}
             </p>
           ) : showCountdown ? (
@@ -207,7 +234,7 @@ export function PageContainer({
     <main
       className={cn(
         "mx-auto w-full px-4 pb-28 md:px-6 md:pb-16",
-        wide ? "max-w-[960px]" : "max-w-[560px]",
+        wide ? "max-w-[960px]" : "max-w-[560px] md:max-w-[760px]",
         className,
       )}
     >
