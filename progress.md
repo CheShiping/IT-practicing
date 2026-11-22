@@ -46,3 +46,15 @@
 - 数据校验：1942 题无重复 id；ch3 各节题号 1..N 连续；板块题量 265+290+168=723。
 - 迁移自测：预置 `ch3-single-1`、`ch3-blank-5` 旧记录后加载，localStorage 变为 `ch3-w-single-1`、`ch3-w-blank-5`，题库页显示「已练 1」。
 - 未推送：命中「`public/data/**` 题库改动不自动推」。
+
+### 推送回执（21:26-21:31）
+
+- `git push origin main`：`29a9175..35242b5`（首次 schannel 报错，改 `-c http.sslBackend=openssl` 成功）。
+- CI：`gh run list` → run `45027555808`，headSha `35242b5`，conclusion **success**（build 前已带 typecheck + lint）。
+- 线上内容校验（Node fetch，绕开 curl 的 schannel 问题）：
+  - `data/manifest.json` 200，版本 `2026-11-22`，总题 1942
+  - `data/units.json` 200，ch3 单元 21 个，板块 Word / Excel / PowerPoint，题量和 723
+  - `data/legacy.json` 200，688 条映射
+  - `data/chapters/ch3.json` 200，325.3KB
+- 线上 UI：`/library` 展开 Office，三个板块标题正常（Word 文字处理 / Excel 电子表格 / PowerPoint 演示文稿），无控制台错误；截图 `build/shots/live-ch3.png`。
+- 用户 21:25 明确「自动推送，这种需要」→ 后续 `public/data/**` 题库改动的推送限制解除，见 AGENTS.md。

@@ -31,7 +31,8 @@
 - 只在 `npm run check` 绿之后提交。提交信息沿用现有风格：`feat:` / `fix:` / `docs:` / `refactor:` / `polish:` + 一句中文说清改了什么。
 - 推完必须拿回执并记进 `progress.md`：`gh run list --limit 1 --json headSha,conclusion`，确认本次 commit 的 run 是 success。**push 退出码 0 不等于上线成功。**
 - Pages 有 CDN 延迟，推完立刻 curl 到旧内容是正常的；以 run 结论加稍后内容校验为准，别据此判定部署失败。
-- 以下四类不自动推（提交后停在本机等人工过目）：`public/data/**` 题库改动、依赖大版本升级、`DESIGN.md` 结构性重写、以及 check 绿但自己没把握的改动。
+- 以下三类不自动推（提交后停在本机等人工过目）：依赖大版本升级、`DESIGN.md` 结构性重写、以及 check 绿但自己没把握的改动。
+- `public/data/**` 题库改动**可以自动推**（用户 2026-11-22 明确要求：拆 Office 板块这类数据改动要直接上线）；前提是 `npm run check` 全绿，推送后按上一条取回执、验线上内容。
 
 ## 门禁口径
 
