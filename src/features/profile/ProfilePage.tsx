@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { PageContainer, SectionHead, TopBar } from "@/components/layout/AppShell";
 import { useManifest } from "@/data/hooks";
@@ -214,14 +215,37 @@ export default function ProfilePage() {
               { k: "入库题量", v: `${manifest?.totalQuestions ?? "—"} 题` },
               { k: "可自动判分", v: `${manifest?.usableQuestions ?? "—"} 题` },
               { k: "数据版本", v: manifest?.dataVersion ?? "—" },
-            ].map((r) => (
-              <div key={r.k} className="flex items-baseline gap-4 px-4 py-3">
-                <span className="shrink-0 text-[12.5px] text-ink-2">{r.k}</span>
-                <span className="num ml-auto text-right text-[12px] font-semibold text-ink">
-                  {r.v}
-                </span>
-              </div>
-            ))}
+              {
+                k: "源码",
+                v: "CheShiping/IT-practicing",
+                href: "https://github.com/CheShiping/IT-practicing",
+              },
+            ].map((r) => {
+              const body = (
+                <>
+                  <span className="shrink-0 text-[12.5px] text-ink-2">{r.k}</span>
+                  <span className="num min-w-0 flex-1 truncate text-right text-[12px] font-semibold text-ink">
+                    {r.v}
+                  </span>
+                </>
+              );
+              return r.href ? (
+                <a
+                  key={r.k}
+                  href={r.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-shell"
+                >
+                  {body}
+                  <ExternalLink className="size-3.5 shrink-0 text-ink-3" aria-hidden />
+                </a>
+              ) : (
+                <div key={r.k} className="flex items-baseline gap-4 px-4 py-3">
+                  {body}
+                </div>
+              );
+            })}
           </section>
           <p className="mt-1.5 px-1 text-[10.5px] leading-5 text-ink-3">
             题目与解析来自纸质教辅扫描件的识别结果，个别字符可能有误差，仅供备考参考，请以原书为准。

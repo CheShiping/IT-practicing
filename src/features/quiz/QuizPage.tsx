@@ -472,7 +472,9 @@ export default function QuizPage() {
         <DialogContent className="w-[calc(100%-2rem)] max-w-[440px] overflow-hidden rounded-[18px]">
           <DialogHeader>
             <DialogTitle className="font-extrabold">笔记</DialogTitle>
-            <DialogDescription className="truncate">{question.stem.slice(0, 40)}</DialogDescription>
+            <DialogDescription className="line-clamp-2 break-words">
+              {question.stem.slice(0, 40)}
+            </DialogDescription>
           </DialogHeader>
           <textarea
             value={noteText}
@@ -480,7 +482,7 @@ export default function QuizPage() {
             rows={5}
             maxLength={2000}
             aria-label="笔记内容"
-            className="block w-full min-w-0 resize-none rounded-[12px] border border-shell-2 bg-shell p-3 text-[14px] leading-7 outline-none focus-visible:border-azure"
+            className="block w-full max-w-full min-w-0 resize-none rounded-[12px] border border-shell-2 bg-shell p-3 text-[14px] leading-7 outline-none focus-visible:border-azure"
             placeholder="记下你为什么选错…"
           />
           <DialogFooter>
