@@ -82,3 +82,11 @@
 - `npm run check` 退出码 0，17 步全 OK，无控制台错误。
 - 截图：`build/verify/04c-qno.png`（第 182 题 · 多选题 · 原书第 1 题）、`04d-result.png`、`04e-result-sheet.png`（答题卡 1 起连续）、`04f-result-item.png`（逐题解析带原书题号）。
 
+### 推送回执（19:22-19:28）
+
+- `git push origin main`：`31878ae..23f2905`，退出码 0（`credential-manager-core` 警告不影响推送）。
+- CI：run `45164657856`，headSha `23f2905`，conclusion **success**。
+- 线上内容：`index.html` 引用 `assets/index-DYO_4QRo.js`（462 KB），bundle 命中「原书第」。
+- 线上 UI（390px 真实浏览器，`?q=182`）：徽标 182、答题卡当前格 182、顶部「第 182 / 340 题」；点「上一题」→ 181。截图 `build/shots/live-qno.png`。控制台仅 `/quiz/:id` 的 404 兜底，属预期。
+
+
