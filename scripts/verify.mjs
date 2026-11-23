@@ -66,7 +66,12 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 
 // 静态托管下 /quiz/:id 这类动态路由由 404.html 空壳兜底，404 状态码是预期行为，不算错误
 const isDynamicRouteFallback = (url) => /\/quiz\/[^/]+(\?.*)?$/.test(url);
-page.on("requestfailed", (r) => errors.push(`[net] ${r.url()}`));
+page.on("requestfailed", (r) => {
+  // 页面跳转会取消还在飞的请求（含 favicon），ERR_ABORTED 不是资源问题
+  const why = r.failure()?.errorText ?? "";
+  if (why === "net::ERR_ABORTED") return;
+  errors.push(`[net] ${r.url()} ${why}`);
+});
 page.on("response", (r) => {
   if (r.status() >= 400 && !isDynamicRouteFallback(r.url())) {
     errors.push(`[${r.status()}] ${r.url()}`);
@@ -166,7 +171,7 @@ await step("进入下一题", async () => {
 });
 
 await step("刷新后进度保留", async () => {
-  const url = page.url();
+  const url = page.url().split("?")[0];
   await page.reload({ waitUntil: "networkidle" });
   await page.waitForSelector("text=提交答案", { timeout: 15000 });
   // 刷新后仍停在第 2 题（未作答），回到第 1 题应保留判定结果
@@ -176,6 +181,69 @@ await step("刷新后进度保留", async () => {
   await page.waitForSelector('[role="status"]', { timeout: 15000 });
   const stored = await page.evaluate(() => localStorage.getItem("msz.v1.app") || "");
   if (!stored.includes("ch1-single-1")) throw new Error("本地进度未保存");
+});
+
+await step("题号与答题卡题号一致", async () => {
+  // 第 182 题是本章多选第一题：原书题号会重新从 1 计，练习序号才是 182
+  const base = page.url().split("?")[0];
+  if (!/\/quiz\/[^/]+$/.test(base)) throw new Error("当前不在练习页：" + page.url());
+  await page.goto(`${base}?q=182`, { waitUntil: "networkidle" });
+  await page.waitForSelector("text=提交答案", { timeout: 30000 });
+
+  const read = () =>
+    page.evaluate(() => {
+      const badge = document.querySelector("article span.num")?.textContent?.trim() ?? "";
+      const cells = [...document.querySelectorAll('[aria-current="true"]')].map((e) =>
+        (e.textContent ?? "").trim(),
+      );
+      const m = document.body.innerText.match(/第\s*(\d+)\s*\/\s*(\d+)\s*题/);
+      return { badge, cells, pos: m ? Number(m[1]) : 0, total: m ? Number(m[2]) : 0 };
+    });
+
+  const at182 = await read();
+  if (at182.pos !== 182) throw new Error(`顶部题号应为 182，实际 ${at182.pos}`);
+  if (at182.badge !== "182") throw new Error(`题面题号应为 182，实际「${at182.badge}」`);
+  if (!at182.cells.length) throw new Error("答题卡没有标出当前题");
+  for (const c of at182.cells) {
+    if (c !== "182") throw new Error(`答题卡当前格应为 182，实际「${c}」`);
+  }
+  await page.screenshot({ path: `${OUT}/04c-qno.png`, fullPage: true });
+
+  // 带 ?q= 进来后翻页，不能被旧参数拽回原题
+  await page.getByRole("button", { name: "上一题" }).click();
+  await page.waitForTimeout(300);
+  const at181 = await read();
+  if (at181.pos !== 181) throw new Error(`上一题后应在 181，实际 ${at181.pos}`);
+  if (at181.badge !== "181") throw new Error(`上一题后题面题号应为 181，实际「${at181.badge}」`);
+});
+
+await step("结果页答题卡按练习序号并能跳题", async () => {
+  await page.getByRole("button", { name: "返回" }).click();
+  await page.getByRole("button", { name: "结束并看结果" }).click();
+  await page.waitForURL(/\/quiz\/[^/]+\/result/, { timeout: 15000 });
+  await page.waitForSelector('button[aria-label^="第 "]', { timeout: 20000 });
+
+  const nos = await page.$$eval('button[aria-label^="第 "]', (els) =>
+    els.map((e) => Number((e.textContent ?? "").trim())),
+  );
+  for (let i = 0; i < nos.length; i++) {
+    if (nos[i] !== i + 1) throw new Error(`答题卡应为连续序号，第 ${i + 1} 格是 ${nos[i]}`);
+  }
+  await page.screenshot({ path: `${OUT}/04d-result.png`, fullPage: true });
+  await page
+    .locator('div.card:has(button[aria-label^="第 "])')
+    .first()
+    .screenshot({ path: `${OUT}/04e-result-sheet.png` });
+  await page
+    .locator('li.card:has-text("正确答案")')
+    .first()
+    .screenshot({ path: `${OUT}/04f-result-item.png` });
+
+  await page.locator('button[aria-label^="第 3 题"]').first().click();
+  await page.waitForURL(/[?&]q=3(?:&|$)/, { timeout: 10000 });
+  await page.waitForSelector("text=提交答案", { timeout: 30000 });
+  const m = (await page.textContent("body")).match(/第\s*(\d+)\s*\/\s*\d+\s*题/);
+  if (!m || Number(m[1]) !== 3) throw new Error(`点第 3 格后应停在第 3 题，实际 ${m?.[1]}`);
 });
 
 await step("错题本可用", async () => {

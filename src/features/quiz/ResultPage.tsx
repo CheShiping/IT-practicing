@@ -53,6 +53,13 @@ export default function ResultPage() {
     };
   }, [session]);
 
+  // 练习内序号：原书题号按题型各从 1 起、删题后还有缺口，不能当答题卡编号
+  const positionOf = useMemo(() => {
+    const map = new Map<string, number>();
+    questions?.forEach((q, i) => map.set(q.id, i + 1));
+    return map;
+  }, [questions]);
+
   const groups: SheetGroup[] = useMemo(() => {
     if (!questions) return [];
     const byType = new Map<string, SheetGroup["items"]>();
@@ -61,12 +68,12 @@ export default function ResultPage() {
       if (!byType.has(key)) byType.set(key, []);
       const r = session?.results[q.id];
       byType.get(key)!.push({
-        no: q.no,
+        no: positionOf.get(q.id) ?? 0,
         state: r === undefined ? "unanswered" : r ? "correct" : "wrong",
       });
     }
     return [...byType.entries()].map(([title, items]) => ({ title, items }));
-  }, [questions, session]);
+  }, [questions, session, positionOf]);
 
   const wrongIds = useMemo(
     () => (session ? session.questionIds.filter((id) => session.results[id] === false) : []),
@@ -149,7 +156,10 @@ export default function ResultPage() {
           <div className="card p-3.5">
             {questions ? (
               <div className="max-h-[236px] overflow-y-auto overscroll-contain pr-0.5">
-                <AnswerSheet groups={groups} onJump={() => navigate(`/quiz/${session.id}?q=1`)} />
+                <AnswerSheet
+                  groups={groups}
+                  onJump={(no) => navigate(`/quiz/${session.id}?q=${no}`)}
+                />
               </div>
             ) : (
               <div className="flex items-center justify-center gap-2 py-8 text-[13px] text-ink-3">
@@ -188,11 +198,14 @@ export default function ResultPage() {
                   return (
                     <li key={q.id} className="card p-3.5">
                       <div className="flex items-center gap-2">
-                        <span className="num flex size-6 items-center justify-center rounded-[7px] bg-shell text-[10.5px] font-extrabold text-ink-2">
-                          {q.no}
+                        <span className="num flex size-6 shrink-0 items-center justify-center rounded-[7px] bg-shell text-[10.5px] font-extrabold text-ink-2">
+                          {positionOf.get(q.id) ?? q.no}
                         </span>
-                        <span className="text-[10px] font-bold text-ink-3">
+                        <span className="shrink-0 text-[10px] font-bold text-ink-3">
                           {KIND_LABEL[q.kind]}
+                        </span>
+                        <span className="num truncate text-[10px] text-ink-3">
+                          原书第 {q.bookNo ?? q.no} 题
                         </span>
                         <span
                           className={`num ml-auto rounded-full px-2 py-0.5 text-[10px] font-extrabold ${

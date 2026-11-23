@@ -76,12 +76,24 @@ export default function QuizPage() {
     };
   }, [session]);
 
-  const index = session ? (jumpTo ? Math.max(0, Number(jumpTo) - 1) : session.index) : 0;
+  const total = session?.questionIds.length ?? 0;
+  // ?q= 是「第几题」（练习内序号，从 1 起），不是原书题号
+  const jumpIndex = jumpTo ? Math.round(Number(jumpTo)) - 1 : Number.NaN;
+  const index = !session || !total
+    ? 0
+    : Math.min(total - 1, Math.max(0, Number.isFinite(jumpIndex) ? jumpIndex : session.index));
   const question = questions?.[index];
   const revealed = session ? Boolean(session.revealed[question?.id ?? ""]) : false;
   const isRecite = session?.mode === "recite";
   const answeredCount = session ? Object.keys(session.revealed).length : 0;
-  const total = session?.questionIds.length ?? 0;
+
+  // 练习内位置以地址栏 ?q= 为准：位置写进 URL 才能让结果页「回看」落到指定题，
+  // 已结束的会话 updateSession 不生效（只 patch 进行中的 current），不能只靠 store
+  useEffect(() => {
+    if (!session || !jumpTo) return;
+    if (index !== session.index) updateSession({ index });
+  }, [jumpTo, index, session, updateSession]);
+
 
   useEffect(() => {
     if (!session || !question) return;
@@ -146,11 +158,17 @@ export default function QuizPage() {
     }
   }
 
-  function go(delta: number) {
-    if (!session) return;
-    const next = Math.min(total - 1, Math.max(0, index + delta));
-    updateSession({ index: next });
+  function goTo(next: number) {
+    if (!session || !total) return;
+    const pos = Math.min(total - 1, Math.max(0, next));
+    updateSession({ index: pos });
+    // 位置同步进地址栏：已结束的会话（结果页回看）靠它定位，updateSession 只改进行中的会话
+    navigate(`/quiz/${session.id}?q=${pos + 1}`, { replace: true });
     window.scrollTo({ top: 0 });
+  }
+
+  function go(delta: number) {
+    goTo(index + delta);
   }
 
   function finish() {
@@ -303,10 +321,7 @@ export default function QuizPage() {
             </div>
             <AnswerSheet
               groups={sheetGroups}
-              onJump={(no) => {
-                updateSession({ index: no - 1 });
-                window.scrollTo({ top: 0 });
-              }}
+              onJump={(no) => goTo(no - 1)}
             />
             <button
               type="button"
@@ -322,10 +337,16 @@ export default function QuizPage() {
         {/* 题面卡 */}
         <article key={question.id} className="rise card p-4">
           <div className="mb-2 flex items-center gap-2">
-            <span className="num flex size-7 items-center justify-center rounded-[8px] bg-azure text-[11.5px] font-extrabold text-white">
-              {question.no}
+            {/* 这里的题号是练习内序号，和答题卡、顶部「第 n / N 题」同一套；原书题号另标 */}
+            <span className="num flex size-7 shrink-0 items-center justify-center rounded-[8px] bg-azure text-[11.5px] font-extrabold text-white">
+              {index + 1}
             </span>
-            <span className="text-[10.5px] font-bold text-ink-3">{KIND_LABEL[question.kind]}</span>
+            <span className="shrink-0 text-[10.5px] font-bold text-ink-3">
+              {KIND_LABEL[question.kind]}
+            </span>
+            <span className="num truncate text-[10.5px] font-medium text-ink-3">
+              原书第 {question.bookNo ?? question.no} 题
+            </span>
             <div className="ml-auto flex items-center gap-0.5">
               <IconBtn
                 label={starred ? "取消收藏" : "收藏本题"}
@@ -623,9 +644,8 @@ export default function QuizPage() {
             <AnswerSheet
               groups={sheetGroups}
               onJump={(no) => {
-                updateSession({ index: no - 1 });
+                goTo(no - 1);
                 setSheetOpen(false);
-                window.scrollTo({ top: 0 });
               }}
             />
           </div>

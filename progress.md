@@ -58,3 +58,27 @@
   - `data/chapters/ch3.json` 200，325.3KB
 - 线上 UI：`/library` 展开 Office，三个板块标题正常（Word 文字处理 / Excel 电子表格 / PowerPoint 演示文稿），无控制台错误；截图 `build/shots/live-ch3.png`。
 - 用户 21:25 明确「自动推送，这种需要」→ 后续 `public/data/**` 题库改动的推送限制解除，见 AGENTS.md。
+
+## 题号统一为练习内序号（19:10-19:55）
+
+### 问题
+
+- 题面卡徽标用 `question.no`（原书题号：各题型各从 1 重计，删题后还有缺口），答题卡用 `i + 1`（练习内序号），两套号对不上：
+  - 全章练习翻到多选时，徽标回落成 1，答题卡却是 182；
+  - 错题 / 收藏重练时，徽标是原书第 47 题，答题卡是 1 —— 即用户看到的「题号大了」。
+- 结果页答题卡直接用原书号，出现 `1..6 → 8` 的跳号（删题缺口）；点格子固定跳 `?q=1`，从来没跳到对应题。
+- 附带：带 `?q=` 进练习后，「上一题 / 下一题」被旧参数拽回原题（`?q=` 覆盖 store 里的 index）。
+
+### 做了什么
+
+- `QuizPage`：题号统一为练习内序号 `index + 1`，原书题号降级成旁边的小字「原书第 N 题」（取 `bookNo ?? no`）；桌面侧栏答题卡与手机 Sheet 跳题都走 `goTo()`。
+- 位置写进地址栏：`goTo()` 用 `navigate('/quiz/:id?q=n', { replace: true })` 同步，`?q=` 成为位置源头。原因：`updateSession` 只 patch 进行中的 `current`，已结束的会话（结果页回看）改不动 index，只靠 store 会落回离开时那题。
+- `ResultPage`：答题卡与逐题解析按 `questionIds` 顺序算序号（`positionOf`），分组仍按题型；点格子 `navigate(?q={no})`，不再是固定 `?q=1`。
+- `verify.mjs`：新增两步用例；`requestfailed` 过滤 `net::ERR_ABORTED`（页面跳转取消在飞的 favicon，不是资源错误，之前偶发把门禁判红）。
+
+### 证据
+
+- 先红后绿：改前 `题面题号应为 182，实际「1」`、`答题卡应为连续序号，第 7 格是 8`；改后同两条通过。
+- `npm run check` 退出码 0，17 步全 OK，无控制台错误。
+- 截图：`build/verify/04c-qno.png`（第 182 题 · 多选题 · 原书第 1 题）、`04d-result.png`、`04e-result-sheet.png`（答题卡 1 起连续）、`04f-result-item.png`（逐题解析带原书题号）。
+

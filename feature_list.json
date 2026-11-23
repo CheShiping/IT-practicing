@@ -1,7 +1,22 @@
 {
-  "updatedAt": "2026-11-22",
+  "updatedAt": "2026-11-23",
   "note": "只允许一个 active 功能；status 取值 todo | active | done | blocked。evidence 必须是可复核的东西（命令输出、截图、commit），不是形容词。",
   "features": [
+    {
+      "id": "qno-consistency",
+      "title": "题号在题面 / 答题卡 / 结果页同一套",
+      "status": "done",
+      "acceptance": [
+        "练习第 182 题（本章多选第一题）时，题面徽标、顶部「第 182 / N 题」、答题卡当前格三处都显示 182，题面另标「原书第 1 题」",
+        "带 ?q= 进入后点上一题 / 下一题，题号随之变化，不被旧参数拽回",
+        "结果页答题卡从 1 连续编号（无跳号），点第 3 格落到第 3 题"
+      ],
+      "evidence": [
+        "npm run check 退出码 0，17 步全 OK（2026-11-23）",
+        "build/verify/04c-qno.png",
+        "build/verify/04e-result-sheet.png / 04f-result-item.png"
+      ]
+    },
     {
       "id": "quiz-all-types",
       "title": "全部题型可练（填空与主观题）",
@@ -23,7 +38,7 @@
         "推送后在 progress.md 留下 CI run 回执（headSha + conclusion）"
       ],
       "evidence": [
-        "npm run check 退出码 0，13 步全 OK（2026-11-22）",
+        "npm run check 退出码 0，17 步全 OK（2026-11-23）",
         "build/verify/01-home.png … 08-desktop.png",
         "commit bb339b8 / 9abbfc4（未推送）"
       ]
